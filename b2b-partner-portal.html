@@ -604,31 +604,36 @@
         /* MODAL */
         .modal-backdrop {
             position: fixed;
-            inset: 0;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
             background: rgba(0, 0, 0, 0.5);
             display: flex;
             align-items: center;
             justify-content: center;
-            z-index: 50;
-            padding: 1rem;
+            z-index: 1000;
         }
 
         .modal-content {
             background: var(--color-bg);
-            max-width: 960px;
-            width: 100%;
-            max-height: 90vh;
-            overflow-y: auto;
             border: 1px solid var(--color-border);
             border-radius: var(--radius-lg);
+            max-width: 90vw;
+            max-height: 85vh;
+            overflow-y: auto;
+            padding: 2rem;
+            width: 100%;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
         }
 
         .modal-header {
-            padding: 1.5rem;
-            border-bottom: 1px solid var(--color-divider);
             display: flex;
             justify-content: space-between;
             align-items: center;
+            margin-bottom: 1.5rem;
+            border-bottom: 1px solid var(--color-divider);
+            padding-bottom: 1rem;
         }
 
         .modal-title {
@@ -637,20 +642,21 @@
         }
 
         .modal-close {
-            width: 32px;
-            height: 32px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
+            font-size: 1.5rem;
             cursor: pointer;
+            color: var(--color-fg-low);
+            transition: color 0.2s;
             background: none;
             border: none;
-            font-size: 1.5rem;
-            color: var(--color-fg-low);
+            padding: 0;
+        }
+
+        .modal-close:hover {
+            color: #000;
         }
 
         .modal-body {
-            padding: 2rem;
+            margin-bottom: 1.5rem;
         }
 
         .product-detail {
@@ -769,13 +775,14 @@
         }
 
         .modal-footer {
-            padding: 1.5rem;
-            border-top: none;
             display: flex;
-            justify-content: space-between;
+            justify-content: flex-end;
+            gap: 1rem;
+            margin-top: 2rem;
+            border-top: 1px solid var(--color-divider);
+            padding-top: 1rem;
             align-items: center;
             font-size: 0.8125rem;
-            gap: 1rem;
         }
 
         .modal-footer .stat-label {
