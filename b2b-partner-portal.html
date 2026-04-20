@@ -17,7 +17,7 @@
         }
 
         html, body, #root {
-            height: 100%;
+            min-height: 100%;
             width: 100%;
         }
 
@@ -48,9 +48,11 @@
 
         /* LAYOUT */
         .header {
-            position: sticky;
+            position: fixed;
             top: 0;
-            z-index: 40;
+            left: 0;
+            right: 0;
+            z-index: 100;
             height: 3.5rem;
             background: var(--color-bg);
             border-bottom: 1px solid var(--color-border-low);
@@ -58,6 +60,10 @@
             align-items: center;
             padding: 0 2rem;
             justify-content: space-between;
+        }
+
+        .header-spacer {
+            height: 3.5rem;
         }
 
         .header-left {
@@ -96,7 +102,7 @@
         }
 
         .nav-item {
-            font-size: 0.875rem;
+            font-size: 1rem;
             color: var(--color-fg-low);
             position: relative;
             cursor: pointer;
@@ -125,7 +131,30 @@
         .header-right {
             display: flex;
             align-items: center;
-            gap: 2rem;
+            gap: 1.5rem;
+        }
+
+        .cart-icon-wrap {
+            position: relative;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            color: var(--color-fg);
+            transition: color 0.2s;
+        }
+
+        .cart-icon-wrap:hover {
+            color: var(--color-fg-low);
+        }
+
+        .cart-icon-wrap .cart-badge {
+            position: absolute;
+            top: -6px;
+            right: -8px;
+            min-width: 16px;
+            height: 16px;
+            font-size: 9px;
+            margin-left: 0;
         }
 
         .company-info {
@@ -363,7 +392,7 @@
 
         .collections-section {
             padding: 3.5rem 1.5rem;
-            max-width: 1280px;
+            max-width: 2200px;
             margin: 0 auto;
         }
 
@@ -383,7 +412,7 @@
 
         .product-grid {
             display: grid;
-            grid-template-columns: repeat(4, 1fr);
+            grid-template-columns: repeat(5, 1fr);
             gap: 1.5rem;
         }
 
@@ -461,9 +490,11 @@
 
         /* PRODUCTS PAGE */
         .summary-bar {
-            position: sticky;
-            top: 3.5rem;
-            z-index: 30;
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            z-index: 90;
             background: #000;
             color: #fff;
             padding: 0.75rem 1.5rem;
@@ -471,7 +502,7 @@
         }
 
         .summary-bar-inner {
-            max-width: 1280px;
+            max-width: 2200px;
             margin: 0 auto;
             padding: 0 1.5rem;
             display: flex;
@@ -512,14 +543,27 @@
             color: #000;
         }
 
+        .filters-sticky {
+            position: sticky;
+            top: 3.5rem;
+            z-index: 50;
+            background: var(--color-bg);
+        }
+
         .filters-row {
-            max-width: 1280px;
+            max-width: 2200px;
             margin: 0 auto;
-            padding: 1rem 1.5rem;
+            padding: 0.75rem 1.5rem;
             display: flex;
             align-items: center;
-            gap: 1rem;
-            flex-wrap: wrap;
+            gap: 0.625rem;
+        }
+
+        .filter-divider {
+            width: 1px;
+            height: 20px;
+            background: var(--color-divider);
+            flex-shrink: 0;
         }
 
         .search-toggle {
@@ -534,6 +578,7 @@
             padding: 4px;
             border-radius: 4px;
             transition: background 0.15s;
+            flex-shrink: 0;
         }
 
         .search-toggle:hover {
@@ -547,43 +592,103 @@
         }
 
         .search-input {
-            padding: 8px 12px;
+            padding: 7px 12px;
             border: 1px solid var(--color-border);
-            background: var(--color-bg-low);
-            font-size: 14px;
+            background: var(--color-bg);
+            font-size: 13px;
             width: 200px;
             border-radius: var(--input-radius);
         }
 
+        .search-input:focus {
+            outline: none;
+            border-color: var(--color-border-strong);
+        }
+
         .category-buttons {
             display: flex;
-            gap: 0.5rem;
-            flex-wrap: wrap;
+            gap: 0.375rem;
+            flex-wrap: nowrap;
         }
 
         .category-btn {
-            padding: 6px 12px;
+            padding: 5px 12px;
             border: 1px solid var(--color-border);
             background: var(--color-bg);
-            font-size: 13px;
+            font-size: 12px;
             font-weight: var(--btn-font-weight);
-            letter-spacing: 0;
+            letter-spacing: 0.02em;
             text-transform: uppercase;
             border-radius: var(--btn-radius);
             cursor: pointer;
-            transition: all 0.2s;
+            transition: all 0.15s;
+            white-space: nowrap;
+        }
+
+        .category-btn:hover {
+            border-color: var(--color-border-strong);
         }
 
         .category-btn.active {
             background: var(--color-bg-contrast);
             color: var(--color-fg-on-contrast);
+            border-color: var(--color-bg-contrast);
+        }
+
+        .filter-select {
+            appearance: none;
+            -webkit-appearance: none;
+            padding: 5px 28px 5px 10px;
+            border: 1px solid var(--color-border);
+            background: var(--color-bg);
+            font-size: 12px;
+            font-weight: var(--btn-font-weight);
+            letter-spacing: 0.02em;
+            border-radius: var(--btn-radius);
+            cursor: pointer;
+            background-image: url("data:image/svg+xml,%3Csvg width='10' height='6' viewBox='0 0 10 6' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M1 1L5 5L9 1' stroke='%23666' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+            background-repeat: no-repeat;
+            background-position: right 10px center;
+            transition: border-color 0.15s;
+        }
+
+        .filter-select:hover {
             border-color: var(--color-border-strong);
         }
 
+        .filter-select:focus {
+            outline: none;
+            border-color: var(--color-border-strong);
+        }
+
+        .filter-reset {
+            background: none;
+            border: none;
+            font-size: 12px;
+            color: var(--color-fg-low);
+            cursor: pointer;
+            padding: 5px 8px;
+            text-decoration: underline;
+            text-underline-offset: 3px;
+            white-space: nowrap;
+            flex-shrink: 0;
+        }
+
+        .filter-reset:hover {
+            color: var(--color-fg);
+        }
+
+        .filters-right {
+            margin-left: auto;
+            display: flex;
+            align-items: center;
+            gap: 0.625rem;
+        }
+
         .products-section {
-            max-width: 1280px;
+            max-width: 2200px;
             margin: 0 auto;
-            padding: 2rem 1.5rem;
+            padding: 1rem 1.5rem;
         }
 
         .product-qty-bar {
@@ -617,23 +722,24 @@
 
         .modal-content {
             background: var(--color-bg);
+            max-width: 980px;
+            width: 100%;
+            max-height: 90vh;
+            overflow: hidden;
             border: 1px solid var(--color-border);
             border-radius: var(--radius-lg);
-            max-width: 90vw;
-            max-height: 85vh;
-            overflow-y: auto;
-            padding: 2rem;
-            width: 100%;
             box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
+            display: flex;
+            flex-direction: column;
         }
 
         .modal-header {
+            padding: 1rem 2rem 0.25rem;
+            border-bottom: none;
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-bottom: 1.5rem;
-            border-bottom: 1px solid var(--color-divider);
-            padding-bottom: 1rem;
+            flex-shrink: 0;
         }
 
         .modal-title {
@@ -656,7 +762,10 @@
         }
 
         .modal-body {
-            margin-bottom: 1.5rem;
+            padding: 1rem 2rem 2rem;
+            overflow-y: auto;
+            flex: 1;
+            min-height: 0;
         }
 
         .product-detail {
@@ -718,13 +827,95 @@
         }
 
         .detail-field {
-            margin-bottom: 0.75rem;
-            padding-bottom: 0.75rem;
-            border-bottom: none;
+            margin-bottom: 0;
+            padding: 0.75rem 0;
+            border-bottom: 1px solid var(--color-divider);
         }
 
         .detail-field:last-child {
             border-bottom: none;
+        }
+
+        .detail-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 0;
+        }
+
+        .detail-row .detail-field {
+            border-bottom: 1px solid var(--color-divider);
+        }
+
+        /* Color selection summary tags */
+        .color-selection-tags {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+            margin-top: 1rem;
+        }
+
+        .color-tag {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            padding: 0.75rem 1rem;
+            background: var(--color-bg-low);
+            border-radius: var(--radius-sm);
+            font-size: 0.8125rem;
+        }
+
+        .color-tag-name {
+            font-weight: 600;
+            min-width: 40px;
+        }
+
+        .color-tag-sizes {
+            flex: 1;
+            color: var(--color-fg);
+        }
+
+        .color-tag-remove {
+            background: none;
+            border: none;
+            font-size: 1.125rem;
+            color: var(--color-fg-lower);
+            cursor: pointer;
+            padding: 0 4px;
+            line-height: 1;
+        }
+
+        .color-tag-remove:hover {
+            color: var(--color-fg);
+        }
+
+        /* Modal bottom fixed area */
+        .modal-bottom {
+            flex-shrink: 0;
+            border-top: 1px solid var(--color-divider);
+            background: var(--color-bg);
+        }
+
+        .modal-summary {
+            padding: 1rem 2rem;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+        }
+
+        .modal-summary-item .detail-label {
+            margin-bottom: 0.25rem;
+        }
+
+        .modal-summary-item .detail-price {
+            font-size: 1.125rem;
+        }
+
+        .modal-action {
+            padding: 0 2rem 1.5rem;
+        }
+
+        .modal-action .btn-black {
+            width: 100%;
         }
 
         .detail-label {
@@ -753,25 +944,71 @@
             margin-top: 1rem;
         }
 
+        .size-input-wrap {
+            position: relative;
+            width: 100%;
+        }
+
         .size-input {
             padding: 10px 12px;
             border: 1px solid var(--color-border);
             background: var(--color-bg-low);
-            text-align: center;
+            text-align: left;
             font-weight: var(--btn-font-weight);
             font-size: 14px;
             width: 100%;
             height: 44px;
             border-radius: var(--input-radius);
+            -moz-appearance: textfield;
         }
 
         .size-input::-webkit-inner-spin-button,
         .size-input::-webkit-outer-spin-button {
-            -webkit-appearance: inner-spin-button;
-            opacity: 1;
-            width: 24px;
-            height: 40px;
+            -webkit-appearance: none;
+            margin: 0;
+        }
+
+        .size-input:focus {
+            outline: none;
+            border-color: var(--color-border-strong);
+        }
+
+        .size-spin {
+            position: absolute;
+            right: 1px;
+            width: 28%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
             cursor: pointer;
+            user-select: none;
+            border-left: 1px solid var(--color-border);
+            background: var(--color-bg);
+            color: var(--color-fg-low);
+            font-size: 8px;
+            transition: background 0.1s, color 0.1s;
+        }
+
+        .size-spin:hover {
+            background: var(--color-bg-low);
+            color: var(--color-fg);
+        }
+
+        .size-spin:active {
+            background: var(--color-border);
+        }
+
+        .size-spin-up {
+            top: 1px;
+            height: 50%;
+            border-radius: 0 var(--input-radius) 0 0;
+            border-bottom: 1px solid var(--color-border);
+        }
+
+        .size-spin-down {
+            bottom: 1px;
+            height: 50%;
+            border-radius: 0 0 var(--input-radius) 0;
         }
 
         .modal-footer {
@@ -816,6 +1053,67 @@
 
         .btn-black-sm:hover {
             opacity: 0.9;
+        }
+
+        /* ORDER DETAIL MODAL */
+        .modal-body .order-detail-info {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+            padding: 1.5rem;
+            background: var(--color-bg-low);
+            border: 1px solid var(--color-border);
+            border-radius: var(--radius-md);
+        }
+
+        .modal-body .order-detail-info .order-info-label {
+            color: var(--color-fg-low);
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            margin-bottom: 0.25rem;
+            font-weight: 400;
+        }
+
+        .modal-body .order-detail-info .order-info-value {
+            font-weight: 600;
+            font-size: 0.875rem;
+        }
+
+        .order-items-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 1rem 0;
+            font-size: 0.875rem;
+        }
+
+        .order-items-table th,
+        .order-items-table td {
+            padding: 0.75rem 1rem;
+            text-align: left;
+            border-bottom: 1px solid var(--color-divider);
+        }
+
+        .order-items-table th {
+            background: var(--color-bg-low);
+            font-weight: 600;
+            font-size: 0.75rem;
+            color: var(--color-fg-low);
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        .order-items-table tfoot td {
+            background: var(--color-bg-low);
+            font-weight: 600;
+        }
+
+        .order-modal-actions {
+            display: flex;
+            gap: 1rem;
+            margin-top: 1.5rem;
+            justify-content: flex-end;
         }
 
         /* COLOR SWATCHES */
@@ -1121,8 +1419,8 @@
 
         /* ORDERS PAGE */
         .orders-section {
-            padding: 2rem;
-            max-width: 1200px;
+            padding: 2rem 1.5rem;
+            max-width: 2200px;
             margin: 0 auto;
         }
 
@@ -1197,6 +1495,7 @@
 
         .order-info-value {
             font-weight: 600;
+            font-size: 1.05rem;
         }
 
         .rejection-reason {
@@ -1284,9 +1583,17 @@
             }
 
             .filters-row {
-                flex-direction: column;
-                align-items: flex-start;
-                gap: 1rem;
+                flex-wrap: wrap;
+                gap: 0.5rem;
+            }
+
+            .filter-divider {
+                display: none;
+            }
+
+            .filters-right {
+                width: 100%;
+                margin-left: 0;
             }
 
             .order-info-grid {
@@ -1322,30 +1629,42 @@
 
         const PRODUCTS = [
             { id: 'P-001', style_no: 'MSSTD-JK01', name: 'Light Windbreaker Jacket', colors: [{ name: 'BLACK', hex: '#000000', images: ['https://hebbkx1anhila5yf.public.blob.vercel-storage.com/detail_3732808_17008145764190_big-NtsQcEgdrQjvBOGpQvPQ4JPRbAUNw9.webp','https://hebbkx1anhila5yf.public.blob.vercel-storage.com/3732808_17008145386635_big-e8tW9vvDFk3LSBkYqJUbwe0wi4MYfZ.webp','https://hebbkx1anhila5yf.public.blob.vercel-storage.com/detail_3732808_17008145754168_big-pDpq99fUbWRi2IMAlNRJk8rfg6SOnl.webp'] }, { name: 'NAVY', hex: '#000080', images: ['https://hebbkx1anhila5yf.public.blob.vercel-storage.com/detail_3732808_17008145764190_big-NtsQcEgdrQjvBOGpQvPQ4JPRbAUNw9.webp','https://hebbkx1anhila5yf.public.blob.vercel-storage.com/3732808_17008145386635_big-e8tW9vvDFk3LSBkYqJUbwe0wi4MYfZ.webp','https://hebbkx1anhila5yf.public.blob.vercel-storage.com/detail_3732808_17008145754168_big-pDpq99fUbWRi2IMAlNRJk8rfg6SOnl.webp'] }, { name: 'GREY', hex: '#808080', images: ['https://hebbkx1anhila5yf.public.blob.vercel-storage.com/detail_3732808_17008145764190_big-NtsQcEgdrQjvBOGpQvPQ4JPRbAUNw9.webp','https://hebbkx1anhila5yf.public.blob.vercel-storage.com/3732808_17008145386635_big-e8tW9vvDFk3LSBkYqJUbwe0wi4MYfZ.webp','https://hebbkx1anhila5yf.public.blob.vercel-storage.com/detail_3732808_17008145754168_big-pDpq99fUbWRi2IMAlNRJk8rfg6SOnl.webp'] }], material: 'Nylon 100%', origin: 'Vietnam', category: 'Outerwear', retail_price_krw: 89000, sample_size: 'M', hs_code: '6201.93', ship_date: '2026-10-15', is_visible: true, is_hero: true, season: { year: 2026, season: 'F/W' }, gender: 'Male', images: ['https://hebbkx1anhila5yf.public.blob.vercel-storage.com/detail_3732808_17008145764190_big-NtsQcEgdrQjvBOGpQvPQ4JPRbAUNw9.webp','https://hebbkx1anhila5yf.public.blob.vercel-storage.com/3732808_17008145386635_big-e8tW9vvDFk3LSBkYqJUbwe0wi4MYfZ.webp','https://hebbkx1anhila5yf.public.blob.vercel-storage.com/detail_3732808_17008145754168_big-pDpq99fUbWRi2IMAlNRJk8rfg6SOnl.webp'], sizes: ['XXS', 'XS', 'S', 'M', 'L', 'XL', 'XXL', 'XXXL'] },
-            { id: 'P-002', style_no: 'DENIM-SH02', name: 'Classic Denim Shirt', colors: [{ name: 'INDIGO', hex: '#4B0082', images: ['https://hebbkx1anhila5yf.public.blob.vercel-storage.com/detail_4300078_17229281298325_big-IBH1zefp09enMqo0kzf0TU3qK69786.webp','https://hebbkx1anhila5yf.public.blob.vercel-storage.com/detail_4300078_17229281454244_big-rzeDLkm3PuJb1Ux90iwxYMLbIyixAt.webp','https://hebbkx1anhila5yf.public.blob.vercel-storage.com/detail_4300078_17229281015339_big-3Ip8wBdWeqGbEkw35kqi07I2BAsgid.webp'] }, { name: 'LIGHT BLUE', hex: '#ADD8E6', images: ['https://hebbkx1anhila5yf.public.blob.vercel-storage.com/detail_4300078_17229281298325_big-IBH1zefp09enMqo0kzf0TU3qK69786.webp','https://hebbkx1anhila5yf.public.blob.vercel-storage.com/detail_4300078_17229281454244_big-rzeDLkm3PuJb1Ux90iwxYMLbIyixAt.webp','https://hebbkx1anhila5yf.public.blob.vercel-storage.com/detail_4300078_17229281015339_big-3Ip8wBdWeqGbEkw35kqi07I2BAsgid.webp'] }, { name: 'WHITE', hex: '#FFFFFF', images: ['https://hebbkx1anhila5yf.public.blob.vercel-storage.com/detail_4300078_17229281298325_big-IBH1zefp09enMqo0kzf0TU3qK69786.webp','https://hebbkx1anhila5yf.public.blob.vercel-storage.com/detail_4300078_17229281454244_big-rzeDLkm3PuJb1Ux90iwxYMLbIyixAt.webp','https://hebbkx1anhila5yf.public.blob.vercel-storage.com/detail_4300078_17229281015339_big-3Ip8wBdWeqGbEkw35kqi07I2BAsgid.webp'] }], material: 'Cotton 98% Elastane 2%', origin: 'Bangladesh', category: 'Tops', retail_price_krw: 65000, sample_size: 'M', hs_code: '6205.20', ship_date: '2026-09-20', is_visible: true, is_hero: true, season: { year: 2026, season: 'S/S' }, gender: 'Male', images: ['https://hebbkx1anhila5yf.public.blob.vercel-storage.com/detail_4300078_17229281298325_big-IBH1zefp09enMqo0kzf0TU3qK69786.webp','https://hebbkx1anhila5yf.public.blob.vercel-storage.com/detail_4300078_17229281454244_big-rzeDLkm3PuJb1Ux90iwxYMLbIyixAt.webp','https://hebbkx1anhila5yf.public.blob.vercel-storage.com/detail_4300078_17229281015339_big-3Ip8wBdWeqGbEkw35kqi07I2BAsgid.webp'], sizes: ['S', 'M', 'L', 'XL'] },
+            { id: 'P-002', style_no: 'DENIM-SH02', name: 'Classic Denim Shirt', colors: [{ name: 'INDIGO', hex: '#4B0082', images: ['https://hebbkx1anhila5yf.public.blob.vercel-storage.com/detail_4300078_17229281298325_big-IBH1zefp09enMqo0kzf0TU3qK69786.webp','https://hebbkx1anhila5yf.public.blob.vercel-storage.com/detail_4300078_17229281454244_big-rzeDLkm3PuJb1Ux90iwxYMLbIyixAt.webp','https://hebbkx1anhila5yf.public.blob.vercel-storage.com/detail_4300078_17229281015339_big-3Ip8wBdWeqGbEkw35kqi07I2BAsgid.webp'] }, { name: 'LIGHT BLUE', hex: '#ADD8E6', images: ['https://hebbkx1anhila5yf.public.blob.vercel-storage.com/detail_4300078_17229281298325_big-IBH1zefp09enMqo0kzf0TU3qK69786.webp','https://hebbkx1anhila5yf.public.blob.vercel-storage.com/detail_4300078_17229281454244_big-rzeDLkm3PuJb1Ux90iwxYMLbIyixAt.webp','https://hebbkx1anhila5yf.public.blob.vercel-storage.com/detail_4300078_17229281015339_big-3Ip8wBdWeqGbEkw35kqi07I2BAsgid.webp'] }, { name: 'WHITE', hex: '#FFFFFF', images: ['https://hebbkx1anhila5yf.public.blob.vercel-storage.com/detail_4300078_17229281298325_big-IBH1zefp09enMqo0kzf0TU3qK69786.webp','https://hebbkx1anhila5yf.public.blob.vercel-storage.com/detail_4300078_17229281454244_big-rzeDLkm3PuJb1Ux90iwxYMLbIyixAt.webp','https://hebbkx1anhila5yf.public.blob.vercel-storage.com/detail_4300078_17229281015339_big-3Ip8wBdWeqGbEkw35kqi07I2BAsgid.webp'] }], material: 'Cotton 98% Elastane 2%', origin: 'Bangladesh', category: 'Tops', retail_price_krw: 65000, sample_size: 'M', hs_code: '6205.20', ship_date: '2026-09-20', is_visible: true, is_hero: true, season: { year: 2027, season: 'S/S' }, gender: 'Male', images: ['https://hebbkx1anhila5yf.public.blob.vercel-storage.com/detail_4300078_17229281298325_big-IBH1zefp09enMqo0kzf0TU3qK69786.webp','https://hebbkx1anhila5yf.public.blob.vercel-storage.com/detail_4300078_17229281454244_big-rzeDLkm3PuJb1Ux90iwxYMLbIyixAt.webp','https://hebbkx1anhila5yf.public.blob.vercel-storage.com/detail_4300078_17229281015339_big-3Ip8wBdWeqGbEkw35kqi07I2BAsgid.webp'], sizes: ['S', 'M', 'L', 'XL'] },
             { id: 'P-003', style_no: 'TSHIRT-BAS03', name: 'Essential White T-Shirt', colors: [{ name: 'WHITE', hex: '#FFFFFF', images: ['https://hebbkx1anhila5yf.public.blob.vercel-storage.com/3732808_17008145386635_big-e8tW9vvDFk3LSBkYqJUbwe0wi4MYfZ.webp','https://hebbkx1anhila5yf.public.blob.vercel-storage.com/detail_3732808_17008145754168_big-pDpq99fUbWRi2IMAlNRJk8rfg6SOnl.webp'] }, { name: 'BLACK', hex: '#000000', images: ['https://hebbkx1anhila5yf.public.blob.vercel-storage.com/3732808_17008145386635_big-e8tW9vvDFk3LSBkYqJUbwe0wi4MYfZ.webp','https://hebbkx1anhila5yf.public.blob.vercel-storage.com/detail_3732808_17008145754168_big-pDpq99fUbWRi2IMAlNRJk8rfg6SOnl.webp'] }, { name: 'GREY', hex: '#808080', images: ['https://hebbkx1anhila5yf.public.blob.vercel-storage.com/3732808_17008145386635_big-e8tW9vvDFk3LSBkYqJUbwe0wi4MYfZ.webp','https://hebbkx1anhila5yf.public.blob.vercel-storage.com/detail_3732808_17008145754168_big-pDpq99fUbWRi2IMAlNRJk8rfg6SOnl.webp'] }], material: 'Cotton 100%', origin: 'India', category: 'Tops', retail_price_krw: 28000, sample_size: 'M', hs_code: '6104.62', ship_date: '2026-08-15', is_visible: true, is_hero: false, season: { year: 2025, season: 'S/S' }, gender: 'Male', images: ['https://hebbkx1anhila5yf.public.blob.vercel-storage.com/3732808_17008145386635_big-e8tW9vvDFk3LSBkYqJUbwe0wi4MYfZ.webp','https://hebbkx1anhila5yf.public.blob.vercel-storage.com/detail_3732808_17008145754168_big-pDpq99fUbWRi2IMAlNRJk8rfg6SOnl.webp'], sizes: ['XS', 'S', 'M', 'L', 'XL', 'XXL'] },
             { id: 'P-004', style_no: 'SWEAT-GRY04', name: 'Comfort Grey Sweatshirt', colors: [{ name: 'GREY', hex: '#808080', images: ['https://hebbkx1anhila5yf.public.blob.vercel-storage.com/4690282_17484120633015_big-d05xAPoZRJ3pH0bhzfghMHp8MTg2Ur.webp','https://hebbkx1anhila5yf.public.blob.vercel-storage.com/detail_4300078_17229281544256_big-xMyZCynBr1G90pKE6VKkejEepNPRZ5.webp'] }, { name: 'BLACK', hex: '#000000', images: ['https://hebbkx1anhila5yf.public.blob.vercel-storage.com/4690282_17484120633015_big-d05xAPoZRJ3pH0bhzfghMHp8MTg2Ur.webp','https://hebbkx1anhila5yf.public.blob.vercel-storage.com/detail_4300078_17229281544256_big-xMyZCynBr1G90pKE6VKkejEepNPRZ5.webp'] }, { name: 'NAVY', hex: '#000080', images: ['https://hebbkx1anhila5yf.public.blob.vercel-storage.com/4690282_17484120633015_big-d05xAPoZRJ3pH0bhzfghMHp8MTg2Ur.webp','https://hebbkx1anhila5yf.public.blob.vercel-storage.com/detail_4300078_17229281544256_big-xMyZCynBr1G90pKE6VKkejEepNPRZ5.webp'] }], material: 'Cotton 60% Polyester 40%', origin: 'Vietnam', category: 'Tops', retail_price_krw: 52000, sample_size: 'M', hs_code: '6104.69', ship_date: '2026-09-10', is_visible: true, is_hero: true, season: { year: 2026, season: 'F/W' }, gender: 'Male', images: ['https://hebbkx1anhila5yf.public.blob.vercel-storage.com/4690282_17484120633015_big-d05xAPoZRJ3pH0bhzfghMHp8MTg2Ur.webp','https://hebbkx1anhila5yf.public.blob.vercel-storage.com/detail_4300078_17229281544256_big-xMyZCynBr1G90pKE6VKkejEepNPRZ5.webp'], sizes: ['S', 'M', 'L'] },
-            { id: 'P-005', style_no: 'SHIRT-GRN05', name: 'Premium Green Shirt', colors: [{ name: 'FOREST GREEN', hex: '#228B22', images: ['https://hebbkx1anhila5yf.public.blob.vercel-storage.com/detail_4300078_17229281454244_big-rzeDLkm3PuJb1Ux90iwxYMLbIyixAt.webp','https://hebbkx1anhila5yf.public.blob.vercel-storage.com/detail_4300078_17229281359421_big-vjFydy5ONXI8qrIItmbaZ5JIXiBSMs.webp'] }, { name: 'SAGE GREEN', hex: '#9DC183', images: ['https://hebbkx1anhila5yf.public.blob.vercel-storage.com/detail_4300078_17229281454244_big-rzeDLkm3PuJb1Ux90iwxYMLbIyixAt.webp','https://hebbkx1anhila5yf.public.blob.vercel-storage.com/detail_4300078_17229281359421_big-vjFydy5ONXI8qrIItmbaZ5JIXiBSMs.webp'] }, { name: 'OLIVE', hex: '#808000', images: ['https://hebbkx1anhila5yf.public.blob.vercel-storage.com/detail_4300078_17229281454244_big-rzeDLkm3PuJb1Ux90iwxYMLbIyixAt.webp','https://hebbkx1anhila5yf.public.blob.vercel-storage.com/detail_4300078_17229281359421_big-vjFydy5ONXI8qrIItmbaZ5JIXiBSMs.webp'] }], material: 'Cotton 100%', origin: 'Pakistan', category: 'Tops', retail_price_krw: 58000, sample_size: 'M', hs_code: '6205.20', ship_date: '2026-10-01', is_visible: true, is_hero: true, season: { year: 2026, season: 'S/S' }, gender: 'Female', images: ['https://hebbkx1anhila5yf.public.blob.vercel-storage.com/detail_4300078_17229281454244_big-rzeDLkm3PuJb1Ux90iwxYMLbIyixAt.webp','https://hebbkx1anhila5yf.public.blob.vercel-storage.com/detail_4300078_17229281359421_big-vjFydy5ONXI8qrIItmbaZ5JIXiBSMs.webp'], sizes: ['S', 'M', 'L', 'XL', 'XXL'] },
+            { id: 'P-005', style_no: 'SHIRT-GRN05', name: 'Premium Green Shirt', colors: [{ name: 'FOREST GREEN', hex: '#228B22', images: ['https://hebbkx1anhila5yf.public.blob.vercel-storage.com/detail_4300078_17229281454244_big-rzeDLkm3PuJb1Ux90iwxYMLbIyixAt.webp','https://hebbkx1anhila5yf.public.blob.vercel-storage.com/detail_4300078_17229281359421_big-vjFydy5ONXI8qrIItmbaZ5JIXiBSMs.webp'] }, { name: 'SAGE GREEN', hex: '#9DC183', images: ['https://hebbkx1anhila5yf.public.blob.vercel-storage.com/detail_4300078_17229281454244_big-rzeDLkm3PuJb1Ux90iwxYMLbIyixAt.webp','https://hebbkx1anhila5yf.public.blob.vercel-storage.com/detail_4300078_17229281359421_big-vjFydy5ONXI8qrIItmbaZ5JIXiBSMs.webp'] }, { name: 'OLIVE', hex: '#808000', images: ['https://hebbkx1anhila5yf.public.blob.vercel-storage.com/detail_4300078_17229281454244_big-rzeDLkm3PuJb1Ux90iwxYMLbIyixAt.webp','https://hebbkx1anhila5yf.public.blob.vercel-storage.com/detail_4300078_17229281359421_big-vjFydy5ONXI8qrIItmbaZ5JIXiBSMs.webp'] }], material: 'Cotton 100%', origin: 'Pakistan', category: 'Tops', retail_price_krw: 58000, sample_size: 'M', hs_code: '6205.20', ship_date: '2026-10-01', is_visible: true, is_hero: true, season: { year: 2027, season: 'S/S' }, gender: 'Female', images: ['https://hebbkx1anhila5yf.public.blob.vercel-storage.com/detail_4300078_17229281454244_big-rzeDLkm3PuJb1Ux90iwxYMLbIyixAt.webp','https://hebbkx1anhila5yf.public.blob.vercel-storage.com/detail_4300078_17229281359421_big-vjFydy5ONXI8qrIItmbaZ5JIXiBSMs.webp'], sizes: ['S', 'M', 'L', 'XL', 'XXL'] },
             { id: 'P-006', style_no: 'PUFFER-BLK06', name: 'Classic Black Puffer Jacket', colors: [{ name: 'BLACK', hex: '#000000', images: ['https://hebbkx1anhila5yf.public.blob.vercel-storage.com/5064198_17478992801556_big%20%281%29-aiZZ8H5qL6ekOkEkvgYTMDr9GSQEiS.webp','https://hebbkx1anhila5yf.public.blob.vercel-storage.com/5064198_17478992801556_big-mi1fT07dNIBJ1DDfozAl4pqPeUOWyK.webp'] }, { name: 'NAVY', hex: '#000080', images: ['https://hebbkx1anhila5yf.public.blob.vercel-storage.com/5064198_17478992801556_big%20%281%29-aiZZ8H5qL6ekOkEkvgYTMDr9GSQEiS.webp','https://hebbkx1anhila5yf.public.blob.vercel-storage.com/5064198_17478992801556_big-mi1fT07dNIBJ1DDfozAl4pqPeUOWyK.webp'] }, { name: 'CHARCOAL', hex: '#333333', images: ['https://hebbkx1anhila5yf.public.blob.vercel-storage.com/5064198_17478992801556_big%20%281%29-aiZZ8H5qL6ekOkEkvgYTMDr9GSQEiS.webp','https://hebbkx1anhila5yf.public.blob.vercel-storage.com/5064198_17478992801556_big-mi1fT07dNIBJ1DDfozAl4pqPeUOWyK.webp'] }], material: 'Polyester 100%', origin: 'China', category: 'Outerwear', retail_price_krw: 125000, sample_size: 'M', hs_code: '6201.13', ship_date: '2026-11-05', is_visible: true, is_hero: true, season: { year: 2026, season: 'F/W' }, gender: 'Male', images: ['https://hebbkx1anhila5yf.public.blob.vercel-storage.com/5064198_17478992801556_big%20%281%29-aiZZ8H5qL6ekOkEkvgYTMDr9GSQEiS.webp','https://hebbkx1anhila5yf.public.blob.vercel-storage.com/5064198_17478992801556_big-mi1fT07dNIBJ1DDfozAl4pqPeUOWyK.webp'], sizes: ['XS', 'S', 'M', 'L', 'XL', 'XXL', 'XXXL'] },
             { id: 'P-007', style_no: 'WINDBRK-NAVY07', name: 'Colorblock Windbreaker', colors: [{ name: 'NAVY/CREAM', hex: '#000080', images: ['https://hebbkx1anhila5yf.public.blob.vercel-storage.com/5898080_17733033213649_big-JGdwFcTn4Wdkvn7zOZiwnb5i6DDEV7.webp','https://hebbkx1anhila5yf.public.blob.vercel-storage.com/d0ca5ffbdfde4c2f981b0027d419a0a4-YszwHw5v9qhNSGkmkJLzjlY5zmsCF7.webp'] }, { name: 'BLACK/CREAM', hex: '#000000', images: ['https://hebbkx1anhila5yf.public.blob.vercel-storage.com/5898080_17733033213649_big-JGdwFcTn4Wdkvn7zOZiwnb5i6DDEV7.webp','https://hebbkx1anhila5yf.public.blob.vercel-storage.com/d0ca5ffbdfde4c2f981b0027d419a0a4-YszwHw5v9qhNSGkmkJLzjlY5zmsCF7.webp'] }, { name: 'GREY/CREAM', hex: '#808080', images: ['https://hebbkx1anhila5yf.public.blob.vercel-storage.com/5898080_17733033213649_big-JGdwFcTn4Wdkvn7zOZiwnb5i6DDEV7.webp','https://hebbkx1anhila5yf.public.blob.vercel-storage.com/d0ca5ffbdfde4c2f981b0027d419a0a4-YszwHw5v9qhNSGkmkJLzjlY5zmsCF7.webp'] }], material: 'Nylon 100%', origin: 'Indonesia', category: 'Outerwear', retail_price_krw: 95000, sample_size: 'M', hs_code: '6201.93', ship_date: '2026-10-20', is_visible: true, is_hero: true, season: { year: 2026, season: 'F/W' }, gender: 'Male', images: ['https://hebbkx1anhila5yf.public.blob.vercel-storage.com/5898080_17733033213649_big-JGdwFcTn4Wdkvn7zOZiwnb5i6DDEV7.webp','https://hebbkx1anhila5yf.public.blob.vercel-storage.com/d0ca5ffbdfde4c2f981b0027d419a0a4-YszwHw5v9qhNSGkmkJLzjlY5zmsCF7.webp'], sizes: ['S', 'M', 'L', 'XL', 'XXL'] },
-            { id: 'P-008', style_no: 'SHIRT-LT-BLU08', name: 'Light Blue Oxford Shirt', colors: [{ name: 'LIGHT BLUE', hex: '#ADD8E6', images: ['https://hebbkx1anhila5yf.public.blob.vercel-storage.com/detail_4300078_17229281015339_big-3Ip8wBdWeqGbEkw35kqi07I2BAsgid.webp','https://hebbkx1anhila5yf.public.blob.vercel-storage.com/detail_4300078_17229281163133_big-cBwU3UgnQ1QNoab8uS0SdkOt27CSjg.webp'] }, { name: 'WHITE', hex: '#FFFFFF', images: ['https://hebbkx1anhila5yf.public.blob.vercel-storage.com/detail_4300078_17229281015339_big-3Ip8wBdWeqGbEkw35kqi07I2BAsgid.webp','https://hebbkx1anhila5yf.public.blob.vercel-storage.com/detail_4300078_17229281163133_big-cBwU3UgnQ1QNoab8uS0SdkOt27CSjg.webp'] }, { name: 'PINK', hex: '#FFC0CB', images: ['https://hebbkx1anhila5yf.public.blob.vercel-storage.com/detail_4300078_17229281015339_big-3Ip8wBdWeqGbEkw35kqi07I2BAsgid.webp','https://hebbkx1anhila5yf.public.blob.vercel-storage.com/detail_4300078_17229281163133_big-cBwU3UgnQ1QNoab8uS0SdkOt27CSjg.webp'] }], material: 'Cotton 100%', origin: 'Philippines', category: 'Tops', retail_price_krw: 62000, sample_size: 'M', hs_code: '6205.20', ship_date: '2026-09-25', is_visible: true, is_hero: false, season: { year: 2026, season: 'S/S' }, gender: 'Female', images: ['https://hebbkx1anhila5yf.public.blob.vercel-storage.com/detail_4300078_17229281015339_big-3Ip8wBdWeqGbEkw35kqi07I2BAsgid.webp','https://hebbkx1anhila5yf.public.blob.vercel-storage.com/detail_4300078_17229281163133_big-cBwU3UgnQ1QNoab8uS0SdkOt27CSjg.webp'], sizes: ['S', 'M', 'L', 'XL'] },
+            { id: 'P-008', style_no: 'SHIRT-LT-BLU08', name: 'Light Blue Oxford Shirt', colors: [{ name: 'LIGHT BLUE', hex: '#ADD8E6', images: ['https://hebbkx1anhila5yf.public.blob.vercel-storage.com/detail_4300078_17229281015339_big-3Ip8wBdWeqGbEkw35kqi07I2BAsgid.webp','https://hebbkx1anhila5yf.public.blob.vercel-storage.com/detail_4300078_17229281163133_big-cBwU3UgnQ1QNoab8uS0SdkOt27CSjg.webp'] }, { name: 'WHITE', hex: '#FFFFFF', images: ['https://hebbkx1anhila5yf.public.blob.vercel-storage.com/detail_4300078_17229281015339_big-3Ip8wBdWeqGbEkw35kqi07I2BAsgid.webp','https://hebbkx1anhila5yf.public.blob.vercel-storage.com/detail_4300078_17229281163133_big-cBwU3UgnQ1QNoab8uS0SdkOt27CSjg.webp'] }, { name: 'PINK', hex: '#FFC0CB', images: ['https://hebbkx1anhila5yf.public.blob.vercel-storage.com/detail_4300078_17229281015339_big-3Ip8wBdWeqGbEkw35kqi07I2BAsgid.webp','https://hebbkx1anhila5yf.public.blob.vercel-storage.com/detail_4300078_17229281163133_big-cBwU3UgnQ1QNoab8uS0SdkOt27CSjg.webp'] }], material: 'Cotton 100%', origin: 'Philippines', category: 'Tops', retail_price_krw: 62000, sample_size: 'M', hs_code: '6205.20', ship_date: '2026-09-25', is_visible: true, is_hero: false, season: { year: 2027, season: 'S/S' }, gender: 'Female', images: ['https://hebbkx1anhila5yf.public.blob.vercel-storage.com/detail_4300078_17229281015339_big-3Ip8wBdWeqGbEkw35kqi07I2BAsgid.webp','https://hebbkx1anhila5yf.public.blob.vercel-storage.com/detail_4300078_17229281163133_big-cBwU3UgnQ1QNoab8uS0SdkOt27CSjg.webp'], sizes: ['S', 'M', 'L', 'XL'] },
             { id: 'P-009', style_no: 'SWEATER-PINK09', name: 'Soft Pink Crewneck Sweater', colors: [{ name: 'PINK', hex: '#FFC0CB', images: ['https://hebbkx1anhila5yf.public.blob.vercel-storage.com/5987750_17703411181399_big-TVjVOooktKSj6lcwBDU8PTQIHXMOet.webp','https://hebbkx1anhila5yf.public.blob.vercel-storage.com/4690282_17484120633015_big-d05xAPoZRJ3pH0bhzfghMHp8MTg2Ur.webp'] }, { name: 'CREAM', hex: '#FFFDD0', images: ['https://hebbkx1anhila5yf.public.blob.vercel-storage.com/5987750_17703411181399_big-TVjVOooktKSj6lcwBDU8PTQIHXMOet.webp','https://hebbkx1anhila5yf.public.blob.vercel-storage.com/4690282_17484120633015_big-d05xAPoZRJ3pH0bhzfghMHp8MTg2Ur.webp'] }, { name: 'BEIGE', hex: '#F5F5DC', images: ['https://hebbkx1anhila5yf.public.blob.vercel-storage.com/5987750_17703411181399_big-TVjVOooktKSj6lcwBDU8PTQIHXMOet.webp','https://hebbkx1anhila5yf.public.blob.vercel-storage.com/4690282_17484120633015_big-d05xAPoZRJ3pH0bhzfghMHp8MTg2Ur.webp'] }], material: 'Cotton 65% Acrylic 35%', origin: 'Vietnam', category: 'Tops', retail_price_krw: 71000, sample_size: 'M', hs_code: '6110.30', ship_date: '2026-10-10', is_visible: true, is_hero: false, season: { year: 2025, season: 'F/W' }, gender: 'Female', images: ['https://hebbkx1anhila5yf.public.blob.vercel-storage.com/5987750_17703411181399_big-TVjVOooktKSj6lcwBDU8PTQIHXMOet.webp','https://hebbkx1anhila5yf.public.blob.vercel-storage.com/4690282_17484120633015_big-d05xAPoZRJ3pH0bhzfghMHp8MTg2Ur.webp'], sizes: ['XS', 'S', 'M', 'L', 'XL', 'XXL'] },
-            { id: 'P-010', style_no: 'SHIRT-SAGE10', name: 'Versatile Sage Green Shirt', colors: [{ name: 'SAGE GREEN', hex: '#9DC183', images: ['https://hebbkx1anhila5yf.public.blob.vercel-storage.com/detail_4300078_17229281544256_big-xMyZCynBr1G90pKE6VKkejEepNPRZ5.webp','https://hebbkx1anhila5yf.public.blob.vercel-storage.com/detail_4300078_17229281359421_big-vjFydy5ONXI8qrIItmbaZ5JIXiBSMs.webp'] }, { name: 'FOREST GREEN', hex: '#228B22', images: ['https://hebbkx1anhila5yf.public.blob.vercel-storage.com/detail_4300078_17229281544256_big-xMyZCynBr1G90pKE6VKkejEepNPRZ5.webp','https://hebbkx1anhila5yf.public.blob.vercel-storage.com/detail_4300078_17229281359421_big-vjFydy5ONXI8qrIItmbaZ5JIXiBSMs.webp'] }, { name: 'OLIVE', hex: '#808000', images: ['https://hebbkx1anhila5yf.public.blob.vercel-storage.com/detail_4300078_17229281544256_big-xMyZCynBr1G90pKE6VKkejEepNPRZ5.webp','https://hebbkx1anhila5yf.public.blob.vercel-storage.com/detail_4300078_17229281359421_big-vjFydy5ONXI8qrIItmbaZ5JIXiBSMs.webp'] }], material: 'Cotton 100%', origin: 'Pakistan', category: 'Tops', retail_price_krw: 59000, sample_size: 'M', hs_code: '6205.20', ship_date: '2026-09-30', is_visible: true, is_hero: true, season: { year: 2026, season: 'S/S' }, gender: 'Female', images: ['https://hebbkx1anhila5yf.public.blob.vercel-storage.com/detail_4300078_17229281544256_big-xMyZCynBr1G90pKE6VKkejEepNPRZ5.webp','https://hebbkx1anhila5yf.public.blob.vercel-storage.com/detail_4300078_17229281359421_big-vjFydy5ONXI8qrIItmbaZ5JIXiBSMs.webp'], sizes: ['S', 'M', 'L', 'XL', 'XXL'] },
-            { id: 'P-011', style_no: 'SWEAT-BEIGE11', name: 'Cozy Beige Crewneck Sweater', colors: [{ name: 'BEIGE', hex: '#F5F5DC', images: ['https://hebbkx1anhila5yf.public.blob.vercel-storage.com/detail_5898080_17733033392006_big-ybjHo3ctJAupwWwcHp5mN5Y7muaUGM.webp','https://hebbkx1anhila5yf.public.blob.vercel-storage.com/detail_5898080_17733033350554_big-BtsxbxkSJY824Y4o6nXagxbJ4nm1y.webp'] }, { name: 'CREAM', hex: '#FFFDD0', images: ['https://hebbkx1anhila5yf.public.blob.vercel-storage.com/detail_5898080_17733033392006_big-ybjHo3ctJAupwWwcHp5mN5Y7muaUGM.webp','https://hebbkx1anhila5yf.public.blob.vercel-storage.com/detail_5898080_17733033350554_big-BtsxbxkSJY824Y4o6nXagxbJ4nm1y.webp'] }, { name: 'TAUPE', hex: '#B38B6D', images: ['https://hebbkx1anhila5yf.public.blob.vercel-storage.com/detail_5898080_17733033392006_big-ybjHo3ctJAupwWwcHp5mN5Y7muaUGM.webp','https://hebbkx1anhila5yf.public.blob.vercel-storage.com/detail_5898080_17733033350554_big-BtsxbxkSJY824Y4o6nXagxbJ4nm1y.webp'] }], material: 'Cotton 50% Acrylic 50%', origin: 'Vietnam', category: 'Tops', retail_price_krw: 68000, sample_size: 'M', hs_code: '6110.30', ship_date: '2026-10-05', is_visible: true, is_hero: false, season: { year: 2026, season: 'F/W' }, gender: 'Female', images: ['https://hebbkx1anhila5yf.public.blob.vercel-storage.com/detail_5898080_17733033392006_big-ybjHo3ctJAupwWwcHp5mN5Y7muaUGM.webp','https://hebbkx1anhila5yf.public.blob.vercel-storage.com/detail_5898080_17733033350554_big-BtsxbxkSJY824Y4o6nXagxbJ4nm1y.webp'], sizes: ['XS', 'S', 'M', 'L', 'XL', 'XXL'] },
+            { id: 'P-010', style_no: 'SHIRT-SAGE10', name: 'Versatile Sage Green Shirt', colors: [{ name: 'SAGE GREEN', hex: '#9DC183', images: ['https://hebbkx1anhila5yf.public.blob.vercel-storage.com/detail_4300078_17229281544256_big-xMyZCynBr1G90pKE6VKkejEepNPRZ5.webp','https://hebbkx1anhila5yf.public.blob.vercel-storage.com/detail_4300078_17229281359421_big-vjFydy5ONXI8qrIItmbaZ5JIXiBSMs.webp'] }, { name: 'FOREST GREEN', hex: '#228B22', images: ['https://hebbkx1anhila5yf.public.blob.vercel-storage.com/detail_4300078_17229281544256_big-xMyZCynBr1G90pKE6VKkejEepNPRZ5.webp','https://hebbkx1anhila5yf.public.blob.vercel-storage.com/detail_4300078_17229281359421_big-vjFydy5ONXI8qrIItmbaZ5JIXiBSMs.webp'] }, { name: 'OLIVE', hex: '#808000', images: ['https://hebbkx1anhila5yf.public.blob.vercel-storage.com/detail_4300078_17229281544256_big-xMyZCynBr1G90pKE6VKkejEepNPRZ5.webp','https://hebbkx1anhila5yf.public.blob.vercel-storage.com/detail_4300078_17229281359421_big-vjFydy5ONXI8qrIItmbaZ5JIXiBSMs.webp'] }], material: 'Cotton 100%', origin: 'Pakistan', category: 'Tops', retail_price_krw: 59000, sample_size: 'M', hs_code: '6205.20', ship_date: '2026-09-30', is_visible: true, is_hero: true, season: { year: 2027, season: 'S/S' }, gender: 'Female', images: ['https://hebbkx1anhila5yf.public.blob.vercel-storage.com/detail_4300078_17229281544256_big-xMyZCynBr1G90pKE6VKkejEepNPRZ5.webp','https://hebbkx1anhila5yf.public.blob.vercel-storage.com/detail_4300078_17229281359421_big-vjFydy5ONXI8qrIItmbaZ5JIXiBSMs.webp'], sizes: ['S', 'M', 'L', 'XL', 'XXL'] },
+
             { id: 'P-012', style_no: 'SWEAT-NAVY-GRX12', name: 'Nature Graphic Navy Sweatshirt', colors: [{ name: 'NAVY', hex: '#000080', images: ['https://hebbkx1anhila5yf.public.blob.vercel-storage.com/detail_5987750_17703454876061_big-2maj0MGTTvIXp8ra2G2CPSm7u6uVmR.webp','https://hebbkx1anhila5yf.public.blob.vercel-storage.com/detail_4690282_17356409407162_big-vYVL05HLts88UViUn62wT4hnaHzPiw.webp'] }, { name: 'BLACK', hex: '#000000', images: ['https://hebbkx1anhila5yf.public.blob.vercel-storage.com/detail_5987750_17703454876061_big-2maj0MGTTvIXp8ra2G2CPSm7u6uVmR.webp','https://hebbkx1anhila5yf.public.blob.vercel-storage.com/detail_4690282_17356409407162_big-vYVL05HLts88UViUn62wT4hnaHzPiw.webp'] }, { name: 'CHARCOAL', hex: '#333333', images: ['https://hebbkx1anhila5yf.public.blob.vercel-storage.com/detail_5987750_17703454876061_big-2maj0MGTTvIXp8ra2G2CPSm7u6uVmR.webp','https://hebbkx1anhila5yf.public.blob.vercel-storage.com/detail_4690282_17356409407162_big-vYVL05HLts88UViUn62wT4hnaHzPiw.webp'] }], material: 'Cotton 80% Polyester 20%', origin: 'Vietnam', category: 'Tops', retail_price_krw: 64000, sample_size: 'M', hs_code: '6104.69', ship_date: '2026-10-12', is_visible: true, is_hero: false, season: { year: 2026, season: 'Special' }, gender: 'Male', images: ['https://hebbkx1anhila5yf.public.blob.vercel-storage.com/detail_5987750_17703454876061_big-2maj0MGTTvIXp8ra2G2CPSm7u6uVmR.webp','https://hebbkx1anhila5yf.public.blob.vercel-storage.com/detail_4690282_17356409407162_big-vYVL05HLts88UViUn62wT4hnaHzPiw.webp'], sizes: ['XS', 'S', 'M', 'L', 'XL', 'XXL', 'XXXL'] },
-            { id: 'P-013', style_no: 'SHIRT-OLIVE13', name: 'Premium Olive Button Shirt', colors: [{ name: 'OLIVE', hex: '#808000', images: ['https://hebbkx1anhila5yf.public.blob.vercel-storage.com/detail_5898080_17733033372035_big-cp3lVk4tGYkjStyXsR40r19B5QuZQI.webp','https://hebbkx1anhila5yf.public.blob.vercel-storage.com/detail_4300078_17229281698977_big-9qAPfK9T5EGKTNaKVq2edaCkqkTu6z.webp'] }, { name: 'FOREST GREEN', hex: '#228B22', images: ['https://hebbkx1anhila5yf.public.blob.vercel-storage.com/detail_5898080_17733033372035_big-cp3lVk4tGYkjStyXsR40r19B5QuZQI.webp','https://hebbkx1anhila5yf.public.blob.vercel-storage.com/detail_4300078_17229281698977_big-9qAPfK9T5EGKTNaKVq2edaCkqkTu6z.webp'] }, { name: 'KHAKI', hex: '#F0E68C', images: ['https://hebbkx1anhila5yf.public.blob.vercel-storage.com/detail_5898080_17733033372035_big-cp3lVk4tGYkjStyXsR40r19B5QuZQI.webp','https://hebbkx1anhila5yf.public.blob.vercel-storage.com/detail_4300078_17229281698977_big-9qAPfK9T5EGKTNaKVq2edaCkqkTu6z.webp'] }], material: 'Cotton 100%', origin: 'Pakistan', category: 'Tops', retail_price_krw: 63000, sample_size: 'M', hs_code: '6205.20', ship_date: '2026-10-08', is_visible: true, is_hero: false, season: { year: 2025, season: 'S/S' }, gender: 'Female', images: ['https://hebbkx1anhila5yf.public.blob.vercel-storage.com/detail_5898080_17733033372035_big-cp3lVk4tGYkjStyXsR40r19B5QuZQI.webp','https://hebbkx1anhila5yf.public.blob.vercel-storage.com/detail_4300078_17229281698977_big-9qAPfK9T5EGKTNaKVq2edaCkqkTu6z.webp'], sizes: ['S', 'M', 'L', 'XL'] },
+
             { id: 'P-014', style_no: 'JACKET-DRK14', name: 'Charcoal Hooded Windbreaker', colors: [{ name: 'DARK GREY', hex: '#A9A9A9', images: ['https://hebbkx1anhila5yf.public.blob.vercel-storage.com/detail_4300078_17229281785095_big-GhA3ZegEuNLePn5nfMc2qSTkSNWPpd.webp','https://hebbkx1anhila5yf.public.blob.vercel-storage.com/detail_5064198_17478992971594_big-2CnKxm8kgAEWF2AoZlLn99s3xhxSJ8.webp'] }, { name: 'BLACK', hex: '#000000', images: ['https://hebbkx1anhila5yf.public.blob.vercel-storage.com/detail_4300078_17229281785095_big-GhA3ZegEuNLePn5nfMc2qSTkSNWPpd.webp','https://hebbkx1anhila5yf.public.blob.vercel-storage.com/detail_5064198_17478992971594_big-2CnKxm8kgAEWF2AoZlLn99s3xhxSJ8.webp'] }, { name: 'NAVY', hex: '#000080', images: ['https://hebbkx1anhila5yf.public.blob.vercel-storage.com/detail_4300078_17229281785095_big-GhA3ZegEuNLePn5nfMc2qSTkSNWPpd.webp','https://hebbkx1anhila5yf.public.blob.vercel-storage.com/detail_5064198_17478992971594_big-2CnKxm8kgAEWF2AoZlLn99s3xhxSJ8.webp'] }], material: 'Nylon 100%', origin: 'China', category: 'Outerwear', retail_price_krw: 110000, sample_size: 'M', hs_code: '6201.93', ship_date: '2026-11-01', is_visible: true, is_hero: false, season: { year: 2026, season: 'F/W' }, gender: 'Male', images: ['https://hebbkx1anhila5yf.public.blob.vercel-storage.com/detail_4300078_17229281785095_big-GhA3ZegEuNLePn5nfMc2qSTkSNWPpd.webp','https://hebbkx1anhila5yf.public.blob.vercel-storage.com/detail_5064198_17478992971594_big-2CnKxm8kgAEWF2AoZlLn99s3xhxSJ8.webp'], sizes: ['XS', 'S', 'M', 'L', 'XL', 'XXL'] },
             { id: 'P-015', style_no: 'ANORAK-NAVY15', name: 'Navy Colorblock Anorak', colors: [{ name: 'NAVY/CREAM', hex: '#000080', images: ['https://hebbkx1anhila5yf.public.blob.vercel-storage.com/detail_5987750_17703454886254_big-4195faq6mef8u8Mu2szCwUn9d4aJnP.webp','https://hebbkx1anhila5yf.public.blob.vercel-storage.com/detail_5898080_17733033317629_big-Hjoe6V215bsC3dEV9PSMybK1CBfAQi.webp'] }, { name: 'BLACK/CREAM', hex: '#000000', images: ['https://hebbkx1anhila5yf.public.blob.vercel-storage.com/detail_5987750_17703454886254_big-4195faq6mef8u8Mu2szCwUn9d4aJnP.webp','https://hebbkx1anhila5yf.public.blob.vercel-storage.com/detail_5898080_17733033317629_big-Hjoe6V215bsC3dEV9PSMybK1CBfAQi.webp'] }, { name: 'GREY/CREAM', hex: '#808080', images: ['https://hebbkx1anhila5yf.public.blob.vercel-storage.com/detail_5987750_17703454886254_big-4195faq6mef8u8Mu2szCwUn9d4aJnP.webp','https://hebbkx1anhila5yf.public.blob.vercel-storage.com/detail_5898080_17733033317629_big-Hjoe6V215bsC3dEV9PSMybK1CBfAQi.webp'] }], material: 'Nylon 100%', origin: 'Vietnam', category: 'Outerwear', retail_price_krw: 105000, sample_size: 'M', hs_code: '6201.93', ship_date: '2026-10-28', is_visible: true, is_hero: true, season: { year: 2026, season: 'F/W' }, gender: 'Male', images: ['https://hebbkx1anhila5yf.public.blob.vercel-storage.com/detail_5987750_17703454886254_big-4195faq6mef8u8Mu2szCwUn9d4aJnP.webp','https://hebbkx1anhila5yf.public.blob.vercel-storage.com/detail_5898080_17733033317629_big-Hjoe6V215bsC3dEV9PSMybK1CBfAQi.webp'], sizes: ['S', 'M', 'L', 'XL', 'XXL'] },
             { id: 'P-016', style_no: 'HOOD-RIB16', name: 'Ribbed Sleeve Hooded Jacket', colors: [{ name: 'BLACK', hex: '#000000', images: ['https://hebbkx1anhila5yf.public.blob.vercel-storage.com/6012200_17725043883314_big-evDHsGjCXFcaFAf96LHFqIYUlu3UQd.webp','https://hebbkx1anhila5yf.public.blob.vercel-storage.com/detail_6012200_17725043956515_big-vfAlxCJQqWKKn02SvAjdvoAYhZNYrd.webp','https://hebbkx1anhila5yf.public.blob.vercel-storage.com/detail_6012200_17721695459931_big-ODcFxnSBvfW5T0lTCSdZaMktGLFsjn.webp','https://hebbkx1anhila5yf.public.blob.vercel-storage.com/detail_6012200_17719221219882_big-kXOziotEWzfwFORcAmaZlU9w0nTFw2.webp','https://hebbkx1anhila5yf.public.blob.vercel-storage.com/detail_6012200_17721695467257_big-YjDaO0r4Fw8NkXCHawG9qo5UeERKIg.webp'] }, { name: 'NAVY', hex: '#000080', images: ['https://hebbkx1anhila5yf.public.blob.vercel-storage.com/6012200_17725043883314_big-evDHsGjCXFcaFAf96LHFqIYUlu3UQd.webp','https://hebbkx1anhila5yf.public.blob.vercel-storage.com/detail_6012200_17725043956515_big-vfAlxCJQqWKKn02SvAjdvoAYhZNYrd.webp','https://hebbkx1anhila5yf.public.blob.vercel-storage.com/detail_6012200_17721695459931_big-ODcFxnSBvfW5T0lTCSdZaMktGLFsjn.webp','https://hebbkx1anhila5yf.public.blob.vercel-storage.com/detail_6012200_17719221219882_big-kXOziotEWzfwFORcAmaZlU9w0nTFw2.webp','https://hebbkx1anhila5yf.public.blob.vercel-storage.com/detail_6012200_17721695467257_big-YjDaO0r4Fw8NkXCHawG9qo5UeERKIg.webp'] }, { name: 'CHARCOAL', hex: '#333333', images: ['https://hebbkx1anhila5yf.public.blob.vercel-storage.com/6012200_17725043883314_big-evDHsGjCXFcaFAf96LHFqIYUlu3UQd.webp','https://hebbkx1anhila5yf.public.blob.vercel-storage.com/detail_6012200_17725043956515_big-vfAlxCJQqWKKn02SvAjdvoAYhZNYrd.webp','https://hebbkx1anhila5yf.public.blob.vercel-storage.com/detail_6012200_17721695459931_big-ODcFxnSBvfW5T0lTCSdZaMktGLFsjn.webp','https://hebbkx1anhila5yf.public.blob.vercel-storage.com/detail_6012200_17719221219882_big-kXOziotEWzfwFORcAmaZlU9w0nTFw2.webp','https://hebbkx1anhila5yf.public.blob.vercel-storage.com/detail_6012200_17721695467257_big-YjDaO0r4Fw8NkXCHawG9qo5UeERKIg.webp'] }], material: 'Nylon 70% Cotton 30%', origin: 'Korea', category: 'Outerwear', retail_price_krw: 139000, sample_size: 'M', hs_code: '6201.93', ship_date: '2026-11-10', is_visible: true, is_hero: false, season: { year: 2025, season: 'F/W' }, gender: 'Male', images: ['https://hebbkx1anhila5yf.public.blob.vercel-storage.com/6012200_17725043883314_big-evDHsGjCXFcaFAf96LHFqIYUlu3UQd.webp','https://hebbkx1anhila5yf.public.blob.vercel-storage.com/detail_6012200_17725043956515_big-vfAlxCJQqWKKn02SvAjdvoAYhZNYrd.webp','https://hebbkx1anhila5yf.public.blob.vercel-storage.com/detail_6012200_17721695459931_big-ODcFxnSBvfW5T0lTCSdZaMktGLFsjn.webp','https://hebbkx1anhila5yf.public.blob.vercel-storage.com/detail_6012200_17719221219882_big-kXOziotEWzfwFORcAmaZlU9w0nTFw2.webp','https://hebbkx1anhila5yf.public.blob.vercel-storage.com/detail_6012200_17721695467257_big-YjDaO0r4Fw8NkXCHawG9qo5UeERKIg.webp'], sizes: ['S', 'M', 'L', 'XL', 'XXL'] },
             { id: 'P-017', style_no: 'BOMBER-SHINY17', name: 'Glossy Black Bomber Jacket', colors: [{ name: 'BLACK', hex: '#000000', images: ['https://hebbkx1anhila5yf.public.blob.vercel-storage.com/5318903_17555112033548_big-BJ5ZmfIJ1AcfdFA89xoCfHEEm6lj64.webp','https://hebbkx1anhila5yf.public.blob.vercel-storage.com/detail_5318903_17550575088709_big-Trz5aiNLmoylB48WAlw78OzlbvqluN.webp','https://hebbkx1anhila5yf.public.blob.vercel-storage.com/detail_5318903_17550575060433_big-5VLfsylZrEFriwDCkOW0S6mXbofUmw.webp','https://hebbkx1anhila5yf.public.blob.vercel-storage.com/detail_5318903_17550575118739_big-4MDBPx772QsYLPVj8ivM7k70kpR6nL.webp'] }, { name: 'NAVY', hex: '#000080', images: ['https://hebbkx1anhila5yf.public.blob.vercel-storage.com/5318903_17555112033548_big-BJ5ZmfIJ1AcfdFA89xoCfHEEm6lj64.webp','https://hebbkx1anhila5yf.public.blob.vercel-storage.com/detail_5318903_17550575088709_big-Trz5aiNLmoylB48WAlw78OzlbvqluN.webp','https://hebbkx1anhila5yf.public.blob.vercel-storage.com/detail_5318903_17550575060433_big-5VLfsylZrEFriwDCkOW0S6mXbofUmw.webp','https://hebbkx1anhila5yf.public.blob.vercel-storage.com/detail_5318903_17550575118739_big-4MDBPx772QsYLPVj8ivM7k70kpR6nL.webp'] }, { name: 'CHARCOAL', hex: '#333333', images: ['https://hebbkx1anhila5yf.public.blob.vercel-storage.com/5318903_17555112033548_big-BJ5ZmfIJ1AcfdFA89xoCfHEEm6lj64.webp','https://hebbkx1anhila5yf.public.blob.vercel-storage.com/detail_5318903_17550575088709_big-Trz5aiNLmoylB48WAlw78OzlbvqluN.webp','https://hebbkx1anhila5yf.public.blob.vercel-storage.com/detail_5318903_17550575060433_big-5VLfsylZrEFriwDCkOW0S6mXbofUmw.webp','https://hebbkx1anhila5yf.public.blob.vercel-storage.com/detail_5318903_17550575118739_big-4MDBPx772QsYLPVj8ivM7k70kpR6nL.webp'] }], material: 'Polyester 100%', origin: 'Korea', category: 'Outerwear', retail_price_krw: 159000, sample_size: 'M', hs_code: '6201.93', ship_date: '2026-11-15', is_visible: true, is_hero: false, season: { year: 2026, season: 'Special' }, gender: 'Male', images: ['https://hebbkx1anhila5yf.public.blob.vercel-storage.com/5318903_17555112033548_big-BJ5ZmfIJ1AcfdFA89xoCfHEEm6lj64.webp','https://hebbkx1anhila5yf.public.blob.vercel-storage.com/detail_5318903_17550575088709_big-Trz5aiNLmoylB48WAlw78OzlbvqluN.webp','https://hebbkx1anhila5yf.public.blob.vercel-storage.com/detail_5318903_17550575060433_big-5VLfsylZrEFriwDCkOW0S6mXbofUmw.webp','https://hebbkx1anhila5yf.public.blob.vercel-storage.com/detail_5318903_17550575118739_big-4MDBPx772QsYLPVj8ivM7k70kpR6nL.webp'], sizes: ['S', 'M', 'L', 'XL'] },
             { id: 'P-018', style_no: 'TECH-NAVY18', name: 'Navy Tech Mountain Jacket', colors: [{ name: 'NAVY/BLACK', hex: '#000080', images: ['https://hebbkx1anhila5yf.public.blob.vercel-storage.com/5408723_17707909468751_big-ZyVIFYpHO0UkoYxXo1hs5lauTxOEqr.webp','https://hebbkx1anhila5yf.public.blob.vercel-storage.com/detail_5408723_17707909496047_big-T5J8eorC3daZyhw0ZS1yrbPUgXXhee.webp','https://hebbkx1anhila5yf.public.blob.vercel-storage.com/detail_5408723_17707909508028_big-gppdnKtcn8XlQYgllNc6fhPrlAUFVh.webp'] }, { name: 'BLACK', hex: '#000000', images: ['https://hebbkx1anhila5yf.public.blob.vercel-storage.com/5408723_17707909468751_big-ZyVIFYpHO0UkoYxXo1hs5lauTxOEqr.webp','https://hebbkx1anhila5yf.public.blob.vercel-storage.com/detail_5408723_17707909496047_big-T5J8eorC3daZyhw0ZS1yrbPUgXXhee.webp','https://hebbkx1anhila5yf.public.blob.vercel-storage.com/detail_5408723_17707909508028_big-gppdnKtcn8XlQYgllNc6fhPrlAUFVh.webp'] }, { name: 'CHARCOAL', hex: '#333333', images: ['https://hebbkx1anhila5yf.public.blob.vercel-storage.com/5408723_17707909468751_big-ZyVIFYpHO0UkoYxXo1hs5lauTxOEqr.webp','https://hebbkx1anhila5yf.public.blob.vercel-storage.com/detail_5408723_17707909496047_big-T5J8eorC3daZyhw0ZS1yrbPUgXXhee.webp','https://hebbkx1anhila5yf.public.blob.vercel-storage.com/detail_5408723_17707909508028_big-gppdnKtcn8XlQYgllNc6fhPrlAUFVh.webp'] }], material: 'Nylon 100%', origin: 'Vietnam', category: 'Outerwear', retail_price_krw: 189000, sample_size: 'L', hs_code: '6201.93', ship_date: '2026-11-20', is_visible: true, is_hero: false, season: { year: 2026, season: 'F/W' }, gender: 'Male', images: ['https://hebbkx1anhila5yf.public.blob.vercel-storage.com/5408723_17707909468751_big-ZyVIFYpHO0UkoYxXo1hs5lauTxOEqr.webp','https://hebbkx1anhila5yf.public.blob.vercel-storage.com/detail_5408723_17707909496047_big-T5J8eorC3daZyhw0ZS1yrbPUgXXhee.webp','https://hebbkx1anhila5yf.public.blob.vercel-storage.com/detail_5408723_17707909508028_big-gppdnKtcn8XlQYgllNc6fhPrlAUFVh.webp'], sizes: ['S', 'M', 'L', 'XL', 'XXL'] },
-            { id: 'P-019', style_no: 'HOOD-RIB19', name: 'Ribbed Sleeve Street Jacket', colors: [{ name: 'BLACK', hex: '#000000', images: ['https://hebbkx1anhila5yf.public.blob.vercel-storage.com/detail_6012200_17719221219882_big-kXOziotEWzfwFORcAmaZlU9w0nTFw2.webp','https://hebbkx1anhila5yf.public.blob.vercel-storage.com/detail_6012200_17721695459931_big-ODcFxnSBvfW5T0lTCSdZaMktGLFsjn.webp'] }, { name: 'NAVY', hex: '#000080', images: ['https://hebbkx1anhila5yf.public.blob.vercel-storage.com/detail_6012200_17719221219882_big-kXOziotEWzfwFORcAmaZlU9w0nTFw2.webp','https://hebbkx1anhila5yf.public.blob.vercel-storage.com/detail_6012200_17721695459931_big-ODcFxnSBvfW5T0lTCSdZaMktGLFsjn.webp'] }, { name: 'CHARCOAL', hex: '#333333', images: ['https://hebbkx1anhila5yf.public.blob.vercel-storage.com/detail_6012200_17719221219882_big-kXOziotEWzfwFORcAmaZlU9w0nTFw2.webp','https://hebbkx1anhila5yf.public.blob.vercel-storage.com/detail_6012200_17721695459931_big-ODcFxnSBvfW5T0lTCSdZaMktGLFsjn.webp'] }], material: 'Nylon 70% Cotton 30%', origin: 'Korea', category: 'Outerwear', retail_price_krw: 145000, sample_size: 'M', hs_code: '6201.93', ship_date: '2026-11-12', is_visible: true, is_hero: false, season: { year: 2025, season: 'Special' }, gender: 'Female', images: ['https://hebbkx1anhila5yf.public.blob.vercel-storage.com/detail_6012200_17719221219882_big-kXOziotEWzfwFORcAmaZlU9w0nTFw2.webp','https://hebbkx1anhila5yf.public.blob.vercel-storage.com/detail_6012200_17721695459931_big-ODcFxnSBvfW5T0lTCSdZaMktGLFsjn.webp'], sizes: ['S', 'M', 'L', 'XL', 'XXL'] }
+            { id: 'P-019', style_no: 'HOOD-RIB19', name: 'Ribbed Sleeve Street Jacket', colors: [{ name: 'BLACK', hex: '#000000', images: ['https://hebbkx1anhila5yf.public.blob.vercel-storage.com/detail_6012200_17719221219882_big-kXOziotEWzfwFORcAmaZlU9w0nTFw2.webp','https://hebbkx1anhila5yf.public.blob.vercel-storage.com/detail_6012200_17721695459931_big-ODcFxnSBvfW5T0lTCSdZaMktGLFsjn.webp'] }, { name: 'NAVY', hex: '#000080', images: ['https://hebbkx1anhila5yf.public.blob.vercel-storage.com/detail_6012200_17719221219882_big-kXOziotEWzfwFORcAmaZlU9w0nTFw2.webp','https://hebbkx1anhila5yf.public.blob.vercel-storage.com/detail_6012200_17721695459931_big-ODcFxnSBvfW5T0lTCSdZaMktGLFsjn.webp'] }, { name: 'CHARCOAL', hex: '#333333', images: ['https://hebbkx1anhila5yf.public.blob.vercel-storage.com/detail_6012200_17719221219882_big-kXOziotEWzfwFORcAmaZlU9w0nTFw2.webp','https://hebbkx1anhila5yf.public.blob.vercel-storage.com/detail_6012200_17721695459931_big-ODcFxnSBvfW5T0lTCSdZaMktGLFsjn.webp'] }], material: 'Nylon 70% Cotton 30%', origin: 'Korea', category: 'Outerwear', retail_price_krw: 145000, sample_size: 'M', hs_code: '6201.93', ship_date: '2026-11-12', is_visible: true, is_hero: false, season: { year: 2025, season: 'Special' }, gender: 'Female', images: ['https://hebbkx1anhila5yf.public.blob.vercel-storage.com/detail_6012200_17719221219882_big-kXOziotEWzfwFORcAmaZlU9w0nTFw2.webp','https://hebbkx1anhila5yf.public.blob.vercel-storage.com/detail_6012200_17721695459931_big-ODcFxnSBvfW5T0lTCSdZaMktGLFsjn.webp'], sizes: ['S', 'M', 'L', 'XL', 'XXL'] },
+            { id: 'P-020', style_no: 'LINEN-WHT20', name: 'Relaxed Linen Blend Shirt', colors: [{ name: 'WHITE', hex: '#FFFFFF', images: ['https://hebbkx1anhila5yf.public.blob.vercel-storage.com/detail_4300078_17229281163133_big-cBwU3UgnQ1QNoab8uS0SdkOt27CSjg.webp','https://hebbkx1anhila5yf.public.blob.vercel-storage.com/detail_4300078_17229281015339_big-3Ip8wBdWeqGbEkw35kqi07I2BAsgid.webp'] }, { name: 'BEIGE', hex: '#F5F5DC', images: ['https://hebbkx1anhila5yf.public.blob.vercel-storage.com/detail_4300078_17229281163133_big-cBwU3UgnQ1QNoab8uS0SdkOt27CSjg.webp','https://hebbkx1anhila5yf.public.blob.vercel-storage.com/detail_4300078_17229281015339_big-3Ip8wBdWeqGbEkw35kqi07I2BAsgid.webp'] }, { name: 'LIGHT BLUE', hex: '#ADD8E6', images: ['https://hebbkx1anhila5yf.public.blob.vercel-storage.com/detail_4300078_17229281163133_big-cBwU3UgnQ1QNoab8uS0SdkOt27CSjg.webp','https://hebbkx1anhila5yf.public.blob.vercel-storage.com/detail_4300078_17229281015339_big-3Ip8wBdWeqGbEkw35kqi07I2BAsgid.webp'] }], material: 'Linen 55% Cotton 45%', origin: 'Philippines', category: 'Tops', retail_price_krw: 68000, sample_size: 'M', hs_code: '6205.20', ship_date: '2027-03-15', is_visible: true, is_hero: false, season: { year: 2027, season: 'S/S' }, gender: 'Male', images: ['https://hebbkx1anhila5yf.public.blob.vercel-storage.com/detail_4300078_17229281163133_big-cBwU3UgnQ1QNoab8uS0SdkOt27CSjg.webp','https://hebbkx1anhila5yf.public.blob.vercel-storage.com/detail_4300078_17229281015339_big-3Ip8wBdWeqGbEkw35kqi07I2BAsgid.webp'], sizes: ['S', 'M', 'L', 'XL', 'XXL'] },
+            { id: 'P-021', style_no: 'KNIT-MOHAIR21', name: 'Striped Mohair Blend Sweater', colors: [{ name: 'GREY/PURPLE', hex: '#808080', images: ['images/img_00.webp'] }, { name: 'CREAM/NAVY', hex: '#FFFDD0', images: ['images/img_00.webp'] }, { name: 'BLACK/GREY', hex: '#000000', images: ['images/img_00.webp'] }], material: 'Mohair 45% Wool 30% Nylon 25%', origin: 'Korea', category: 'Tops', retail_price_krw: 128000, sample_size: 'M', hs_code: '6110.19', ship_date: '2027-02-15', is_visible: true, is_hero: true, season: { year: 2027, season: 'S/S' }, gender: 'Male', images: ['images/img_00.webp'], sizes: ['S', 'M', 'L', 'XL', 'XXL'] },
+            { id: 'P-022', style_no: 'HOOD-KNITSLV22', name: 'Knit-Sleeve Hooded Zip Jacket', colors: [{ name: 'BLACK', hex: '#000000', images: ['images/img_02.webp','images/img_04.webp','images/img_01.webp','images/img_03.webp'] }, { name: 'CHARCOAL', hex: '#333333', images: ['images/img_02.webp','images/img_04.webp','images/img_01.webp','images/img_03.webp'] }, { name: 'NAVY', hex: '#000080', images: ['images/img_02.webp','images/img_04.webp','images/img_01.webp','images/img_03.webp'] }], material: 'Nylon 60% Cotton 40%', origin: 'Korea', category: 'Outerwear', retail_price_krw: 158000, sample_size: 'M', hs_code: '6201.93', ship_date: '2027-02-20', is_visible: true, is_hero: true, season: { year: 2027, season: 'S/S' }, gender: 'Male', images: ['images/img_02.webp','images/img_04.webp','images/img_01.webp','images/img_03.webp'], sizes: ['S', 'M', 'L', 'XL', 'XXL'] },
+            { id: 'P-023', style_no: 'SUEDE-BRN23', name: 'Buckle Collar Suede Zip Jacket', colors: [{ name: 'BROWN', hex: '#8B4513', images: ['images/img_06.webp','images/img_07.webp','images/img_05.webp','images/img_11.webp','images/img_12.webp','images/img_13.webp','images/img_09.webp','images/img_08.webp'] }, { name: 'BLACK', hex: '#000000', images: ['images/img_06.webp','images/img_07.webp','images/img_05.webp','images/img_11.webp','images/img_12.webp','images/img_13.webp','images/img_09.webp','images/img_08.webp'] }, { name: 'CAMEL', hex: '#C19A6B', images: ['images/img_06.webp','images/img_07.webp','images/img_05.webp','images/img_11.webp','images/img_12.webp','images/img_13.webp','images/img_09.webp','images/img_08.webp'] }], material: 'Polyester 85% Polyurethane 15%', origin: 'Korea', category: 'Outerwear', retail_price_krw: 178000, sample_size: 'M', hs_code: '6201.93', ship_date: '2027-02-25', is_visible: true, is_hero: true, season: { year: 2027, season: 'S/S' }, gender: 'Male', images: ['images/img_06.webp','images/img_07.webp','images/img_05.webp','images/img_11.webp','images/img_12.webp','images/img_13.webp','images/img_09.webp','images/img_08.webp'], sizes: ['S', 'M', 'L', 'XL', 'XXL'] },
+            { id: 'P-024', style_no: 'BLOUSON-DRK24', name: 'Minimal Zip-Up Blouson Jacket', colors: [{ name: 'CHARCOAL', hex: '#333333', images: ['images/img_14.webp','images/img_15.webp','images/img_16.webp'] }, { name: 'BLACK', hex: '#000000', images: ['images/img_14.webp','images/img_15.webp','images/img_16.webp'] }, { name: 'NAVY', hex: '#000080', images: ['images/img_14.webp','images/img_15.webp','images/img_16.webp'] }], material: 'Nylon 100%', origin: 'Korea', category: 'Outerwear', retail_price_krw: 135000, sample_size: 'M', hs_code: '6201.93', ship_date: '2027-03-01', is_visible: true, is_hero: true, season: { year: 2027, season: 'S/S' }, gender: 'Male', images: ['images/img_14.webp','images/img_15.webp','images/img_16.webp'], sizes: ['S', 'M', 'L', 'XL', 'XXL'] }
         ];
 
         const ORDERS = [
-            { order_id: 'ORD-2026-0001', partner_id: 'PTR-001', partner_name: 'Southeast Asia Trading Co.', status: '주문접수', rejection_reason: null, total_qty: 150, total_amount: 4650.00, created_at: '2026-04-10T09:30:00', updated_at: '2026-04-10T09:30:00' },
-            { order_id: 'ORD-2026-0002', partner_id: 'PTR-002', partner_name: 'Middle East Fashion Hub', status: '주문승인', rejection_reason: null, total_qty: 300, total_amount: 9800.00, created_at: '2026-04-08T14:20:00', updated_at: '2026-04-09T11:00:00' },
-            { order_id: 'ORD-2026-0003', partner_id: 'PTR-003', partner_name: 'Singapore Style Partners', status: '반려', rejection_reason: 'Requested quantities exceed available stock for some items.', total_qty: 500, total_amount: 15200.00, created_at: '2026-04-05T16:45:00', updated_at: '2026-04-06T10:30:00' }
+            { order_id: 'ORD-2026-0002', partner_id: 'PTR-002', partner_name: 'Middle East Fashion Hub', status: '주문승인', rejection_reason: null, total_qty: 300, total_amount: 9800.00, items: [
+                { product: PRODUCTS[2], color: 'NAVY', size: 'M', qty: 100, unit_price: 32.69, subtotal: 3269.00 },
+                { product: PRODUCTS[2], color: 'NAVY', size: 'L', qty: 100, unit_price: 32.69, subtotal: 3269.00 },
+                { product: PRODUCTS[3], color: 'GREY', size: 'M', qty: 100, unit_price: 32.69, subtotal: 3269.00 }
+            ], created_at: '2026-04-08T14:20:00', updated_at: '2026-04-09T11:00:00' },
+            { order_id: 'ORD-2026-0003', partner_id: 'PTR-003', partner_name: 'Singapore Style Partners', status: '반려', rejection_reason: 'Requested quantities exceed available stock for some items.', total_qty: 500, total_amount: 15200.00, items: [
+                { product: PRODUCTS[4], color: 'FOREST GREEN', size: 'S', qty: 150, unit_price: 30.38, subtotal: 4557.00 },
+                { product: PRODUCTS[5], color: 'BLACK', size: 'M', qty: 200, unit_price: 32.69, subtotal: 6538.00 },
+                { product: PRODUCTS[5], color: 'BLACK', size: 'L', qty: 150, unit_price: 32.69, subtotal: 4903.50 }
+            ], created_at: '2026-04-05T16:45:00', updated_at: '2026-04-06T10:30:00' }
         ];
 
         // HELPERS
@@ -1353,13 +1672,32 @@
             return Math.floor((retailKrw / EXCHANGE_RATE) * (1 - CURRENT_PARTNER.discount_rate) * 100) / 100;
         };
 
+        const LATEST_SEASON = { year: 2027, season: 'S/S' };
+        const formatSeason = (season) => {
+            if (!season) return '';
+            if (season.year === LATEST_SEASON.year && season.season === LATEST_SEASON.season) return 'NEW';
+            const yy = season.year.toString().slice(-2);
+            const ss = season.season === 'S/S' ? 'SS' : season.season;
+            return `${yy}-${ss}`;
+        };
+
         const formatUSD = (amount) => `$${amount.toFixed(2)}`;
         const formatKRW = (amount) => `₩${Math.round(amount).toLocaleString()}`;
+        const formatDateTime = (dateStr) => {
+            const d = new Date(dateStr);
+            const yyyy = d.getFullYear();
+            const MM = String(d.getMonth() + 1).padStart(2, '0');
+            const dd = String(d.getDate()).padStart(2, '0');
+            const hh = String(d.getHours()).padStart(2, '0');
+            const mm = String(d.getMinutes()).padStart(2, '0');
+            const ss = String(d.getSeconds()).padStart(2, '0');
+            return `${yyyy}-${MM}-${dd} ${hh}:${mm}:${ss}`;
+        };
 
         // COMPONENTS
         const ProductCard = ({ product, onSelect, cartQty }) => {
             const wholesalePrice = calculateWholesalePrice(product.retail_price_krw);
-            const seasonLabel = product.season ? `${product.season.year} ${product.season.season}` : '';
+            const seasonLabel = formatSeason(product.season);
 
             return (
                 <div className="product-card" onClick={() => onSelect(product)}>
@@ -1420,6 +1758,15 @@
                 });
             };
 
+            React.useEffect(() => {
+                if (isOpen) {
+                    document.body.style.overflow = 'hidden';
+                } else {
+                    document.body.style.overflow = '';
+                }
+                return () => { document.body.style.overflow = ''; };
+            }, [isOpen]);
+
             if (!isOpen) return null;
 
             return (
@@ -1449,8 +1796,18 @@
                                 </div>
                                 <div className="detail-info">
                                     <div className="detail-field">
-                                        <div className="detail-label">Style No</div>
+                                        <div className="detail-label">Style No.</div>
                                         <div className="detail-value">{product.style_no}</div>
+                                    </div>
+                                    <div className="detail-row">
+                                        <div className="detail-field">
+                                            <div className="detail-label">Item Season</div>
+                                            <div className="detail-value">{formatSeason(product.season) || 'N/A'}</div>
+                                        </div>
+                                        <div className="detail-field">
+                                            <div className="detail-label">Est. Delivery</div>
+                                            <div className="detail-value">{product.ship_date}</div>
+                                        </div>
                                     </div>
                                     <div className="detail-field">
                                         <div className="detail-label">Material</div>
@@ -1460,29 +1817,25 @@
                                         <div className="detail-label">Origin</div>
                                         <div className="detail-value">{product.origin}</div>
                                     </div>
-                                    <div className="detail-field">
-                                        <div className="detail-label">Sample Size</div>
-                                        <div className="detail-value">{product.sample_size}</div>
+                                    <div className="detail-row">
+                                        <div className="detail-field">
+                                            <div className="detail-label">Gender</div>
+                                            <div className="detail-value">{product.gender || 'N/A'}</div>
+                                        </div>
+                                        <div className="detail-field">
+                                            <div className="detail-label">Sample Size</div>
+                                            <div className="detail-value">{product.sample_size}</div>
+                                        </div>
                                     </div>
-                                    <div className="detail-field">
-                                        <div className="detail-label">Item Season</div>
-                                        <div className="detail-value">{product.season ? `${product.season.year} ${product.season.season}` : 'N/A'}</div>
-                                    </div>
-                                    <div className="detail-field">
-                                        <div className="detail-label">Gender</div>
-                                        <div className="detail-value">{product.gender || 'N/A'}</div>
-                                    </div>
-                                    <div className="detail-field">
-                                        <div className="detail-label">Est. Delivery</div>
-                                        <div className="detail-value">{product.ship_date}</div>
-                                    </div>
-                                    <div className="detail-field">
-                                        <div className="detail-label">Wholesale Price (USD)</div>
-                                        <div className="detail-price">{formatUSD(wholesalePrice)}</div>
-                                    </div>
-                                    <div className="detail-field">
-                                        <div className="detail-label">Retail (KRW)</div>
-                                        <div className="detail-value">{formatKRW(product.retail_price_krw)}</div>
+                                    <div className="detail-row">
+                                        <div className="detail-field">
+                                            <div className="detail-label">Wholesale Price</div>
+                                            <div className="detail-price">{formatUSD(wholesalePrice)}</div>
+                                        </div>
+                                        <div className="detail-field">
+                                            <div className="detail-label">Retail(KRW)</div>
+                                            <div className="detail-value">{formatKRW(product.retail_price_krw)}</div>
+                                        </div>
                                     </div>
                                     <div className="detail-field">
                                         <div className="detail-label">Color</div>
@@ -1507,70 +1860,84 @@
                                             </div>
                                         </div>
                                     </div>
-                                    <div className="detail-field">
-                                        <div className="detail-label">Sizes & Quantities</div>
+                                    <div className="detail-field" style={{ borderBottom: 'none' }}>
+                                        <div className="detail-label">Quantity by Size</div>
                                         <div className="sizes-grid" style={{ gridTemplateColumns: `repeat(${Math.min(4, product.sizes.length)}, 1fr)` }}>
                                             {product.sizes.map(size => (
                                                 <div key={size}>
-                                                    <div style={{ fontSize: '11px', color: '#888', textTransform: 'uppercase', fontWeight: 600, marginBottom: '6px' }}>{size}</div>
-                                                    <input
-                                                        key={size}
-                                                        type="number"
-                                                        min="0"
-                                                        value={quantities[size] || 0}
-                                                        onChange={(e) => handleQtyChange(size, e.target.value)}
-                                                        className="size-input"
-                                                    />
+                                                    <div style={{ fontSize: '11px', color: 'var(--color-fg-low)', textTransform: 'uppercase', fontWeight: 600, marginBottom: '6px' }}>{size}</div>
+                                                    <div className="size-input-wrap">
+                                                        <input
+                                                            type="number"
+                                                            min="0"
+                                                            value={quantities[size] || ''}
+                                                            placeholder="0"
+                                                            onChange={(e) => handleQtyChange(size, e.target.value)}
+                                                            className="size-input"
+                                                        />
+                                                        <div className="size-spin size-spin-up" onClick={() => handleQtyChange(size, (quantities[size] || 0) + 1)}>▲</div>
+                                                        <div className="size-spin size-spin-down" onClick={() => handleQtyChange(size, Math.max(0, (quantities[size] || 0) - 1))}>▼</div>
+                                                    </div>
                                                 </div>
                                             ))}
                                         </div>
                                     </div>
+                                    {/* Color selection summary tags */}
+                                    <div className="color-selection-tags">
+                                        {Object.entries(allColorQuantities).map(([colorIdx, sizeQties]) => {
+                                            const hasQty = Object.values(sizeQties).some(q => q > 0);
+                                            if (!hasQty) return null;
+                                            const colorObj = product.colors[parseInt(colorIdx)];
+                                            return (
+                                                <div key={colorIdx} className="color-tag">
+                                                    <span className="color-tag-name">{colorObj.name}</span>
+                                                    <span className="color-tag-sizes">
+                                                        {Object.entries(sizeQties).filter(([, q]) => q > 0).map(([size, q], i, arr) => (
+                                                            <span key={size}>{size} {q}{i < arr.length - 1 ? ' / ' : ''}</span>
+                                                        ))}
+                                                    </span>
+                                                    <button className="color-tag-remove" onClick={() => {
+                                                        const reset = {};
+                                                        product.sizes.forEach(s => { reset[s] = 0; });
+                                                        setAllColorQuantities({ ...allColorQuantities, [colorIdx]: reset });
+                                                    }}>&times;</button>
+                                                </div>
+                                            );
+                                        })}
+                                    </div>
+                                    <div className="modal-summary" style={{ padding: '1rem 0 0', border: 'none' }}>
+                                        <div className="modal-summary-item">
+                                            <div className="detail-label">Total</div>
+                                            <div className="detail-price">{totalQty.toLocaleString()}</div>
+                                        </div>
+                                        <div className="modal-summary-item" style={{ textAlign: 'right' }}>
+                                            <div className="detail-label">Total Amount</div>
+                                            <div className="detail-price">{formatUSD(totalAmount)}</div>
+                                        </div>
+                                    </div>
+                                    <div style={{ marginTop: '1rem' }}>
+                                        <button className="btn-black" onClick={() => {
+                                            const qtyByColor = {};
+                                            Object.entries(allColorQuantities).forEach(([colorIdx, sizeQties]) => {
+                                                const colorName = product.colors[parseInt(colorIdx)].name;
+                                                const validSizes = {};
+                                                product.sizes.forEach(size => {
+                                                    if (sizeQties[size] > 0) {
+                                                        validSizes[size] = sizeQties[size];
+                                                    }
+                                                });
+                                                if (Object.keys(validSizes).length > 0) {
+                                                    qtyByColor[colorName] = validSizes;
+                                                }
+                                            });
+                                            onAddToCart(product, qtyByColor);
+                                            onClose();
+                                        }}>
+                                            {isEditMode ? 'UPDATE SELECTION' : 'ADD TO SELECTION'}
+                                        </button>
+                                    </div>
                                 </div>
                             </div>
-                        </div>
-                        <div style={{ padding: '0 1.5rem', display: 'flex', justifyContent: 'flex-end', alignItems: 'center', gap: '1rem' }}>
-                            <div className="stat" style={{ alignItems: 'center' }}>
-                                <span className="stat-label">TOTAL:</span>
-                                <span style={{ fontWeight: 700 }}>{totalQty}</span>
-                            </div>
-                            <div className="stat" style={{ alignItems: 'center' }}>
-                                <span className="stat-label">AMOUNT:</span>
-                                <span style={{ fontWeight: 700 }}>{formatUSD(totalAmount)}</span>
-                            </div>
-                        </div>
-                        <div className="modal-footer" style={{ justifyContent: 'space-between', gap: '1rem' }}>
-                            <div style={{ display: 'flex', gap: '1rem', alignItems: 'center', flexWrap: 'wrap' }}>
-                                {Object.entries(allColorQuantities).map(([colorIdx, sizeQties]) => {
-                                    const colorQty = Object.values(sizeQties).reduce((a, b) => a + b, 0);
-                                    if (colorQty === 0) return null;
-                                    const colorObj = product.colors[parseInt(colorIdx)];
-                                    return (
-                                        <div key={colorIdx} className="stat" style={{ alignItems: 'center' }}>
-                                            <span className="stat-label">{colorObj.name}:</span>
-                                            <span style={{ fontWeight: 700, color: ['#FFFFFF','#FFF','#FFFFF0','#F5F5DC','#FAEBD7'].includes(colorObj.hex.toUpperCase()) ? '#888' : colorObj.hex }}>{colorQty}</span>
-                                        </div>
-                                    );
-                                })}
-                            </div>
-                            <button className="btn-black-sm" onClick={() => {
-                                const qtyByColor = {};
-                                Object.entries(allColorQuantities).forEach(([colorIdx, sizeQties]) => {
-                                    const colorName = product.colors[parseInt(colorIdx)].name;
-                                    const validSizes = {};
-                                    product.sizes.forEach(size => {
-                                        if (sizeQties[size] > 0) {
-                                            validSizes[size] = sizeQties[size];
-                                        }
-                                    });
-                                    if (Object.keys(validSizes).length > 0) {
-                                        qtyByColor[colorName] = validSizes;
-                                    }
-                                });
-                                onAddToCart(product, qtyByColor);
-                                onClose();
-                            }}>
-                                {isEditMode ? 'UPDATE SELECTION' : 'ADD TO SELECTION'}
-                            </button>
                         </div>
                     </div>
                 </div>
@@ -1595,12 +1962,7 @@
             const [filterYear, setFilterYear] = useState('All');
             const [filterSeason, setFilterSeason] = useState('All');
             const [filterGender, setFilterGender] = useState('All');
-
-            const MOCK_ORDER_ITEMS = [
-                { product: PRODUCTS[0], size: 'S', qty: 30, unit_price: 46.15, subtotal: 1384.50 },
-                { product: PRODUCTS[0], size: 'M', qty: 50, unit_price: 46.15, subtotal: 2307.50 },
-                { product: PRODUCTS[0], size: 'L', qty: 20, unit_price: 46.15, subtotal: 923.00 }
-            ];
+            const [orders, setOrders] = useState(ORDERS);
 
             const handleLogin = (e) => {
                 e.preventDefault();
@@ -1656,10 +2018,13 @@
                 });
             };
 
-            const getCurrentSeasonProducts = () => {
-                return PRODUCTS.filter(p => p.is_visible && p.season && p.season.year === 2026 && p.season.season === 'F/W').slice(0, 8);
+            const getNewProducts = () => {
+                return PRODUCTS.filter(p => p.is_visible && p.season && p.season.year === LATEST_SEASON.year && p.season.season === LATEST_SEASON.season).slice(0, 5);
             };
-            const getHeroProducts = () => PRODUCTS.filter(p => p.is_hero && p.is_visible).slice(0, 8);
+            const getHeroProducts = () => {
+                const newIds = new Set(getNewProducts().map(p => p.id));
+                return PRODUCTS.filter(p => p.is_hero && p.is_visible && !newIds.has(p.id)).slice(0, 10);
+            };
 
             const stats = getCartStats();
 
@@ -1716,7 +2081,7 @@
             // Pages with header
             return (
                 <div style={{ minHeight: '100vh' }}>
-                    <div className="header" style={{ position: 'relative' }}>
+                    <div className="header">
                         <div className="header-left">
                             <div className="logo" onClick={() => { setPage('home'); setSelectedProduct(null); setModalOpen(false); }}>
                                 MUSINSA STANDARD
@@ -1725,7 +2090,7 @@
                         </div>
                         <div className="header-center">
                             <div className="nav">
-                                {['products', 'cart', 'orders'].map(navPage => (
+                                {['home', 'products', 'orders'].map(navPage => (
                                     <div
                                         key={navPage}
                                         className={`nav-item ${page === navPage ? 'active' : ''}`}
@@ -1737,14 +2102,18 @@
                                         style={{ display: 'inline-flex', alignItems: 'center' }}
                                     >
                                         {navPage === 'orders' ? 'My Orders' : navPage.charAt(0).toUpperCase() + navPage.slice(1)}
-                                        {navPage === 'cart' && stats.totalStyles > 0 && <span className="cart-badge">{stats.totalStyles}</span>}
                                     </div>
                                 ))}
                             </div>
                         </div>
                         <div className="header-right">
-                            <div className="company-info">
-                                <div className="company-name">{CURRENT_PARTNER.company_name}</div>
+                            <div className="cart-icon-wrap" onClick={() => { setPage('cart'); setSelectedProduct(null); setModalOpen(false); }}>
+                                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+                                    <path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z"/>
+                                    <line x1="3" y1="6" x2="21" y2="6"/>
+                                    <path d="M16 10a4 4 0 01-8 0"/>
+                                </svg>
+                                {stats.totalQty > 0 && <span className="cart-badge">{stats.totalQty}</span>}
                             </div>
                             <button className="logout-btn" onClick={() => {
                                 setPage('login');
@@ -1752,12 +2121,13 @@
                             }}>Logout</button>
                         </div>
                     </div>
+                    <div className="header-spacer"></div>
 
                     {/* HOME PAGE */}
                     {page === 'home' && (
                         <div className="page">
                             <div className="hero-section">
-                                <div className="hero-label">2026 FALL/WINTER COLLECTION</div>
+                                <div className="hero-label">2027 SPRING/SUMMER COLLECTION</div>
                                 <div className="hero-title">MUSINSA STANDARD<br />GLOBAL SHOWROOM</div>
                                 <div className="hero-subtitle">Explore our latest collection and place your wholesale orders</div>
                                 <button className="btn-white" onClick={() => setPage('products')}>View All Products</button>
@@ -1766,13 +2136,13 @@
                             <div className="collections-section">
                                 <div style={{ display: 'flex', alignItems: 'baseline', justifyContent: 'space-between', marginBottom: '2rem' }}>
                                     <div style={{ display: 'flex', alignItems: 'baseline', gap: '12px' }}>
-                                        <h3 className="section-title" style={{ margin: 0 }}>2026 F/W</h3>
-                                        <span style={{ color: '#888', fontSize: '14px' }}>{PRODUCTS.filter(p => p.is_visible && p.season && p.season.year === 2026 && p.season.season === 'F/W').length} items</span>
+                                        <h3 className="section-title" style={{ margin: 0 }}>New Arrivals — 27 S/S</h3>
+                                        <span style={{ color: '#888', fontSize: '14px' }}>{PRODUCTS.filter(p => p.is_visible && p.season && p.season.year === LATEST_SEASON.year && p.season.season === LATEST_SEASON.season).length} items</span>
                                     </div>
-                                    <button onClick={() => { setFilterYear('2026'); setFilterSeason('F/W'); setActiveFilter('all'); setPage('products'); }} style={{ background: 'none', border: 'none', color: '#888', fontSize: '14px', cursor: 'pointer', textDecoration: 'underline', textUnderlineOffset: '4px' }}>View all</button>
+                                    <button onClick={() => { setFilterYear(String(LATEST_SEASON.year)); setFilterSeason(LATEST_SEASON.season); setActiveFilter('all'); setPage('products'); }} style={{ background: 'none', border: 'none', color: '#888', fontSize: '14px', cursor: 'pointer', textDecoration: 'underline', textUnderlineOffset: '4px' }}>View all</button>
                                 </div>
                                 <div className="product-grid">
-                                    {getCurrentSeasonProducts().map(product => (
+                                    {getNewProducts().map(product => (
                                         <ProductCard
                                             key={product.id}
                                             product={product}
@@ -1829,46 +2199,12 @@
 
                     {/* PRODUCTS PAGE */}
                     {page === 'products' && (
-                        <div className="page">
-                            <div className="summary-bar">
-                                <div className="summary-bar-inner">
-                                    <div className="summary-stats">
-                                        <div className="stat">
-                                            <span className="stat-label">STYLES</span>
-                                            <span>{stats.totalStyles}</span>
-                                        </div>
-                                        <div className="stat">
-                                            <span className="stat-label">QTY</span>
-                                            <span>{stats.totalQty}</span>
-                                        </div>
-                                        <div className="stat">
-                                            <span className="stat-label">TOTAL</span>
-                                            <span>{formatUSD(stats.totalAmount)}</span>
-                                        </div>
-                                    </div>
-                                    <button className="btn-outline-white" onClick={() => setPage('cart')}>VIEW CART</button>
-                                </div>
+                        <div className="page" style={{ paddingBottom: stats.totalStyles > 0 ? '4rem' : 0 }}>
+                            <div style={{ maxWidth: '2200px', margin: '0 auto', padding: '2rem 1.5rem 0' }}>
+                                <h2 style={{ marginBottom: 0 }}>Products</h2>
                             </div>
-
+                            <div className="filters-sticky">
                             <div className="filters-row">
-                                <button className="search-toggle" onClick={() => { setShowSearch(!showSearch); if (showSearch) setSearchTerm(''); }}>
-                                    {showSearch ? (
-                                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
-                                    ) : (
-                                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
-                                    )}
-                                </button>
-                                {showSearch && (
-                                    <input
-                                        type="text"
-                                        className="search-input"
-                                        placeholder="Search style no. or name..."
-                                        value={searchTerm}
-                                        onChange={(e) => setSearchTerm(e.target.value)}
-                                        autoFocus
-                                        style={{ width: '220px' }}
-                                    />
-                                )}
                                 <div className="category-buttons">
                                     {['All', 'Outerwear', 'Tops'].map(cat => (
                                         <button
@@ -1880,17 +2216,9 @@
                                         </button>
                                     ))}
                                 </div>
-                                <select value={filterYear} onChange={(e) => setFilterYear(e.target.value)} style={{ padding: '6px 12px', border: '1px solid var(--color-border)', background: 'var(--color-bg)', fontSize: '13px', fontWeight: 500, letterSpacing: 0, borderRadius: '4px', cursor: 'pointer' }}>
-                                    <option value="All">ALL YEARS</option>
-                                    <option value="2025">2025</option>
-                                    <option value="2026">2026</option>
-                                </select>
-                                <select value={filterSeason} onChange={(e) => setFilterSeason(e.target.value)} style={{ padding: '6px 12px', border: '1px solid var(--color-border)', background: 'var(--color-bg)', fontSize: '13px', fontWeight: 500, letterSpacing: 0, borderRadius: '4px', cursor: 'pointer' }}>
-                                    <option value="All">ALL SEASONS</option>
-                                    <option value="S/S">S/S</option>
-                                    <option value="F/W">F/W</option>
-                                    <option value="Special">Special</option>
-                                </select>
+
+                                <div className="filter-divider"></div>
+
                                 <div className="category-buttons">
                                     {['All', 'Male', 'Female'].map(g => (
                                         <button
@@ -1902,32 +2230,114 @@
                                         </button>
                                     ))}
                                 </div>
-                                <div className="category-buttons">
-                                    <button
-                                        className={`category-btn ${activeFilter === 'hero' ? 'active' : ''}`}
-                                        onClick={() => setActiveFilter(activeFilter === 'hero' ? 'all' : 'hero')}
-                                    >
-                                        HERO
+
+                                <div className="filter-divider"></div>
+
+                                <select className="filter-select" value={filterYear} onChange={(e) => setFilterYear(e.target.value)}>
+                                    <option value="All">All Years</option>
+                                    <option value="2025">2025</option>
+                                    <option value="2026">2026</option>
+                                    <option value="2027">2027</option>
+                                </select>
+                                <select className="filter-select" value={filterSeason} onChange={(e) => setFilterSeason(e.target.value)}>
+                                    <option value="All">All Seasons</option>
+                                    <option value="S/S">S/S</option>
+                                    <option value="F/W">F/W</option>
+                                    <option value="Special">Special</option>
+                                </select>
+
+                                <div className="filter-divider"></div>
+
+                                <button
+                                    className={`category-btn ${activeFilter === 'hero' ? 'active' : ''}`}
+                                    onClick={() => setActiveFilter(activeFilter === 'hero' ? 'all' : 'hero')}
+                                >
+                                    HERO
+                                </button>
+
+                                {(selectedCategory !== 'All' || filterGender !== 'All' || filterYear !== 'All' || filterSeason !== 'All' || activeFilter !== 'all') && (
+                                    <button className="filter-reset" onClick={() => {
+                                        setSelectedCategory('All');
+                                        setFilterGender('All');
+                                        setFilterYear('All');
+                                        setFilterSeason('All');
+                                        setActiveFilter('all');
+                                    }}>Reset</button>
+                                )}
+
+                                <div className="filters-right">
+                                    <button className="search-toggle" onClick={() => { setShowSearch(!showSearch); if (showSearch) setSearchTerm(''); }}>
+                                        {showSearch ? (
+                                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+                                        ) : (
+                                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+                                        )}
                                     </button>
+                                    {showSearch && (
+                                        <input
+                                            type="text"
+                                            className="search-input"
+                                            placeholder="Search style no. or name..."
+                                            value={searchTerm}
+                                            onChange={(e) => setSearchTerm(e.target.value)}
+                                            autoFocus
+                                        />
+                                    )}
                                 </div>
+                            </div>
                             </div>
 
                             <div className="products-section">
-                                <div className="product-grid">
-                                    {getVisibleProducts().map(product => (
-                                        <ProductCard
-                                            key={product.id}
-                                            product={product}
-                                            onSelect={(p) => {
-                                                setSelectedProduct(p);
-                                                setModalOpen(true);
-                                                setEditingProduct(null);
-                                            }}
-                                            cartQty={cart[product.id] ? Object.values(cart[product.id]).reduce((colorSum, sizeQties) => colorSum + Object.values(sizeQties).reduce((a, b) => a + b, 0), 0) : 0}
-                                        />
-                                    ))}
-                                </div>
+                                {getVisibleProducts().length === 0 ? (
+                                    <div style={{ maxWidth: '600px', margin: '0 auto', padding: '1.5rem', textAlign: 'center', minHeight: 'calc(100vh - 12rem)', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center' }}>
+                                        <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="#ccc" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" style={{ marginBottom: '1.5rem' }}>
+                                            <circle cx="11" cy="11" r="8"></circle>
+                                            <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+                                            <line x1="8" y1="11" x2="14" y2="11"></line>
+                                        </svg>
+                                        <h2 style={{ fontSize: '1.5rem', fontWeight: 700, marginBottom: '0.5rem', color: 'var(--color-fg)' }}>No products found</h2>
+                                        <p style={{ color: '#888', marginBottom: '2rem' }}>Try adjusting your filters to find what you're looking for.</p>
+                                        <button className="btn-black" style={{ width: 'auto', padding: '10px 24px', fontSize: '13px' }} onClick={() => { setSelectedCategory('All'); setFilterGender('All'); setFilterYear('All'); setFilterSeason('All'); setActiveFilter('all'); setSearchTerm(''); }}>Reset Filters</button>
+                                    </div>
+                                ) : (
+                                    <div className="product-grid">
+                                        {getVisibleProducts().map(product => (
+                                            <ProductCard
+                                                key={product.id}
+                                                product={product}
+                                                onSelect={(p) => {
+                                                    setSelectedProduct(p);
+                                                    setModalOpen(true);
+                                                    setEditingProduct(null);
+                                                }}
+                                                cartQty={cart[product.id] ? Object.values(cart[product.id]).reduce((colorSum, sizeQties) => colorSum + Object.values(sizeQties).reduce((a, b) => a + b, 0), 0) : 0}
+                                            />
+                                        ))}
+                                    </div>
+                                )}
                             </div>
+
+                            {stats.totalStyles > 0 && (
+                                <div className="summary-bar">
+                                    <div className="summary-bar-inner">
+                                        <div className="summary-stats">
+                                            <div className="stat">
+                                                <span className="stat-label">STYLES</span>
+                                                <span>{stats.totalStyles}</span>
+                                            </div>
+                                            <div className="stat">
+                                                <span className="stat-label">QTY</span>
+                                                <span>{stats.totalQty}</span>
+                                            </div>
+                                            <div className="stat">
+                                                <span className="stat-label">TOTAL</span>
+                                                <span>{formatUSD(stats.totalAmount)}</span>
+                                            </div>
+                                        </div>
+                                        <button className="btn-outline-white" onClick={() => setPage('cart')}>VIEW CART</button>
+                                    </div>
+                                </div>
+                            )}
 
                             {selectedProduct && (
                                 <ProductDetailModal
@@ -1947,8 +2357,11 @@
                     {/* CART PAGE */}
                     {page === 'cart' && !orderSubmitted && (
                         <div className="page">
+                            <div style={{ maxWidth: '2200px', margin: '0 auto', padding: '2rem 1.5rem 0' }}>
+                                <h2 style={{ marginBottom: '2rem' }}>Cart</h2>
+                            </div>
                             {stats.totalQty === 0 ? (
-                                <div style={{ maxWidth: '600px', margin: '0 auto', padding: '1.5rem', textAlign: 'center', minHeight: 'calc(100vh - 7rem)', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center' }}>
+                                <div style={{ maxWidth: '600px', margin: '0 auto', padding: '1.5rem', textAlign: 'center', minHeight: 'calc(100vh - 14rem)', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center' }}>
                                     <div style={{ width: '64px', height: '64px', margin: '0 auto 1.5rem', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
                                         <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="#ccc" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
                                             <path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z"></path>
@@ -1958,13 +2371,11 @@
                                     </div>
                                     <h2 style={{ fontSize: '1.5rem', fontWeight: 700, marginBottom: '0.5rem' }}>Your cart is empty</h2>
                                     <p style={{ color: '#888', marginBottom: '2rem' }}>Browse our collection and add products to your selection.</p>
-                                    <button className="btn-black" onClick={() => setPage('products')}>Browse Products</button>
+                                    <button className="btn-black" style={{ width: 'auto', padding: '10px 24px', fontSize: '13px' }} onClick={() => setPage('products')}>Browse Products</button>
                                 </div>
                             ) : (
-                                <div style={{ maxWidth: '1280px', margin: '0 auto', padding: '2rem 1.5rem', paddingBottom: '120px' }}>
-                                    {/* Cart Header */}
-                                    <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '2rem' }}>
-                                        <h2 style={{ fontSize: '1.5rem', fontWeight: 700 }}>Your Selection</h2>
+                                <div style={{ maxWidth: '2200px', margin: '0 auto', padding: '0 1.5rem', paddingBottom: '120px' }}>
+                                    <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'flex-end', marginBottom: '2rem' }}>
                                         <div style={{ display: 'flex', gap: '0.5rem' }}>
                                             <button className="btn-outline-black" style={{ fontSize: '12px', padding: '8px 16px' }}>EXPORT EXCEL</button>
                                             <button className="btn-outline-black" style={{ fontSize: '12px', padding: '8px 16px' }} onClick={() => {
@@ -2044,7 +2455,7 @@
                                         background: '#000', color: '#fff', padding: '1.5rem',
                                         zIndex: 40
                                     }}>
-                                        <div style={{ maxWidth: '1280px', margin: '0 auto', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+                                        <div style={{ maxWidth: '2200px', margin: '0 auto', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
                                             <div style={{ display: 'flex', gap: '3rem' }}>
                                                 <div>
                                                     <div style={{ fontSize: '11px', opacity: 0.7 }}>STYLES</div>
@@ -2174,6 +2585,41 @@
                                 <div className="confirm-buttons">
                                     <button className="btn-outline-black" style={{ whiteSpace: 'nowrap' }} onClick={() => setPage('cart')}>Back to Cart</button>
                                     <button className="btn-black" onClick={() => {
+                                        const stats = getCartStats();
+                                        const orderItems = [];
+                                        Object.entries(cart).forEach(([productId, colorQties]) => {
+                                            const product = PRODUCTS.find(p => p.id === productId);
+                                            if (!product) return;
+                                            const wholesalePrice = calculateWholesalePrice(product.retail_price_krw);
+                                            Object.entries(colorQties).forEach(([colorName, sizeQties]) => {
+                                                Object.entries(sizeQties).forEach(([size, qty]) => {
+                                                    if (qty > 0) {
+                                                        orderItems.push({
+                                                            product,
+                                                            color: colorName,
+                                                            size,
+                                                            qty,
+                                                            unit_price: wholesalePrice,
+                                                            subtotal: Math.round(qty * wholesalePrice * 100) / 100
+                                                        });
+                                                    }
+                                                });
+                                            });
+                                        });
+                                        const newOrder = {
+                                            order_id: 'ORD-2026-' + String(orders.length + 1).padStart(4, '0'),
+                                            partner_id: CURRENT_PARTNER.partner_id,
+                                            partner_name: CURRENT_PARTNER.company,
+                                            status: '주문접수',
+                                            rejection_reason: null,
+                                            total_qty: stats.totalQty,
+                                            total_amount: stats.totalAmount,
+                                            items: orderItems,
+                                            created_at: new Date().toISOString(),
+                                            updated_at: new Date().toISOString()
+                                        };
+                                        setOrders(prev => [...prev, newOrder]);
+                                        setCart({});
                                         setOrderSubmitted(true);
                                     }}>Submit Order</button>
                                 </div>
@@ -2188,7 +2634,7 @@
                                 <div className="success-screen">
                                     <div className="success-icon">✓</div>
                                     <div className="success-title">Order Submitted</div>
-                                    <div className="success-order-no">ORD-2026-{String(Math.floor(Math.random() * 10000)).padStart(4, '0')}</div>
+                                    <div className="success-order-no">{orders.length > 0 ? orders[orders.length - 1].order_id : ''}</div>
                                     <div className="success-buttons">
                                         <button className="btn-outline-black" onClick={() => {
                                             setPage('products');
@@ -2210,7 +2656,20 @@
                         <div className="page">
                             <div className="orders-section">
                                 <h2 style={{ marginBottom: '2rem' }}>My Orders</h2>
-                                {ORDERS.filter(o => o.partner_id === CURRENT_PARTNER.partner_id).map(order => {
+                                {orders.filter(o => o.partner_id === CURRENT_PARTNER.partner_id).length === 0 ? (
+                                    <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', minHeight: 'calc(100vh - 12rem)', textAlign: 'center', color: 'var(--color-fg-low)' }}>
+                                        <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="#ccc" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" style={{ marginBottom: '1.5rem' }}>
+                                            <path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"></path>
+                                            <polyline points="14 2 14 8 20 8"></polyline>
+                                            <line x1="16" y1="13" x2="8" y2="13"></line>
+                                            <line x1="16" y1="17" x2="8" y2="17"></line>
+                                        </svg>
+                                        <h2 style={{ fontSize: '1.5rem', fontWeight: 700, marginBottom: '0.5rem', color: 'var(--color-fg)' }}>No orders yet</h2>
+                                        <p style={{ color: '#888', marginBottom: '2rem' }}>Browse our collection and place your first wholesale order.</p>
+                                        <button className="btn-black" style={{ width: 'auto', padding: '10px 24px', fontSize: '13px' }} onClick={() => setPage('products')}>Browse Products</button>
+                                    </div>
+                                ) : null}
+                                {orders.filter(o => o.partner_id === CURRENT_PARTNER.partner_id).sort((a, b) => new Date(b.created_at) - new Date(a.created_at)).map(order => {
                                     const statusMap = {
                                         '주문접수': 'Pending',
                                         '주문승인': 'Approved',
@@ -2224,21 +2683,19 @@
 
                                     return (
                                         <div key={order.order_id} className="order-card">
-                                            <div className="order-header">
-                                                <div>
-                                                    <div className="order-id">{order.order_id}</div>
-                                                    <div className="order-date">{new Date(order.created_at).toLocaleDateString()}</div>
+                                            <div className="order-info-grid" style={{ gridTemplateColumns: 'repeat(3, 1fr)', marginBottom: '0' }}>
+                                                <div className="order-info-item">
+                                                    <div className="order-info-label">Order Number</div>
+                                                    <div className="order-info-value">{order.order_id}</div>
                                                 </div>
-                                                <div className={`status-badge ${statusClassMap[order.status]}`}>
-                                                    {statusMap[order.status]}
+                                                <div className="order-info-item">
+                                                    <div className="order-info-label">Order Date</div>
+                                                    <div className="order-info-value">{formatDateTime(order.created_at)}</div>
                                                 </div>
-                                            </div>
-                                            {order.rejection_reason && (
-                                                <div className="rejection-reason">
-                                                    <strong>Rejection Reason:</strong> {order.rejection_reason}
+                                                <div className="order-info-item">
+                                                    <div className="order-info-label">Last Updated</div>
+                                                    <div className="order-info-value">{formatDateTime(order.updated_at)}</div>
                                                 </div>
-                                            )}
-                                            <div className="order-info-grid">
                                                 <div className="order-info-item">
                                                     <div className="order-info-label">Total Quantity</div>
                                                     <div className="order-info-value">{order.total_qty} units</div>
@@ -2248,10 +2705,17 @@
                                                     <div className="order-info-value">{formatUSD(order.total_amount)}</div>
                                                 </div>
                                                 <div className="order-info-item">
-                                                    <div className="order-info-label">Last Updated</div>
-                                                    <div className="order-info-value">{new Date(order.updated_at).toLocaleDateString()}</div>
+                                                    <div className="order-info-label">Status</div>
+                                                    <div className="order-info-value">
+                                                        <span className={`status-badge ${statusClassMap[order.status]}`}>{statusMap[order.status]}</span>
+                                                    </div>
                                                 </div>
                                             </div>
+                                            {order.rejection_reason && (
+                                                <div className="rejection-reason">
+                                                    <strong>Rejection Reason:</strong> {order.rejection_reason}
+                                                </div>
+                                            )}
                                             <div style={{ textAlign: 'right' }}>
                                                 <button className="order-card-button" onClick={() => setSelectedOrder(order)}>View Details</button>
                                             </div>
@@ -2261,94 +2725,100 @@
                             </div>
 
                             {/* Order Detail Modal */}
-                            {selectedOrder && (
+                            {selectedOrder && (() => {
+                                const statusMap = { '주문접수': 'Pending', '주문승인': 'Approved', '반려': 'Rejected' };
+                                const statusClassMap = { '주문접수': 'status-pending', '주문승인': 'status-approved', '반려': 'status-rejected' };
+                                return (
                                 <div className="modal-backdrop" onClick={() => setSelectedOrder(null)}>
-                                    <div className="modal-content" style={{ maxWidth: '800px', maxHeight: '90vh', overflow: 'auto' }} onClick={e => e.stopPropagation()}>
+                                    <div className="modal-content" onClick={e => e.stopPropagation()}>
                                         <div className="modal-header">
-                                            <h3>Order Details</h3>
-                                            <button onClick={() => setSelectedOrder(null)} style={{ fontSize: '1.5rem', background: 'none', border: 'none', cursor: 'pointer' }}>&times;</button>
+                                            <h2 className="modal-title">{selectedOrder.order_id}</h2>
+                                            <button className="modal-close" onClick={() => setSelectedOrder(null)}>&times;</button>
                                         </div>
-                                        <div style={{ padding: '1.5rem' }}>
-                                            {/* Order Info Grid */}
-                                            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '1rem', padding: '1rem', background: '#f5f5f5', borderRadius: '8px', marginBottom: '1.5rem' }}>
-                                                <div>
-                                                    <div style={{ fontSize: '11px', color: '#888', marginBottom: '4px' }}>Order Number</div>
-                                                    <div style={{ fontFamily: 'inherit', fontWeight: 600 }}>{selectedOrder.order_id}</div>
+                                        <div className="modal-body">
+                                            <div className="order-detail-info">
+                                                <div className="order-info-item">
+                                                    <div className="order-info-label">Order Number</div>
+                                                    <div className="order-info-value">{selectedOrder.order_id}</div>
                                                 </div>
-                                                <div>
-                                                    <div style={{ fontSize: '11px', color: '#888', marginBottom: '4px' }}>Order Date</div>
-                                                    <div style={{ fontSize: '14px' }}>{new Date(selectedOrder.created_at).toLocaleString('en-US')}</div>
+                                                <div className="order-info-item">
+                                                    <div className="order-info-label">Order Date</div>
+                                                    <div className="order-info-value">{formatDateTime(selectedOrder.created_at)}</div>
                                                 </div>
-                                                <div>
-                                                    <div style={{ fontSize: '11px', color: '#888', marginBottom: '4px' }}>Status</div>
-                                                    <span className={`status-badge ${{
-                                                        '주문접수': 'status-pending',
-                                                        '주문승인': 'status-approved',
-                                                        '반려': 'status-rejected'
-                                                    }[selectedOrder.status]}`}>
-                                                        {{'주문접수': 'Pending', '주문승인': 'Approved', '반려': 'Rejected'}[selectedOrder.status]}
-                                                    </span>
+                                                <div className="order-info-item">
+                                                    <div className="order-info-label">Status</div>
+                                                    <div className="order-info-value">
+                                                        <span className={`status-badge ${statusClassMap[selectedOrder.status]}`}>
+                                                            {statusMap[selectedOrder.status]}
+                                                        </span>
+                                                    </div>
                                                 </div>
-                                                <div>
-                                                    <div style={{ fontSize: '11px', color: '#888', marginBottom: '4px' }}>Total Amount</div>
-                                                    <div style={{ fontWeight: 700 }}>{formatUSD(selectedOrder.total_amount)}</div>
+                                                <div className="order-info-item">
+                                                    <div className="order-info-label">Total Quantity</div>
+                                                    <div className="order-info-value">{selectedOrder.total_qty} units</div>
+                                                </div>
+                                                <div className="order-info-item">
+                                                    <div className="order-info-label">Total Amount</div>
+                                                    <div className="order-info-value">{formatUSD(selectedOrder.total_amount)}</div>
+                                                </div>
+                                                <div className="order-info-item">
+                                                    <div className="order-info-label">Last Updated</div>
+                                                    <div className="order-info-value">{formatDateTime(selectedOrder.updated_at)}</div>
                                                 </div>
                                             </div>
 
                                             {selectedOrder.rejection_reason && (
-                                                <div style={{ padding: '1rem', background: '#fef2f2', border: '1px solid #fecaca', borderRadius: '6px', marginBottom: '1.5rem' }}>
-                                                    <div style={{ fontSize: '14px', fontWeight: 600, color: '#991b1b', marginBottom: '4px' }}>Rejection Reason:</div>
-                                                    <div style={{ fontSize: '14px', color: '#b91c1c' }}>{selectedOrder.rejection_reason}</div>
+                                                <div className="rejection-reason">
+                                                    <strong>Rejection Reason:</strong> {selectedOrder.rejection_reason}
                                                 </div>
                                             )}
 
-                                            {/* Order Items Table */}
-                                            <h4 style={{ fontSize: '14px', fontWeight: 600, marginBottom: '12px' }}>Order Items</h4>
-                                            <table style={{ width: '100%', borderCollapse: 'collapse', border: '1px solid var(--color-border)' }}>
+                                            <table className="order-items-table">
                                                 <thead>
-                                                    <tr style={{ background: '#f5f5f5' }}>
-                                                        <th style={{ padding: '10px 12px', textAlign: 'left', fontSize: '12px', fontWeight: 500, color: '#888' }}>Product</th>
-                                                        <th style={{ padding: '10px 12px', textAlign: 'left', fontSize: '12px', fontWeight: 500, color: '#888' }}>Style No.</th>
-                                                        <th style={{ padding: '10px 12px', textAlign: 'left', fontSize: '12px', fontWeight: 500, color: '#888' }}>Size</th>
-                                                        <th style={{ padding: '10px 12px', textAlign: 'left', fontSize: '12px', fontWeight: 500, color: '#888' }}>Qty</th>
-                                                        <th style={{ padding: '10px 12px', textAlign: 'left', fontSize: '12px', fontWeight: 500, color: '#888' }}>Unit Price</th>
-                                                        <th style={{ padding: '10px 12px', textAlign: 'left', fontSize: '12px', fontWeight: 500, color: '#888' }}>Subtotal</th>
+                                                    <tr>
+                                                        <th>Product</th>
+                                                        <th>Style No.</th>
+                                                        <th>Color / Size</th>
+                                                        <th>Qty</th>
+                                                        <th>Unit Price</th>
+                                                        <th>Subtotal</th>
                                                     </tr>
                                                 </thead>
                                                 <tbody>
-                                                    {MOCK_ORDER_ITEMS.map((item, idx) => (
-                                                        <tr key={idx} style={{ borderTop: '1px solid var(--color-divider)' }}>
-                                                            <td style={{ padding: '10px 12px' }}>
+                                                    {(selectedOrder.items || []).map((item, idx) => (
+                                                        <tr key={idx}>
+                                                            <td>
                                                                 <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-                                                                    <img src={item.product.images[0]} alt={item.product.name} style={{ width: '40px', height: '40px', objectFit: 'cover', background: '#f5f5f5' }} />
-                                                                    <span style={{ fontSize: '14px' }}>{item.product.name}</span>
+                                                                    <img src={item.product.images[0]} alt={item.product.name} style={{ width: '40px', height: '40px', objectFit: 'cover', background: 'var(--color-bg-low)' }} />
+                                                                    <span>{item.product.name}</span>
                                                                 </div>
                                                             </td>
-                                                            <td style={{ padding: '10px 12px', fontSize: '14px', fontFamily: 'inherit' }}>{item.product.style_no}</td>
-                                                            <td style={{ padding: '10px 12px', fontSize: '14px' }}>{item.size}</td>
-                                                            <td style={{ padding: '10px 12px', fontSize: '14px' }}>{item.qty}</td>
-                                                            <td style={{ padding: '10px 12px', fontSize: '14px', fontFamily: 'inherit' }}>${item.unit_price.toFixed(2)}</td>
-                                                            <td style={{ padding: '10px 12px', fontSize: '14px', fontFamily: 'inherit' }}>${item.subtotal.toFixed(2)}</td>
+                                                            <td>{item.product.style_no}</td>
+                                                            <td>{item.color ? `${item.color} / ${item.size}` : item.size}</td>
+                                                            <td>{item.qty}</td>
+                                                            <td>${item.unit_price.toFixed(2)}</td>
+                                                            <td>${item.subtotal.toFixed(2)}</td>
                                                         </tr>
                                                     ))}
                                                 </tbody>
                                                 <tfoot>
-                                                    <tr style={{ background: '#f5f5f5', borderTop: '1px solid var(--color-divider)' }}>
-                                                        <td colSpan="3" style={{ padding: '10px 12px', textAlign: 'right', fontSize: '14px', fontWeight: 600 }}>Total</td>
-                                                        <td style={{ padding: '10px 12px', fontSize: '14px', fontWeight: 600 }}>{selectedOrder.total_qty}</td>
-                                                        <td style={{ padding: '10px 12px' }}></td>
-                                                        <td style={{ padding: '10px 12px', fontSize: '14px', fontFamily: 'inherit', fontWeight: 600 }}>{formatUSD(selectedOrder.total_amount)}</td>
+                                                    <tr>
+                                                        <td colSpan="3" style={{ textAlign: 'right' }}>Total</td>
+                                                        <td>{selectedOrder.total_qty}</td>
+                                                        <td></td>
+                                                        <td>{formatUSD(selectedOrder.total_amount)}</td>
                                                     </tr>
                                                 </tfoot>
                                             </table>
 
-                                            <div style={{ display: 'flex', justifyContent: 'flex-end', marginTop: '1.5rem' }}>
+                                            <div className="order-modal-actions">
                                                 <button className="order-card-button" onClick={() => setSelectedOrder(null)}>Close</button>
                                             </div>
                                         </div>
                                     </div>
                                 </div>
-                            )}
+                                );
+                            })()}
                         </div>
                     )}
                 </div>
