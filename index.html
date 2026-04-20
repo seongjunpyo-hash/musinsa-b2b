@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MUSINSA GLOBAL B2B</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.min.css" />
+    <link rel="stylesheet" href="design-system/layer-desktop.css" />
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html, body {
+            height: 100%;
+            font-family: 'Pretendard Variable', Pretendard, system-ui, -apple-system, sans-serif;
+            color: #000;
+            background: #000;
+        }
+
+        .landing {
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 2rem;
+        }
+
+        .branding {
+            text-align: center;
+            margin-bottom: 4rem;
+        }
+
+        .branding-logo {
+            font-size: 3rem;
+            font-weight: 700;
+            letter-spacing: 0.3em;
+            color: #fff;
+            margin-bottom: 0.5rem;
+        }
+
+        .branding-sub {
+            font-size: 0.8125rem;
+            letter-spacing: 0.4em;
+            color: rgba(255, 255, 255, 0.4);
+            text-transform: uppercase;
+        }
+
+        .portal-cards {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 2rem;
+            max-width: 800px;
+            width: 100%;
+        }
+
+        .portal-card {
+            background: #fff;
+            padding: 3rem 2.5rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+            text-decoration: none;
+            color: #000;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .portal-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 20px 60px rgba(255, 255, 255, 0.1);
+        }
+
+        .portal-card-icon {
+            width: 48px;
+            height: 48px;
+            margin-bottom: 2rem;
+        }
+
+        .portal-card-label {
+            font-size: 0.65rem;
+            letter-spacing: 0.15em;
+            text-transform: uppercase;
+            color: #888;
+            margin-bottom: 0.5rem;
+        }
+
+        .portal-card-title {
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin-bottom: 0.75rem;
+            letter-spacing: -0.01em;
+        }
+
+        .portal-card-desc {
+            font-size: 0.875rem;
+            color: #666;
+            line-height: 1.6;
+            margin-bottom: 2.5rem;
+            flex: 1;
+        }
+
+        .portal-card-arrow {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 0.8125rem;
+            font-weight: 600;
+            letter-spacing: 0.05em;
+            text-transform: uppercase;
+            color: #000;
+            transition: gap 0.2s ease;
+        }
+
+        .portal-card:hover .portal-card-arrow {
+            gap: 0.75rem;
+        }
+
+        .portal-card-arrow svg {
+            width: 16px;
+            height: 16px;
+        }
+
+        .footer-text {
+            margin-top: 4rem;
+            font-size: 0.75rem;
+            color: rgba(255, 255, 255, 0.25);
+            letter-spacing: 0.05em;
+        }
+
+        @media (max-width: 640px) {
+            .portal-cards {
+                grid-template-columns: 1fr;
+            }
+            .branding-logo {
+                font-size: 2rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="landing">
+        <div class="branding">
+            <div class="branding-logo">MUSINSA</div>
+            <div class="branding-sub">Global B2B Ordering System</div>
+        </div>
+
+        <div class="portal-cards">
+            <a class="portal-card" href="./b2b-partner-portal.html">
+                <svg class="portal-card-icon" viewBox="0 0 48 48" fill="none" stroke="#000" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                    <rect x="6" y="6" width="36" height="36" rx="2"/>
+                    <path d="M6 18h36"/>
+                    <path d="M18 18v24"/>
+                    <circle cx="31" cy="30" r="4"/>
+                    <path d="M31 34v4"/>
+                </svg>
+                <div class="portal-card-label">For Overseas Partners</div>
+                <div class="portal-card-title">Partner Portal</div>
+                <div class="portal-card-desc">Browse products, select sizes and quantities, and place wholesale orders. Manage your order history and track deliveries.</div>
+                <div class="portal-card-arrow">
+                    Enter Portal
+                    <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M3 8h10M9 4l4 4-4 4"/>
+                    </svg>
+                </div>
+            </a>
+
+            <a class="portal-card" href="./b2b-admin-console.html">
+                <svg class="portal-card-icon" viewBox="0 0 48 48" fill="none" stroke="#000" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                    <rect x="6" y="6" width="36" height="36" rx="2"/>
+                    <path d="M6 16h36"/>
+                    <path d="M14 24h8M14 30h12M14 36h6"/>
+                    <circle cx="34" cy="30" r="6"/>
+                    <path d="M34 27v3h3"/>
+                </svg>
+                <div class="portal-card-label">Internal Management</div>
+                <div class="portal-card-title">Admin Console</div>
+                <div class="portal-card-desc">Manage products, process orders, oversee partner accounts, and configure system settings for the B2B platform.</div>
+                <div class="portal-card-arrow">
+                    Enter Console
+                    <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M3 8h10M9 4l4 4-4 4"/>
+                    </svg>
+                </div>
+            </a>
+        </div>
+
+        <div class="footer-text">&copy; 2026 MUSINSA Global. All rights reserved.</div>
+    </div>
+</body>
+</html>

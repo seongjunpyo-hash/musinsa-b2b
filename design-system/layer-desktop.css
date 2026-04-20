@@ -1,0 +1,513 @@
+/**
+ * ============================================================
+ * MUSINSA LayerDesktop Design System v2.14.0
+ * ============================================================
+ * Extracted from Figma: LayerDesktop library
+ * Source: figma.com/design/nm6vlOA9stZAf03Q1LvsHa/LayerDesktop
+ *
+ * Usage:
+ *   <link rel="stylesheet" href="layer-desktop.css" />
+ *   or
+ *   @import url('layer-desktop.css');
+ *
+ * Requires Pretendard font:
+ *   <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.min.css" />
+ * ============================================================
+ */
+
+
+/* ------------------------------------------------------------ */
+/* 1. PRIMITIVE TOKENS                                          */
+/* ------------------------------------------------------------ */
+
+:root {
+
+  /* ---- Gray Scale ---- */
+  --ld-gray-0:   #ffffff;
+  --ld-gray-100: #f5f5f5;
+  --ld-gray-200: #ebebeb;
+  --ld-gray-300: #e0e0e0;
+  --ld-gray-500: #8a8a8a;
+  --ld-gray-600: #666666;
+  --ld-gray-800: #1a1a1a;
+  --ld-gray-900: #000000;
+
+  /* ---- Gray Alpha ---- */
+  --ld-gray-alpha-900-20: rgba(0, 0, 0, 0.2);
+  --ld-gray-alpha-900-60: rgba(0, 0, 0, 0.6);
+  --ld-gray-alpha-900-80: rgba(0, 0, 0, 0.8);
+  --ld-gray-alpha-500-10: rgba(138, 138, 138, 0.1);
+
+  /* ---- Blue (Accent) ---- */
+  --ld-blue-500:          #245eff;
+  --ld-blue-alpha-500-10: rgba(36, 94, 255, 0.1);
+  --ld-blue-alpha-500-90: rgba(36, 94, 255, 0.9);
+
+  /* ---- Red (Critical) ---- */
+  --ld-red-400:          #ff5e56;
+  --ld-red-500:          #f31110;
+  --ld-red-alpha-500-10: rgba(243, 17, 16, 0.1);
+
+  /* ---- Yellow (Warning) ---- */
+  --ld-yellow-400:          #ffa12a;
+  --ld-yellow-500:          #fa9200;
+  --ld-yellow-alpha-500-10: rgba(250, 146, 0, 0.1);
+
+  /* ---- Green (Success) ---- */
+  --ld-green-400:          #27ba1d;
+  --ld-green-500:          #1ea514;
+  --ld-green-alpha-500-10: rgba(30, 165, 20, 0.1);
+
+
+  /* ---------------------------------------------------------- */
+  /* 2. SEMANTIC TOKENS                                         */
+  /* ---------------------------------------------------------- */
+
+  /* ---- Foreground (Text / Icon) ---- */
+  --ld-fg:             var(--ld-gray-900);
+  --ld-fg-low:         var(--ld-gray-600);
+  --ld-fg-lower:       var(--ld-gray-500);
+  --ld-fg-lowest:      #cccccc;
+  --ld-fg-disabled:    var(--ld-gray-alpha-900-20);
+  --ld-fg-on-contrast: var(--ld-gray-0);
+  --ld-fg-inverse:     var(--ld-gray-0);
+  --ld-fg-neutral:     var(--ld-gray-800);
+  --ld-fg-accent:      var(--ld-blue-500);
+  --ld-fg-success:     var(--ld-green-500);
+  --ld-fg-warning:     var(--ld-yellow-500);
+  --ld-fg-critical:    var(--ld-red-500);
+
+  /* ---- Background ---- */
+  --ld-bg:             var(--ld-gray-0);
+  --ld-bg-low:         var(--ld-gray-100);
+  --ld-bg-contrast:    var(--ld-gray-900);
+  --ld-bg-disabled:    var(--ld-gray-alpha-500-10);
+  --ld-bg-transparent: var(--ld-gray-alpha-900-60);
+  --ld-bg-neutral:     var(--ld-gray-800);
+  --ld-bg-neutral-low: var(--ld-gray-200);
+  --ld-bg-accent:      var(--ld-blue-500);
+  --ld-bg-accent-low:  var(--ld-blue-alpha-500-10);
+  --ld-bg-success:     var(--ld-green-500);
+  --ld-bg-success-low: var(--ld-green-alpha-500-10);
+  --ld-bg-warning:     var(--ld-yellow-500);
+  --ld-bg-warning-low: var(--ld-yellow-alpha-500-10);
+  --ld-bg-critical:    var(--ld-red-500);
+  --ld-bg-critical-low:var(--ld-red-alpha-500-10);
+
+  /* ---- Border / Stroke ---- */
+  --ld-border:             var(--ld-gray-300);
+  --ld-border-low:         var(--ld-gray-200);
+  --ld-border-strong:      var(--ld-gray-900);
+  --ld-border-disabled:    var(--ld-gray-200);
+  --ld-border-neutral:     var(--ld-gray-800);
+  --ld-border-neutral-low: var(--ld-gray-200);
+  --ld-border-accent:      var(--ld-blue-500);
+  --ld-border-success:     var(--ld-green-500);
+  --ld-border-success-low: var(--ld-green-400);
+  --ld-border-warning:     var(--ld-yellow-500);
+  --ld-border-warning-low: var(--ld-yellow-400);
+  --ld-border-critical:    var(--ld-red-500);
+  --ld-border-critical-low:var(--ld-red-400);
+  --ld-border-width:       1px;
+  --ld-border-bold-width:  2px;
+
+  /* ---- Divider ---- */
+  --ld-divider:     var(--ld-gray-200);
+  --ld-divider-low: var(--ld-gray-alpha-500-10);
+
+
+  /* ---------------------------------------------------------- */
+  /* 3. BUTTON TOKENS                                           */
+  /* ---------------------------------------------------------- */
+
+  /* Primary (Filled) */
+  --ld-btn-primary-bg:          var(--ld-bg-contrast);
+  --ld-btn-primary-bg-hover:    var(--ld-gray-alpha-900-80);
+  --ld-btn-primary-bg-disabled: var(--ld-bg-disabled);
+  --ld-btn-primary-fg:          var(--ld-fg-on-contrast);
+  --ld-btn-primary-fg-disabled: var(--ld-fg-disabled);
+
+  /* Primary (Outlined) */
+  --ld-btn-primary-outlined-bg:       var(--ld-bg);
+  --ld-btn-primary-outlined-bg-hover: var(--ld-gray-alpha-500-10);
+  --ld-btn-primary-outlined-border:   var(--ld-gray-900);
+  --ld-btn-primary-outlined-fg:       var(--ld-fg);
+
+  /* Secondary (Filled) */
+  --ld-btn-secondary-bg:          var(--ld-bg-low);
+  --ld-btn-secondary-bg-hover:    var(--ld-gray-200);
+  --ld-btn-secondary-bg-disabled: var(--ld-bg-disabled);
+  --ld-btn-secondary-fg:          var(--ld-fg);
+  --ld-btn-secondary-fg-disabled: var(--ld-fg-disabled);
+
+  /* Negative (Critical) */
+  --ld-btn-negative-bg:       var(--ld-bg);
+  --ld-btn-negative-border:   var(--ld-red-500);
+  --ld-btn-negative-fg:       var(--ld-red-500);
+
+  /* Accent */
+  --ld-btn-accent-bg:         var(--ld-blue-500);
+  --ld-btn-accent-bg-hover:   var(--ld-blue-alpha-500-90);
+  --ld-btn-accent-fg:         var(--ld-fg-on-contrast);
+
+
+  /* ---------------------------------------------------------- */
+  /* 4. TYPOGRAPHY TOKENS                                       */
+  /* ---------------------------------------------------------- */
+
+  --ld-font-family: 'Pretendard Variable', Pretendard, -apple-system, BlinkMacSystemFont, system-ui, Roboto, 'Helvetica Neue', 'Segoe UI', 'Apple SD Gothic Neo', 'Noto Sans KR', 'Malgun Gothic', 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', sans-serif;
+
+  /* Font Weight */
+  --ld-font-weight-regular: 400;
+  --ld-font-weight-medium:  500;
+  --ld-font-weight-bold:    700;
+
+  /* Font Size Scale */
+  --ld-font-size-xs:  12px;
+  --ld-font-size-sm:  13px;
+  --ld-font-size-md:  14px;
+  --ld-font-size-lg:  15px;
+  --ld-font-size-xl:  16px;
+  --ld-font-size-2xl: 18px;
+  --ld-font-size-3xl: 20px;
+  --ld-font-size-4xl: 24px;
+
+  /* Line Height */
+  --ld-line-height-xs:  1.5;     /* 150% — 13px text */
+  --ld-line-height-sm:  1.4;     /* 140% — 14px text */
+  --ld-line-height-md:  1.36;    /* 136% — 15px text */
+  --ld-line-height-lg:  1.5;     /* body default */
+
+
+  /* ---------------------------------------------------------- */
+  /* 5. SPACING TOKENS                                          */
+  /* ---------------------------------------------------------- */
+
+  --ld-space-2:  2px;
+  --ld-space-4:  4px;
+  --ld-space-6:  6px;
+  --ld-space-8:  8px;
+  --ld-space-10: 10px;
+  --ld-space-12: 12px;
+  --ld-space-16: 16px;
+  --ld-space-20: 20px;
+  --ld-space-24: 24px;
+  --ld-space-32: 32px;
+  --ld-space-40: 40px;
+  --ld-space-48: 48px;
+
+
+  /* ---------------------------------------------------------- */
+  /* 6. RADIUS TOKENS                                           */
+  /* ---------------------------------------------------------- */
+
+  --ld-radius-none: 0;
+  --ld-radius-sm:   4px;
+  --ld-radius-md:   6px;
+  --ld-radius-lg:   8px;
+  --ld-radius-xl:   12px;
+  --ld-radius-full: 9999px;
+
+
+  /* ---------------------------------------------------------- */
+  /* 7. COMPONENT SIZE TOKENS (Button)                          */
+  /* ---------------------------------------------------------- */
+
+  /* xsmall: height 32px */
+  --ld-btn-xs-height:    32px;
+  --ld-btn-xs-padding-x: 10px;
+  --ld-btn-xs-padding-y: 6px;
+  --ld-btn-xs-font-size: var(--ld-font-size-sm);  /* 13px */
+  --ld-btn-xs-font-weight: var(--ld-font-weight-regular);
+  --ld-btn-xs-gap:       2px;
+
+  /* small: height 36px */
+  --ld-btn-sm-height:    36px;
+  --ld-btn-sm-padding-x: 12px;
+  --ld-btn-sm-padding-y: 8px;
+  --ld-btn-sm-font-size: var(--ld-font-size-md);  /* 14px */
+  --ld-btn-sm-font-weight: var(--ld-font-weight-medium);
+  --ld-btn-sm-gap:       2px;
+
+  /* medium: height 40px */
+  --ld-btn-md-height:    40px;
+  --ld-btn-md-padding-x: 12px;
+  --ld-btn-md-padding-y: 10px;
+  --ld-btn-md-font-size: var(--ld-font-size-md);  /* 14px */
+  --ld-btn-md-font-weight: var(--ld-font-weight-medium);
+  --ld-btn-md-gap:       4px;
+
+  /* large: height 44px */
+  --ld-btn-lg-height:    44px;
+  --ld-btn-lg-padding-x: 16px;
+  --ld-btn-lg-padding-y: 12px;
+  --ld-btn-lg-font-size: var(--ld-font-size-lg);  /* 15px */
+  --ld-btn-lg-font-weight: var(--ld-font-weight-medium);
+  --ld-btn-lg-gap:       4px;
+
+  /* xlarge: height 52px */
+  --ld-btn-xl-height:    52px;
+  --ld-btn-xl-padding-x: 20px;
+  --ld-btn-xl-padding-y: 16px;
+  --ld-btn-xl-font-size: var(--ld-font-size-lg);  /* 15px */
+  --ld-btn-xl-font-weight: var(--ld-font-weight-medium);
+  --ld-btn-xl-gap:       4px;
+
+  /* Button shared */
+  --ld-btn-radius: var(--ld-radius-sm);           /* 4px */
+
+  /* ---------------------------------------------------------- */
+  /* COMPAT: Short aliases for B2B HTML files                   */
+  /* Maps --ld-* tokens → legacy variable names used in HTML    */
+  /* ---------------------------------------------------------- */
+
+  /* Primitive */
+  --gray-0:   var(--ld-gray-0);
+  --gray-100: var(--ld-gray-100);
+  --gray-200: var(--ld-gray-200);
+  --gray-300: var(--ld-gray-300);
+  --gray-500: var(--ld-gray-500);
+  --gray-600: var(--ld-gray-600);
+  --gray-800: var(--ld-gray-800);
+  --gray-900: var(--ld-gray-900);
+
+  /* Semantic */
+  --color-fg:             var(--ld-fg);
+  --color-fg-low:         var(--ld-fg-low);
+  --color-fg-lower:       var(--ld-fg-lower);
+  --color-fg-on-contrast: var(--ld-fg-on-contrast);
+  --color-bg:             var(--ld-bg);
+  --color-bg-low:         var(--ld-bg-low);
+  --color-bg-contrast:    var(--ld-bg-contrast);
+  --color-border:         var(--ld-border);
+  --color-border-low:     var(--ld-border-low);
+  --color-border-strong:  var(--ld-border-strong);
+  --color-divider:        var(--ld-divider);
+
+  /* Status */
+  --color-accent:   var(--ld-fg-accent);
+  --color-critical: var(--ld-fg-critical);
+  --color-warning:  var(--ld-fg-warning);
+  --color-success:  var(--ld-fg-success);
+
+  /* Component shortcuts */
+  --btn-radius:     var(--ld-btn-radius);
+  --btn-font-weight:var(--ld-font-weight-medium);
+  --input-radius:   var(--ld-radius-sm);
+  --input-border:   var(--ld-border);
+  --radius-sm:      var(--ld-radius-sm);
+  --radius-md:      var(--ld-radius-md);
+  --radius-lg:      var(--ld-radius-lg);
+}
+
+
+/* ------------------------------------------------------------ */
+/* 8. BASE RESET & TYPOGRAPHY                                   */
+/* ------------------------------------------------------------ */
+
+.ld-base,
+.ld-base *,
+.ld-base *::before,
+.ld-base *::after {
+  box-sizing: border-box;
+}
+
+.ld-base {
+  font-family: var(--ld-font-family);
+  font-size: var(--ld-font-size-md);
+  font-weight: var(--ld-font-weight-regular);
+  line-height: var(--ld-line-height-lg);
+  color: var(--ld-fg);
+  background: var(--ld-bg);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+
+/* ------------------------------------------------------------ */
+/* 9. UTILITY CLASSES                                           */
+/* ------------------------------------------------------------ */
+
+/* — Text — */
+.ld-text-xs    { font-size: var(--ld-font-size-xs); }
+.ld-text-sm    { font-size: var(--ld-font-size-sm); }
+.ld-text-md    { font-size: var(--ld-font-size-md); }
+.ld-text-lg    { font-size: var(--ld-font-size-lg); }
+.ld-text-xl    { font-size: var(--ld-font-size-xl); }
+.ld-text-2xl   { font-size: var(--ld-font-size-2xl); }
+.ld-text-3xl   { font-size: var(--ld-font-size-3xl); }
+.ld-text-4xl   { font-size: var(--ld-font-size-4xl); }
+
+.ld-font-regular { font-weight: var(--ld-font-weight-regular); }
+.ld-font-medium  { font-weight: var(--ld-font-weight-medium); }
+.ld-font-bold    { font-weight: var(--ld-font-weight-bold); }
+
+/* — Color — */
+.ld-color-fg          { color: var(--ld-fg); }
+.ld-color-fg-low      { color: var(--ld-fg-low); }
+.ld-color-fg-lower    { color: var(--ld-fg-lower); }
+.ld-color-fg-accent   { color: var(--ld-fg-accent); }
+.ld-color-fg-success  { color: var(--ld-fg-success); }
+.ld-color-fg-warning  { color: var(--ld-fg-warning); }
+.ld-color-fg-critical { color: var(--ld-fg-critical); }
+
+.ld-bg-default  { background: var(--ld-bg); }
+.ld-bg-low      { background: var(--ld-bg-low); }
+.ld-bg-contrast { background: var(--ld-bg-contrast); }
+
+
+/* ------------------------------------------------------------ */
+/* 10. COMPONENT CLASSES                                        */
+/* ------------------------------------------------------------ */
+
+/* — Button: Primary (Filled) — */
+.ld-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border: none;
+  border-radius: var(--ld-btn-radius);
+  font-family: var(--ld-font-family);
+  cursor: pointer;
+  transition: background 0.15s, opacity 0.15s;
+  white-space: nowrap;
+  text-decoration: none;
+}
+
+.ld-btn-primary {
+  background: var(--ld-btn-primary-bg);
+  color: var(--ld-btn-primary-fg);
+}
+.ld-btn-primary:hover { background: var(--ld-btn-primary-bg-hover); }
+.ld-btn-primary:disabled {
+  background: var(--ld-btn-primary-bg-disabled);
+  color: var(--ld-btn-primary-fg-disabled);
+  cursor: not-allowed;
+}
+
+/* — Button: Primary (Outlined) — */
+.ld-btn-outlined {
+  background: var(--ld-btn-primary-outlined-bg);
+  color: var(--ld-btn-primary-outlined-fg);
+  border: var(--ld-border-width) solid var(--ld-btn-primary-outlined-border);
+}
+.ld-btn-outlined:hover { background: var(--ld-btn-primary-outlined-bg-hover); }
+
+/* — Button: Secondary — */
+.ld-btn-secondary {
+  background: var(--ld-btn-secondary-bg);
+  color: var(--ld-btn-secondary-fg);
+}
+.ld-btn-secondary:hover { background: var(--ld-btn-secondary-bg-hover); }
+.ld-btn-secondary:disabled {
+  background: var(--ld-btn-secondary-bg-disabled);
+  color: var(--ld-btn-secondary-fg-disabled);
+  cursor: not-allowed;
+}
+
+/* — Button: Negative — */
+.ld-btn-negative {
+  background: var(--ld-btn-negative-bg);
+  color: var(--ld-btn-negative-fg);
+  border: var(--ld-border-width) solid var(--ld-btn-negative-border);
+}
+
+/* — Button: Accent — */
+.ld-btn-accent {
+  background: var(--ld-btn-accent-bg);
+  color: var(--ld-btn-accent-fg);
+}
+.ld-btn-accent:hover { background: var(--ld-btn-accent-bg-hover); }
+
+/* — Button Sizes — */
+.ld-btn-xs {
+  height: var(--ld-btn-xs-height);
+  padding: var(--ld-btn-xs-padding-y) var(--ld-btn-xs-padding-x);
+  font-size: var(--ld-btn-xs-font-size);
+  font-weight: var(--ld-btn-xs-font-weight);
+  gap: var(--ld-btn-xs-gap);
+}
+.ld-btn-sm {
+  height: var(--ld-btn-sm-height);
+  padding: var(--ld-btn-sm-padding-y) var(--ld-btn-sm-padding-x);
+  font-size: var(--ld-btn-sm-font-size);
+  font-weight: var(--ld-btn-sm-font-weight);
+  gap: var(--ld-btn-sm-gap);
+}
+.ld-btn-md {
+  height: var(--ld-btn-md-height);
+  padding: var(--ld-btn-md-padding-y) var(--ld-btn-md-padding-x);
+  font-size: var(--ld-btn-md-font-size);
+  font-weight: var(--ld-btn-md-font-weight);
+  gap: var(--ld-btn-md-gap);
+}
+.ld-btn-lg {
+  height: var(--ld-btn-lg-height);
+  padding: var(--ld-btn-lg-padding-y) var(--ld-btn-lg-padding-x);
+  font-size: var(--ld-btn-lg-font-size);
+  font-weight: var(--ld-btn-lg-font-weight);
+  gap: var(--ld-btn-lg-gap);
+}
+.ld-btn-xl {
+  height: var(--ld-btn-xl-height);
+  padding: var(--ld-btn-xl-padding-y) var(--ld-btn-xl-padding-x);
+  font-size: var(--ld-btn-xl-font-size);
+  font-weight: var(--ld-btn-xl-font-weight);
+  gap: var(--ld-btn-xl-gap);
+}
+
+/* — Input — */
+.ld-input {
+  width: 100%;
+  padding: var(--ld-btn-md-padding-y) var(--ld-btn-md-padding-x);
+  border: var(--ld-border-width) solid var(--ld-border);
+  border-radius: var(--ld-radius-sm);
+  background: var(--ld-bg);
+  color: var(--ld-fg);
+  font-family: var(--ld-font-family);
+  font-size: var(--ld-font-size-md);
+  line-height: var(--ld-line-height-sm);
+  transition: border-color 0.15s;
+}
+.ld-input::placeholder { color: var(--ld-fg-lower); }
+.ld-input:focus {
+  outline: none;
+  border-color: var(--ld-border-strong);
+}
+.ld-input:disabled {
+  background: var(--ld-bg-disabled);
+  color: var(--ld-fg-disabled);
+  cursor: not-allowed;
+}
+
+/* — Badge / Tag — */
+.ld-badge {
+  display: inline-flex;
+  align-items: center;
+  padding: var(--ld-space-4) var(--ld-space-8);
+  border-radius: var(--ld-radius-sm);
+  font-size: var(--ld-font-size-xs);
+  font-weight: var(--ld-font-weight-medium);
+  line-height: 1;
+}
+.ld-badge-default  { background: var(--ld-bg-low);          color: var(--ld-fg); }
+.ld-badge-accent   { background: var(--ld-bg-accent-low);   color: var(--ld-fg-accent); }
+.ld-badge-success  { background: var(--ld-bg-success-low);  color: var(--ld-fg-success); }
+.ld-badge-warning  { background: var(--ld-bg-warning-low);  color: var(--ld-fg-warning); }
+.ld-badge-critical { background: var(--ld-bg-critical-low); color: var(--ld-fg-critical); }
+.ld-badge-contrast { background: var(--ld-bg-contrast);     color: var(--ld-fg-on-contrast); }
+
+/* — Divider — */
+.ld-divider {
+  border: none;
+  border-top: var(--ld-border-width) solid var(--ld-divider);
+  margin: var(--ld-space-16) 0;
+}
+
+/* — Card — */
+.ld-card {
+  background: var(--ld-bg);
+  border: var(--ld-border-width) solid var(--ld-border);
+  border-radius: var(--ld-radius-md);
+  padding: var(--ld-space-24);
+}

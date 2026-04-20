@@ -1,0 +1,2106 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>MUSINSA Admin Console</title>
+  <script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+  <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+  <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.min.css" />
+  <link rel="stylesheet" href="design-system/layer-desktop.css" />
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    html, body {
+      font-family: 'Pretendard Variable', Pretendard, system-ui, -apple-system, sans-serif;
+      background: var(--color-bg);
+      color: var(--color-fg);
+    }
+
+    body {
+      line-height: 1.5;
+    }
+
+    a {
+      color: inherit;
+      text-decoration: none;
+    }
+
+    button {
+      font-family: 'Pretendard Variable', Pretendard, system-ui, -apple-system, sans-serif;
+      cursor: pointer;
+      border: none;
+    }
+
+    input, textarea, select {
+      font-family: 'Pretendard Variable', Pretendard, system-ui, -apple-system, sans-serif;
+    }
+
+    /* Login Page */
+    .login-container {
+      display: grid;
+      grid-template-columns: 60% 40%;
+      min-height: 100vh;
+    }
+
+    .login-left {
+      background: #000;
+      color: #fff;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      padding: 2rem;
+    }
+
+    .login-branding {
+      text-align: center;
+    }
+
+    .login-branding-main {
+      font-size: 3.5rem;
+      font-weight: 700;
+      letter-spacing: 0.3em;
+      margin-bottom: 0.5rem;
+    }
+
+    .login-branding-sub {
+      font-size: 0.875rem;
+      letter-spacing: 0.4em;
+      opacity: 0.6;
+    }
+
+    .login-right {
+      background: #fff;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      padding: 3rem 2rem;
+    }
+
+    .login-form-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      margin-bottom: 2rem;
+    }
+
+    .language-toggle {
+      display: flex;
+      gap: 0.5rem;
+      background: var(--color-bg-low);
+      padding: 0.25rem;
+      border-radius: 2px;
+    }
+
+    .lang-btn {
+      padding: 0.5rem 1rem;
+      background: transparent;
+      border: none;
+      font-size: 0.875rem;
+      cursor: pointer;
+      color: var(--color-fg-low);
+    }
+
+    .lang-btn.active {
+      background: #fff;
+      color: #000;
+    }
+
+    .login-form-content h2 {
+      font-size: 1.5rem;
+      font-weight: 700;
+      margin-bottom: 0.5rem;
+    }
+
+    .login-form-content p {
+      color: var(--color-fg-low);
+      margin-bottom: 2rem;
+      font-size: 0.875rem;
+    }
+
+    .login-label {
+      font-size: 0.75rem;
+      letter-spacing: 0.05em;
+      font-weight: 600;
+      color: #000;
+      margin-top: 1.5rem;
+      margin-bottom: 0.5rem;
+      display: block;
+    }
+
+    .login-label:first-of-type {
+      margin-top: 0;
+    }
+
+    .login-label-internal {
+      font-size: 0.65rem;
+      letter-spacing: 0.06em;
+      color: #000;
+      margin-bottom: 1rem;
+      padding-bottom: 0.75rem;
+      border-bottom: 1px solid var(--color-border-strong);
+      display: block;
+    }
+
+    .login-input {
+      width: 100%;
+      padding: 10px 12px;
+      border: 1px solid var(--color-border);
+      background: var(--color-bg);
+      color: var(--color-fg);
+      margin-bottom: 1rem;
+      font-size: 14px;
+      border-radius: var(--input-radius);
+    }
+
+    .login-input:focus {
+      outline: none;
+      border-color: var(--color-border-strong);
+    }
+
+    .login-submit {
+      width: 100%;
+      padding: 12px 16px;
+      background: var(--color-bg-contrast);
+      color: var(--color-fg-on-contrast);
+      font-size: 15px;
+      font-weight: var(--btn-font-weight);
+      letter-spacing: 0;
+      margin-top: 1rem;
+      border-radius: var(--btn-radius);
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+
+    .login-submit:hover {
+      background: var(--gray-800);
+    }
+
+    .login-demo {
+      font-size: 0.75rem;
+      color: var(--color-fg-low);
+      margin-top: 1rem;
+      line-height: 1.6;
+    }
+
+    /* Header */
+    .header {
+      height: 3.5rem;
+      background: var(--color-bg);
+      border-bottom: 1px solid var(--color-border-low);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 2rem;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+
+    .header-left {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+    }
+
+    .header-brand {
+      font-size: 1.125rem;
+      font-weight: 700;
+      letter-spacing: 0.05em;
+    }
+
+    .header-badge {
+      background: var(--color-bg-low);
+      color: #000;
+      font-size: 0.65rem;
+      padding: 0.25rem 0.5rem;
+      letter-spacing: 0.05em;
+      font-weight: 600;
+    }
+
+    .header-center {
+      position: absolute;
+      left: 50%;
+      transform: translateX(-50%);
+      display: flex;
+      align-items: center;
+    }
+
+    .header-nav {
+      display: flex;
+      gap: 2rem;
+      margin-left: 0;
+    }
+
+    .header-nav-item {
+      color: var(--color-fg-low);
+      font-size: 0.95rem;
+      cursor: pointer;
+      transition: color 0.2s;
+      position: relative;
+    }
+
+    .header-nav-item.active {
+      color: #000;
+      font-weight: 600;
+    }
+
+    .header-nav-item.active::after {
+      content: '';
+      position: absolute;
+      bottom: -0.75rem;
+      left: 0;
+      right: 0;
+      height: 2px;
+      background: #000;
+    }
+
+    .header-right {
+      display: flex;
+      align-items: center;
+      gap: 1.5rem;
+    }
+
+    .header-admin {
+      color: var(--color-fg-low);
+      font-size: 0.95rem;
+    }
+
+    .header-logout {
+      color: #000;
+      font-size: 0.95rem;
+      cursor: pointer;
+      text-decoration: underline;
+      transition: color 0.2s;
+    }
+
+    .header-logout:hover {
+      color: #666;
+    }
+
+    /* Main Content */
+    .main-content {
+      padding: 2rem;
+      max-width: 100%;
+    }
+
+    .page-title {
+      font-size: 2rem;
+      font-weight: 700;
+      margin-bottom: 0.5rem;
+    }
+
+    .page-subtitle {
+      color: var(--color-fg-low);
+      font-size: 0.95rem;
+      margin-bottom: 2rem;
+    }
+
+    /* Dashboard */
+    .dashboard-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 1.5rem;
+      margin-bottom: 2rem;
+    }
+
+    .stat-card {
+      background: var(--color-bg);
+      border: 1px solid var(--color-border);
+      padding: 1.5rem;
+      min-height: 140px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      border-radius: var(--radius-md);
+    }
+
+    .stat-card-value {
+      font-size: 2rem;
+      font-weight: 700;
+      margin-bottom: 0.5rem;
+    }
+
+    .stat-card-label {
+      font-size: 0.75rem;
+      letter-spacing: 0.05em;
+      color: #000;
+      margin-bottom: 0.5rem;
+    }
+
+    .stat-card-subtitle {
+      font-size: 0.85rem;
+      color: var(--color-fg-low);
+    }
+
+    .stat-card.amber .stat-card-value {
+      color: #d97706;
+    }
+
+    .stat-card.green .stat-card-value {
+      color: #16a34a;
+    }
+
+    .stat-card-status {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      margin-top: 0.5rem;
+    }
+
+    .status-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: #16a34a;
+    }
+
+    .quick-actions-grid {
+      display: grid;
+      grid-template-columns: 2fr 1fr;
+      gap: 1.5rem;
+    }
+
+    .quick-actions-card {
+      background: #fff;
+      border: 1px solid var(--color-border);
+      padding: 1.5rem;
+    }
+
+    .quick-actions-title {
+      font-size: 1rem;
+      font-weight: 700;
+      margin-bottom: 1.5rem;
+    }
+
+    .quick-action-item {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 0.75rem 0;
+      border-bottom: 1px solid #f5f5f5;
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+
+    .quick-action-item:hover {
+      background: var(--color-bg-low);
+      padding: 0.75rem 0.5rem;
+      margin: 0 -0.5rem;
+    }
+
+    .quick-action-item:last-child {
+      border-bottom: none;
+    }
+
+    .quick-action-text {
+      font-size: 0.95rem;
+    }
+
+    .quick-action-arrow {
+      color: var(--color-fg-low);
+    }
+
+    .recent-orders-list {
+      display: flex;
+      flex-direction: column;
+      gap: 0.75rem;
+    }
+
+    .order-item {
+      padding: 0.75rem 0;
+      border-bottom: 1px solid #f5f5f5;
+      font-size: 0.85rem;
+    }
+
+    .order-item:last-child {
+      border-bottom: none;
+    }
+
+    .order-id {
+      font-weight: 600;
+      margin-bottom: 0.25rem;
+    }
+
+    .order-meta {
+      color: var(--color-fg-low);
+      font-size: 0.8rem;
+    }
+
+    /* Products Page */
+    .products-actions {
+      display: flex;
+      gap: 1rem;
+      margin-bottom: 2rem;
+    }
+
+    .btn-primary {
+      background: var(--color-bg-contrast);
+      color: var(--color-fg-on-contrast);
+      padding: 10px 16px;
+      font-size: 14px;
+      font-weight: var(--btn-font-weight);
+      border-radius: var(--btn-radius);
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+
+    .btn-primary:hover {
+      background: var(--gray-800);
+    }
+
+    .btn-secondary {
+      background: var(--color-bg-low);
+      color: var(--color-fg);
+      padding: 10px 16px;
+      font-size: 14px;
+      font-weight: var(--btn-font-weight);
+      border-radius: var(--btn-radius);
+      cursor: pointer;
+      transition: background 0.2s;
+      border: 1px solid var(--color-border);
+    }
+
+    .btn-secondary:hover {
+      background: var(--color-border-low);
+    }
+
+    .search-input {
+      width: 100%;
+      max-width: 400px;
+      padding: 10px 12px;
+      border: 1px solid var(--color-border);
+      background: var(--color-bg);
+      color: var(--color-fg);
+      margin-bottom: 1.5rem;
+      font-size: 14px;
+      border-radius: var(--input-radius);
+    }
+
+    .search-input::placeholder {
+      color: var(--color-fg-low);
+    }
+
+    .products-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-bottom: 2rem;
+      font-size: 0.9rem;
+    }
+
+    .products-table thead {
+      background: var(--color-bg-low);
+      border-top: 1px solid var(--color-divider);
+      border-bottom: 1px solid var(--color-divider);
+    }
+
+    .products-table th {
+      padding: 0.75rem;
+      text-align: left;
+      font-weight: 600;
+      font-size: 0.85rem;
+      letter-spacing: 0.02em;
+      color: #000;
+    }
+
+    .products-table td {
+      padding: 0.75rem;
+      border-bottom: 1px solid var(--color-divider);
+      vertical-align: middle;
+    }
+
+    .products-table tbody tr:hover {
+      background: var(--color-bg-low);
+    }
+
+    .product-image {
+      width: 40px;
+      height: 40px;
+      object-fit: cover;
+      border: 1px solid var(--color-border);
+    }
+
+    .product-link {
+      color: #0066cc;
+      cursor: pointer;
+      font-weight: 500;
+    }
+
+    .product-link:hover {
+      text-decoration: underline;
+    }
+
+    .toggle-switch {
+      position: relative;
+      display: inline-block;
+      width: 44px;
+      height: 24px;
+      cursor: pointer;
+    }
+
+    .toggle-switch input {
+      display: none;
+    }
+
+    .toggle-slider {
+      position: absolute;
+      cursor: pointer;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background-color: #ccc;
+      transition: 0.3s;
+      border-radius: 24px;
+    }
+
+    .toggle-slider:before {
+      position: absolute;
+      content: "";
+      height: 18px;
+      width: 18px;
+      left: 3px;
+      bottom: 3px;
+      background-color: white;
+      transition: 0.3s;
+      border-radius: 50%;
+    }
+
+    .toggle-switch input:checked + .toggle-slider {
+      background-color: #000;
+    }
+
+    .toggle-switch input:checked + .toggle-slider:before {
+      transform: translateX(20px);
+    }
+
+    /* Orders Page */
+    .orders-filters {
+      display: flex;
+      gap: 1rem;
+      margin-bottom: 1.5rem;
+    }
+
+    .filter-select {
+      padding: 0.75rem;
+      border: 1px solid var(--color-border);
+      background: #fff;
+      color: #000;
+      font-size: 0.95rem;
+      cursor: pointer;
+    }
+
+    .status-badge {
+      display: inline-block;
+      padding: 4px 8px;
+      border-radius: var(--radius-sm);
+      font-size: 12px;
+      font-weight: var(--btn-font-weight);
+      letter-spacing: 0;
+    }
+
+    .status-badge.pending {
+      background: #fef08a;
+      color: #713f12;
+    }
+
+    .status-badge.approved {
+      background: #dcfce7;
+      color: #166534;
+    }
+
+    .status-badge.rejected {
+      background: #fee2e2;
+      color: #991b1b;
+    }
+
+    .status-badge.cancelled {
+      background: #f3f4f6;
+      color: #374151;
+    }
+
+    .btn-small {
+      padding: 6px 10px;
+      font-size: 13px;
+      font-weight: var(--btn-font-weight);
+      background: var(--color-bg-contrast);
+      color: var(--color-fg-on-contrast);
+      border: none;
+      border-radius: var(--btn-radius);
+      cursor: pointer;
+      margin: 0 0.25rem;
+      transition: background 0.2s;
+    }
+
+    .btn-small:hover {
+      background: #333;
+    }
+
+    .btn-small.reject {
+      background: #fee2e2;
+      color: #991b1b;
+    }
+
+    .btn-small.reject:hover {
+      background: #fecaca;
+    }
+
+    /* Partners Page */
+    .partners-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 1.5rem;
+    }
+
+    .partners-header .page-subtitle {
+      margin-bottom: 0;
+    }
+
+    /* Settings Page */
+    .settings-container {
+      max-width: 700px;
+      margin: 0 auto;
+    }
+
+    .settings-card {
+      background: #fff;
+      border: 1px solid var(--color-border);
+      padding: 2rem;
+      margin-bottom: 1.5rem;
+    }
+
+    .settings-card-title {
+      font-size: 1rem;
+      font-weight: 700;
+      margin-bottom: 1rem;
+    }
+
+    .settings-group {
+      margin-bottom: 1.5rem;
+    }
+
+    .settings-label {
+      display: block;
+      font-size: 0.875rem;
+      font-weight: 600;
+      margin-bottom: 0.5rem;
+      color: #000;
+    }
+
+    .settings-input {
+      width: 100%;
+      padding: 0.75rem;
+      border: 1px solid var(--color-border);
+      background: #fff;
+      color: #000;
+      font-size: 0.95rem;
+    }
+
+    .settings-description {
+      font-size: 0.85rem;
+      color: var(--color-fg-low);
+      margin-top: 0.5rem;
+    }
+
+    .settings-warning {
+      background: #fef08a;
+      border: 1px solid #facc15;
+      padding: 1rem;
+      border-radius: 2px;
+      font-size: 0.85rem;
+      color: #713f12;
+      margin-top: 1rem;
+    }
+
+    .settings-toggle-group {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .settings-info-box {
+      background: var(--color-bg-low);
+      border-left: 3px solid #000;
+      padding: 1rem;
+      margin-top: 1.5rem;
+      font-size: 0.85rem;
+      line-height: 1.7;
+    }
+
+    .settings-info-box ul {
+      list-style: none;
+      padding-left: 0;
+    }
+
+    .settings-info-box li {
+      margin-bottom: 0.5rem;
+    }
+
+    .settings-info-box li:before {
+      content: "•";
+      margin-right: 0.5rem;
+      font-weight: 700;
+    }
+
+    .btn-save {
+      background: #000;
+      color: #fff;
+      padding: 0.75rem 2rem;
+      font-size: 0.875rem;
+      font-weight: 600;
+      cursor: pointer;
+      margin-top: 1.5rem;
+      transition: background 0.2s;
+    }
+
+    .btn-save:hover {
+      background: #333;
+    }
+
+    .save-feedback {
+      color: #16a34a;
+      font-size: 0.85rem;
+      margin-top: 0.5rem;
+    }
+
+    /* Modal */
+    .modal-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: rgba(0, 0, 0, 0.5);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 1000;
+    }
+
+    .modal-content {
+      background: var(--color-bg);
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius-lg);
+      max-width: 90vw;
+      max-height: 85vh;
+      overflow-y: auto;
+      padding: 2rem;
+      width: 100%;
+      box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
+    }
+
+    .modal-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 1.5rem;
+      border-bottom: 1px solid var(--color-divider);
+      padding-bottom: 1rem;
+    }
+
+    .modal-title {
+      font-size: 1.25rem;
+      font-weight: 700;
+    }
+
+    .modal-close {
+      font-size: 1.5rem;
+      cursor: pointer;
+      color: var(--color-fg-low);
+      transition: color 0.2s;
+      background: none;
+      border: none;
+      padding: 0;
+    }
+
+    .modal-close:hover {
+      color: #000;
+    }
+
+    .modal-body {
+      margin-bottom: 1.5rem;
+    }
+
+    .modal-footer {
+      display: flex;
+      justify-content: flex-end;
+      gap: 1rem;
+      margin-top: 2rem;
+      border-top: 1px solid var(--color-divider);
+      padding-top: 1rem;
+    }
+
+    .btn-cancel {
+      background: var(--color-bg-low);
+      color: var(--color-fg);
+      padding: 10px 16px;
+      font-size: 14px;
+      font-weight: var(--btn-font-weight);
+      border-radius: var(--btn-radius);
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+
+    .btn-cancel:hover {
+      background: var(--color-border-low);
+    }
+
+    .form-group {
+      margin-bottom: 1rem;
+    }
+
+    .form-label {
+      display: block;
+      font-size: 0.85rem;
+      font-weight: 600;
+      margin-bottom: 0.4rem;
+      color: #000;
+    }
+
+    .form-input {
+      width: 100%;
+      padding: 10px 12px;
+      border: 1px solid var(--color-border);
+      background: var(--color-bg);
+      color: var(--color-fg);
+      font-size: 14px;
+      border-radius: var(--input-radius);
+    }
+
+    .form-input:disabled {
+      background: var(--color-bg-low);
+      color: var(--color-fg-low);
+      cursor: not-allowed;
+    }
+
+    .form-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1rem;
+    }
+
+    .form-row-full {
+      grid-column: 1 / -1;
+    }
+
+    .image-gallery {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+      gap: 1rem;
+      margin-bottom: 1rem;
+    }
+
+    .image-item {
+      position: relative;
+      width: 100%;
+      aspect-ratio: 1;
+      border: 1px solid var(--color-border);
+      overflow: hidden;
+    }
+
+    .image-item img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    .drag-drop-zone {
+      border: 2px dashed var(--color-border);
+      padding: 2rem;
+      text-align: center;
+      cursor: pointer;
+      transition: border-color 0.2s, background 0.2s;
+      border-radius: var(--radius-md);
+      background: var(--color-bg-low);
+    }
+
+    .drag-drop-zone:hover {
+      border-color: #000;
+      background: var(--color-bg-low);
+    }
+
+    .drag-drop-zone.drag-over {
+      border-color: #000;
+      background: #f0f0f0;
+    }
+
+    .sizes-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 1rem 0;
+      font-size: 0.9rem;
+    }
+
+    .sizes-table th,
+    .sizes-table td {
+      padding: 0.5rem;
+      text-align: left;
+      border-bottom: 1px solid var(--color-divider);
+    }
+
+    .sizes-table th {
+      background: var(--color-bg-low);
+      font-weight: 600;
+      font-size: 0.85rem;
+    }
+
+    .sizes-table tbody tr:hover {
+      background: #f9f9f9;
+    }
+
+    .textarea {
+      width: 100%;
+      padding: 0.75rem;
+      border: 1px solid var(--color-border);
+      background: #fff;
+      color: #000;
+      font-family: 'Pretendard Variable', Pretendard, system-ui, -apple-system, sans-serif;
+      font-size: 14px;
+      resize: vertical;
+      min-height: 100px;
+      border-radius: var(--input-radius);
+    }
+
+    .textarea:focus {
+      outline: none;
+      border-color: #000;
+    }
+
+    .order-items-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 1rem 0;
+      font-size: 0.9rem;
+    }
+
+    .order-items-table th,
+    .order-items-table td {
+      padding: 0.75rem;
+      text-align: left;
+      border-bottom: 1px solid var(--color-divider);
+    }
+
+    .order-items-table th {
+      background: var(--color-bg-low);
+      font-weight: 600;
+      font-size: 0.85rem;
+    }
+
+    .order-info-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1rem;
+      margin-bottom: 1.5rem;
+      padding-bottom: 1.5rem;
+      border-bottom: 1px solid var(--color-divider);
+    }
+
+    .order-info-item {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .order-info-label {
+      font-size: 0.85rem;
+      font-weight: 600;
+      color: #000;
+      margin-bottom: 0.3rem;
+    }
+
+    .order-info-value {
+      font-size: 0.95rem;
+      color: #000;
+    }
+
+    .order-modal-actions {
+      display: flex;
+      gap: 1rem;
+      margin-top: 1.5rem;
+    }
+
+    .btn-approve {
+      background: #16a34a;
+      color: #fff;
+      padding: 0.75rem 1.5rem;
+      font-size: 0.875rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+
+    .btn-approve:hover {
+      background: #15803d;
+    }
+
+    .btn-reject {
+      background: #dc2626;
+      color: #fff;
+      padding: 0.75rem 1.5rem;
+      font-size: 0.875rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+
+    .btn-reject:hover {
+      background: #b91c1c;
+    }
+  </style>
+</head>
+<body>
+  <div id="root"></div>
+
+  <script type="text/babel">
+    const { useState, useEffect, useRef } = React;
+
+    // Mock Data
+    const MOCK_PRODUCTS = [
+      { id: 'P-001', style_no: 'MSSTD-JK01', name: 'Light Windbreaker Jacket', color: 'BLACK', material: 'Nylon 100%', origin: 'Vietnam', category: 'Outerwear', retail_price_krw: 89000, sample_size: 'M', hs_code: '6201.93', ship_date: '2026-10-15', is_visible: true, is_hero: true, season: { year: 2026, season: 'F/W' }, gender: 'Male', images: ['https://hebbkx1anhila5yf.public.blob.vercel-storage.com/detail_3732808_17008145764190_big-NtsQcEgdrQjvBOGpQvPQ4JPRbAUNw9.webp','https://hebbkx1anhila5yf.public.blob.vercel-storage.com/3732808_17008145386635_big-e8tW9vvDFk3LSBkYqJUbwe0wi4MYfZ.webp','https://hebbkx1anhila5yf.public.blob.vercel-storage.com/detail_3732808_17008145754168_big-pDpq99fUbWRi2IMAlNRJk8rfg6SOnl.webp'], sizes: ['XXS', 'XS', 'S', 'M', 'L', 'XL', 'XXL', 'XXXL'] },
+      { id: 'P-002', style_no: 'DENIM-SH02', name: 'Classic Denim Shirt', color: 'INDIGO', material: 'Cotton 98% Elastane 2%', origin: 'Bangladesh', category: 'Tops', retail_price_krw: 65000, sample_size: 'M', hs_code: '6205.20', ship_date: '2026-09-20', is_visible: true, is_hero: true, season: { year: 2026, season: 'S/S' }, gender: 'Male', images: ['https://hebbkx1anhila5yf.public.blob.vercel-storage.com/detail_4300078_17229281298325_big-IBH1zefp09enMqo0kzf0TU3qK69786.webp','https://hebbkx1anhila5yf.public.blob.vercel-storage.com/detail_4300078_17229281454244_big-rzeDLkm3PuJb1Ux90iwxYMLbIyixAt.webp','https://hebbkx1anhila5yf.public.blob.vercel-storage.com/detail_4300078_17229281015339_big-3Ip8wBdWeqGbEkw35kqi07I2BAsgid.webp'], sizes: ['S', 'M', 'L', 'XL'] },
+      { id: 'P-003', style_no: 'TSHIRT-BAS03', name: 'Essential White T-Shirt', color: 'WHITE', material: 'Cotton 100%', origin: 'India', category: 'Tops', retail_price_krw: 28000, sample_size: 'M', hs_code: '6104.62', ship_date: '2026-08-15', is_visible: true, is_hero: false, season: { year: 2025, season: 'S/S' }, gender: 'Male', images: ['https://hebbkx1anhila5yf.public.blob.vercel-storage.com/3732808_17008145386635_big-e8tW9vvDFk3LSBkYqJUbwe0wi4MYfZ.webp','https://hebbkx1anhila5yf.public.blob.vercel-storage.com/detail_3732808_17008145754168_big-pDpq99fUbWRi2IMAlNRJk8rfg6SOnl.webp'], sizes: ['XS', 'S', 'M', 'L', 'XL', 'XXL'] },
+      { id: 'P-004', style_no: 'SWEAT-GRY04', name: 'Comfort Grey Sweatshirt', color: 'GREY', material: 'Cotton 60% Polyester 40%', origin: 'Vietnam', category: 'Tops', retail_price_krw: 52000, sample_size: 'M', hs_code: '6104.69', ship_date: '2026-09-10', is_visible: true, is_hero: true, season: { year: 2026, season: 'F/W' }, gender: 'Male', images: ['https://hebbkx1anhila5yf.public.blob.vercel-storage.com/4690282_17484120633015_big-d05xAPoZRJ3pH0bhzfghMHp8MTg2Ur.webp','https://hebbkx1anhila5yf.public.blob.vercel-storage.com/detail_4300078_17229281544256_big-xMyZCynBr1G90pKE6VKkejEepNPRZ5.webp'], sizes: ['S', 'M', 'L'] },
+      { id: 'P-005', style_no: 'SHIRT-GRN05', name: 'Premium Green Shirt', color: 'FOREST GREEN', material: 'Cotton 100%', origin: 'Pakistan', category: 'Tops', retail_price_krw: 58000, sample_size: 'M', hs_code: '6205.20', ship_date: '2026-10-01', is_visible: true, is_hero: true, season: { year: 2026, season: 'S/S' }, gender: 'Female', images: ['https://hebbkx1anhila5yf.public.blob.vercel-storage.com/detail_4300078_17229281454244_big-rzeDLkm3PuJb1Ux90iwxYMLbIyixAt.webp','https://hebbkx1anhila5yf.public.blob.vercel-storage.com/detail_4300078_17375343575729_big-OMdp2vIskcYQVIahtlJl50PdPM8nMI.webp'], sizes: ['S', 'M', 'L', 'XL', 'XXL'] },
+      { id: 'P-006', style_no: 'PUFFER-BLK06', name: 'Classic Black Puffer Jacket', color: 'BLACK', material: 'Polyester 100%', origin: 'China', category: 'Outerwear', retail_price_krw: 125000, sample_size: 'M', hs_code: '6201.13', ship_date: '2026-11-05', is_visible: true, is_hero: true, season: { year: 2026, season: 'F/W' }, gender: 'Male', images: ['https://hebbkx1anhila5yf.public.blob.vercel-storage.com/5064198_17478992801556_big%20%281%29-aiZZ8H5qL6ekOkEkvgYTMDr9GSQEiS.webp','https://hebbkx1anhila5yf.public.blob.vercel-storage.com/5064198_17478992801556_big-mi1fT07dNIBJ1DDfozAl4pqPeUOWyK.webp'], sizes: ['XS', 'S', 'M', 'L', 'XL', 'XXL', 'XXXL'] },
+      { id: 'P-007', style_no: 'WINDBRK-NAVY07', name: 'Colorblock Windbreaker', color: 'NAVY/CREAM', material: 'Nylon 100%', origin: 'Indonesia', category: 'Outerwear', retail_price_krw: 95000, sample_size: 'M', hs_code: '6201.93', ship_date: '2026-10-20', is_visible: true, is_hero: true, season: { year: 2026, season: 'F/W' }, gender: 'Male', images: ['https://hebbkx1anhila5yf.public.blob.vercel-storage.com/5898080_17733033213649_big-JGdwFcTn4Wdkvn7zOZiwnb5i6DDEV7.webp','https://hebbkx1anhila5yf.public.blob.vercel-storage.com/d0ca5ffbdfde4c2f981b0027d419a0a4-YszwHw5v9qhNSGkmkJLzjlY5zmsCF7.webp'], sizes: ['S', 'M', 'L', 'XL', 'XXL'] },
+      { id: 'P-008', style_no: 'SHIRT-LT-BLU08', name: 'Light Blue Oxford Shirt', color: 'LIGHT BLUE', material: 'Cotton 100%', origin: 'Philippines', category: 'Tops', retail_price_krw: 62000, sample_size: 'M', hs_code: '6205.20', ship_date: '2026-09-25', is_visible: true, is_hero: false, season: { year: 2026, season: 'S/S' }, gender: 'Female', images: ['https://hebbkx1anhila5yf.public.blob.vercel-storage.com/detail_4300078_17229281015339_big-3Ip8wBdWeqGbEkw35kqi07I2BAsgid.webp','https://hebbkx1anhila5yf.public.blob.vercel-storage.com/detail_4300078_17229281163133_big-cBwU3UgnQ1QNoab8uS0SdkOt27CSjg.webp'], sizes: ['S', 'M', 'L', 'XL'] },
+      { id: 'P-009', style_no: 'SWEATER-PINK09', name: 'Soft Pink Crewneck Sweater', color: 'PINK', material: 'Cotton 65% Acrylic 35%', origin: 'Vietnam', category: 'Tops', retail_price_krw: 71000, sample_size: 'M', hs_code: '6110.30', ship_date: '2026-10-10', is_visible: true, is_hero: false, season: { year: 2025, season: 'F/W' }, gender: 'Female', images: ['https://hebbkx1anhila5yf.public.blob.vercel-storage.com/5987750_17703411181399_big-TVjVOooktKSj6lcwBDU8PTQIHXMOet.webp','https://hebbkx1anhila5yf.public.blob.vercel-storage.com/4690282_17484120633015_big-d05xAPoZRJ3pH0bhzfghMHp8MTg2Ur.webp'], sizes: ['XS', 'S', 'M', 'L', 'XL', 'XXL'] },
+      { id: 'P-010', style_no: 'SHIRT-SAGE10', name: 'Versatile Sage Green Shirt', color: 'SAGE GREEN', material: 'Cotton 100%', origin: 'Pakistan', category: 'Tops', retail_price_krw: 59000, sample_size: 'M', hs_code: '6205.20', ship_date: '2026-09-30', is_visible: true, is_hero: true, season: { year: 2026, season: 'S/S' }, gender: 'Female', images: ['https://hebbkx1anhila5yf.public.blob.vercel-storage.com/detail_4300078_17229281544256_big-xMyZCynBr1G90pKE6VKkejEepNPRZ5.webp','https://hebbkx1anhila5yf.public.blob.vercel-storage.com/detail_4300078_17229281359421_big-vjFydy5ONXI8qrIItmbaZ5JIXiBSMs.webp'], sizes: ['S', 'M', 'L', 'XL', 'XXL'] },
+      { id: 'P-011', style_no: 'SWEAT-BEIGE11', name: 'Cozy Beige Crewneck Sweater', color: 'BEIGE', material: 'Cotton 50% Acrylic 50%', origin: 'Vietnam', category: 'Tops', retail_price_krw: 68000, sample_size: 'M', hs_code: '6110.30', ship_date: '2026-10-05', is_visible: true, is_hero: false, season: { year: 2026, season: 'F/W' }, gender: 'Female', images: ['https://hebbkx1anhila5yf.public.blob.vercel-storage.com/detail_5898080_17733033392006_big-ybjHo3ctJAupwWwcHp5mN5Y7muaUGM.webp','https://hebbkx1anhila5yf.public.blob.vercel-storage.com/detail_5898080_17733033350554_big-BtsxbxkDSJY824Y4o6nXagxbJ4nm1y.webp'], sizes: ['XS', 'S', 'M', 'L', 'XL', 'XXL'] },
+      { id: 'P-012', style_no: 'SWEAT-NAVY-GRX12', name: 'Nature Graphic Navy Sweatshirt', color: 'NAVY', material: 'Cotton 80% Polyester 20%', origin: 'Vietnam', category: 'Tops', retail_price_krw: 64000, sample_size: 'M', hs_code: '6104.69', ship_date: '2026-10-12', is_visible: true, is_hero: false, season: { year: 2026, season: 'Special' }, gender: 'Male', images: ['https://hebbkx1anhila5yf.public.blob.vercel-storage.com/detail_5987750_17703454876061_big-2maj0MGTTvIXp8ra2G2CPSm7u6uVmR.webp','https://hebbkx1anhila5yf.public.blob.vercel-storage.com/detail_4690282_17356409407162_big-vYVL05HLts88UViUn62wT4hnaHzPiw.webp'], sizes: ['XS', 'S', 'M', 'L', 'XL', 'XXL', 'XXXL'] },
+      { id: 'P-013', style_no: 'SHIRT-OLIVE13', name: 'Premium Olive Button Shirt', color: 'OLIVE', material: 'Cotton 100%', origin: 'Pakistan', category: 'Tops', retail_price_krw: 63000, sample_size: 'M', hs_code: '6205.20', ship_date: '2026-10-08', is_visible: true, is_hero: false, season: { year: 2025, season: 'S/S' }, gender: 'Female', images: ['https://hebbkx1anhila5yf.public.blob.vercel-storage.com/detail_5898080_17733033372035_big-cp3lVk4tGYkjStyXsR40r19B5QuZQI.webp','https://hebbkx1anhila5yf.public.blob.vercel-storage.com/detail_4300078_17229281698977_big-9qAPfK9T5EGKTNaKVq2edaCkqkTu6z.webp'], sizes: ['S', 'M', 'L', 'XL'] },
+      { id: 'P-014', style_no: 'JACKET-DRK14', name: 'Charcoal Hooded Windbreaker', color: 'DARK GREY', material: 'Nylon 100%', origin: 'China', category: 'Outerwear', retail_price_krw: 110000, sample_size: 'M', hs_code: '6201.93', ship_date: '2026-11-01', is_visible: true, is_hero: false, season: { year: 2026, season: 'F/W' }, gender: 'Male', images: ['https://hebbkx1anhila5yf.public.blob.vercel-storage.com/detail_4300078_17229281785095_big-GhA3ZegEuNLePn5nfMc2qSTkSNWPpd.webp','https://hebbkx1anhila5yf.public.blob.vercel-storage.com/detail_5064198_17478992971594_big-2CnKxm8kgAEWF2AoZlLn99s3xhxSJ8.webp'], sizes: ['XS', 'S', 'M', 'L', 'XL', 'XXL'] },
+      { id: 'P-015', style_no: 'ANORAK-NAVY15', name: 'Navy Colorblock Anorak', color: 'NAVY/CREAM', material: 'Nylon 100%', origin: 'Vietnam', category: 'Outerwear', retail_price_krw: 105000, sample_size: 'M', hs_code: '6201.93', ship_date: '2026-10-28', is_visible: true, is_hero: true, season: { year: 2026, season: 'F/W' }, gender: 'Male', images: ['https://hebbkx1anhila5yf.public.blob.vercel-storage.com/detail_5987750_17703454886254_big-4195faq6mef8u8Mu2szCwUn9d4aJnP.webp','https://hebbkx1anhila5yf.public.blob.vercel-storage.com/detail_5898080_17733033317629_big-Hjoe6V215bsC3dEV9PSMybK1CBfAQi.webp'], sizes: ['S', 'M', 'L', 'XL', 'XXL'] },
+      { id: 'P-016', style_no: 'HOOD-RIB16', name: 'Ribbed Sleeve Hooded Jacket', color: 'BLACK', material: 'Nylon 70% Cotton 30%', origin: 'Korea', category: 'Outerwear', retail_price_krw: 139000, sample_size: 'M', hs_code: '6201.93', ship_date: '2026-11-10', is_visible: true, is_hero: false, season: { year: 2025, season: 'F/W' }, gender: 'Male', images: ['https://hebbkx1anhila5yf.public.blob.vercel-storage.com/6012200_17725043883314_big-evDHsGjCXFcaFAf96LHFqIYUlu3UQd.webp','https://hebbkx1anhila5yf.public.blob.vercel-storage.com/detail_6012200_17725043956515_big-vfAlxCJQqWKKn02SvAjdvoAYhZNYrd.webp','https://hebbkx1anhila5yf.public.blob.vercel-storage.com/detail_6012200_17721695459931_big-ODcFxnSBvfW5T0lTCSdZaMktGLFsjn.webp','https://hebbkx1anhila5yf.public.blob.vercel-storage.com/detail_6012200_17719221219882_big-kXOziotEWzfwFORcAmaZlU9w0nTFw2.webp','https://hebbkx1anhila5yf.public.blob.vercel-storage.com/detail_6012200_17721695467257_big-YjDaO0r4Fw8NkXCHawG9qo5UeERKIg.webp'], sizes: ['S', 'M', 'L', 'XL', 'XXL'] },
+      { id: 'P-017', style_no: 'BOMBER-SHINY17', name: 'Glossy Black Bomber Jacket', color: 'BLACK', material: 'Polyester 100%', origin: 'Korea', category: 'Outerwear', retail_price_krw: 159000, sample_size: 'M', hs_code: '6201.93', ship_date: '2026-11-15', is_visible: true, is_hero: false, season: { year: 2026, season: 'Special' }, gender: 'Male', images: ['https://hebbkx1anhila5yf.public.blob.vercel-storage.com/5318903_17555112033548_big-BJ5ZmfIJ1AcfdFA89xoCfHEEm6lj64.webp','https://hebbkx1anhila5yf.public.blob.vercel-storage.com/detail_5318903_17550575088709_big-Trz5aiNLmoylB48WAlw78OzlbvqluN.webp','https://hebbkx1anhila5yf.public.blob.vercel-storage.com/detail_5318903_17550575060433_big-5VLfsylZrEFriwDCkOW0S6mXbofUmw.webp','https://hebbkx1anhila5yf.public.blob.vercel-storage.com/detail_5318903_17550575118739_big-4MDBPx772QsYPVj8ivM7k70kpR6nL.webp'], sizes: ['S', 'M', 'L', 'XL'] },
+      { id: 'P-018', style_no: 'TECH-NAVY18', name: 'Navy Tech Mountain Jacket', color: 'NAVY/BLACK', material: 'Nylon 100%', origin: 'Vietnam', category: 'Outerwear', retail_price_krw: 189000, sample_size: 'L', hs_code: '6201.93', ship_date: '2026-11-20', is_visible: true, is_hero: false, season: { year: 2026, season: 'F/W' }, gender: 'Male', images: ['https://hebbkx1anhila5yf.public.blob.vercel-storage.com/5408723_17707909468751_big-ZyVIFYpHO0UkoYxXo1hs5lauTxOEqr.webp','https://hebbkx1anhila5yf.public.blob.vercel-storage.com/detail_5408723_17707909496047_big-T5J8eorC3daZyhw0ZS1yrbPUgXXhee.webp','https://hebbkx1anhila5yf.public.blob.vercel-storage.com/detail_5408723_17707909508028_big-gppdnKtcn8XlQYgllNc6fhPrlAUFVh.webp'], sizes: ['S', 'M', 'L', 'XL', 'XXL'] },
+      { id: 'P-019', style_no: 'HOOD-RIB19', name: 'Ribbed Sleeve Street Jacket', color: 'BLACK', material: 'Nylon 70% Cotton 30%', origin: 'Korea', category: 'Outerwear', retail_price_krw: 145000, sample_size: 'M', hs_code: '6201.93', ship_date: '2026-11-12', is_visible: true, is_hero: false, season: { year: 2025, season: 'Special' }, gender: 'Female', images: ['https://hebbkx1anhila5yf.public.blob.vercel-storage.com/detail_6012200_17719221219882_big-kXOziotEWzfwFORcAmaZlU9w0nTFw2.webp','https://hebbkx1anhila5yf.public.blob.vercel-storage.com/detail_6012200_17721695459931_big-ODcFxnSBvfW5T0lTCSdZaMktGLFsjn.webp'], sizes: ['S', 'M', 'L', 'XL', 'XXL'] },
+    ];
+
+    const MOCK_PARTNERS = [
+      { partner_id: 'PTR-001', company_name: 'Southeast Asia Trading Co.', email: 'partner@sea-trading.com', discount_rate: 0.30, created_at: '2024-01-15' },
+      { partner_id: 'PTR-002', company_name: 'Middle East Fashion Hub', email: 'orders@me-fashion.com', discount_rate: 0.25, created_at: '2024-02-20' },
+      { partner_id: 'PTR-003', company_name: 'Singapore Style Partners', email: 'buying@sg-style.com', discount_rate: 0.28, created_at: '2024-03-10' }
+    ];
+
+    const MOCK_ORDERS = [
+      { order_id: 'ORD-2026-0001', partner_id: 'PTR-001', partner_name: 'Southeast Asia Trading Co.', status: '주문접수', rejection_reason: null, total_qty: 150, total_amount: 4650.00, created_at: '2026-04-10T09:30:00', updated_at: '2026-04-10T09:30:00' },
+      { order_id: 'ORD-2026-0002', partner_id: 'PTR-002', partner_name: 'Middle East Fashion Hub', status: '주문승인', rejection_reason: null, total_qty: 300, total_amount: 9800.00, created_at: '2026-04-08T14:20:00', updated_at: '2026-04-09T11:00:00' },
+      { order_id: 'ORD-2026-0003', partner_id: 'PTR-003', partner_name: 'Singapore Style Partners', status: '반려', rejection_reason: 'Requested quantities exceed available stock for some items.', total_qty: 500, total_amount: 15200.00, created_at: '2026-04-05T16:45:00', updated_at: '2026-04-06T10:30:00' }
+    ];
+
+    const EXCHANGE_RATE = { krw_per_usd: 1350.00, effective_date: '2026-04-01' };
+
+    // Utility Functions
+    const formatUSD = (amount) => `$${(amount).toFixed(2)}`;
+    const formatKRW = (amount) => `₩${Math.floor(amount).toLocaleString()}`;
+    const calculateWholesalePrice = (retailPriceKrw, discountRate, exchangeRate = EXCHANGE_RATE.krw_per_usd) => {
+      return Math.floor((retailPriceKrw / exchangeRate) * (1 - discountRate) * 100) / 100;
+    };
+
+    const getStatusBadgeClass = (status) => {
+      if (status === '주문접수') return 'pending';
+      if (status === '주문승인') return 'approved';
+      if (status === '반려') return 'rejected';
+      if (status === '주문취소') return 'cancelled';
+      return 'pending';
+    };
+
+    // Components
+    const LoginPage = ({ onLogin }) => {
+      const [email, setEmail] = useState('admin@musinsa.com');
+      const [password, setPassword] = useState('');
+      const [language, setLanguage] = useState('EN');
+
+      const handleSubmit = (e) => {
+        e.preventDefault();
+        onLogin();
+      };
+
+      return (
+        <div className="login-container">
+          <div className="login-left">
+            <div className="login-branding">
+              <div className="login-branding-main">MUSINSA</div>
+              <div className="login-branding-sub">ADMIN CONSOLE</div>
+            </div>
+          </div>
+          <div className="login-right">
+            <div className="login-form-header">
+              <div>
+                <label className="login-label-internal">INTERNAL ACCESS</label>
+                <h2>Admin Console</h2>
+                <p>Sign in with your staff account</p>
+              </div>
+              <div className="language-toggle">
+                <button className={`lang-btn ${language === 'EN' ? 'active' : ''}`} onClick={() => setLanguage('EN')}>EN</button>
+                <button className={`lang-btn ${language === 'KO' ? 'active' : ''}`} onClick={() => setLanguage('KO')}>KO</button>
+              </div>
+            </div>
+            <form onSubmit={handleSubmit}>
+              <label className="login-label">EMAIL</label>
+              <input
+                type="email"
+                className="login-input"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                required
+              />
+              <label className="login-label">PASSWORD</label>
+              <input
+                type="password"
+                className="login-input"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+              />
+              <button type="submit" className="login-submit">SIGN IN</button>
+            </form>
+            <div className="login-demo">
+              Demo credentials:<br/>
+              Email: admin@musinsa.com<br/>
+              Password: any password
+            </div>
+          </div>
+        </div>
+      );
+    };
+
+    const Header = ({ currentPage, onNavigate, onLogout }) => {
+      const navItems = [
+        { key: 'products', label: '상품 관리' },
+        { key: 'orders', label: '주문 조회' },
+        { key: 'partners', label: '파트너 관리' },
+        { key: 'settings', label: '환율 설정' }
+      ];
+
+      return (
+        <header className="header" style={{ position: 'relative' }}>
+          <div className="header-left">
+            <div className="header-brand">MUSINSA</div>
+            <div className="header-badge">ADMIN</div>
+          </div>
+          <div className="header-center">
+            <div className="header-nav">
+              {navItems.map(item => (
+                <div
+                  key={item.key}
+                  className={`header-nav-item ${currentPage === item.key ? 'active' : ''}`}
+                  onClick={() => onNavigate(item.key)}
+                >
+                  {item.label}
+                </div>
+              ))}
+            </div>
+          </div>
+          <div className="header-right">
+            <div className="header-admin">관리자</div>
+            <div className="header-logout" onClick={onLogout}>로그아웃</div>
+          </div>
+        </header>
+      );
+    };
+
+    const Dashboard = ({ products, orders, partners }) => {
+      const visibleProducts = products.filter(p => p.is_visible).length;
+      const pendingOrders = orders.filter(o => o.status === '주문접수').length;
+      const recentOrders = orders.slice(0, 3);
+
+      return (
+        <div className="main-content">
+          <h1 className="page-title">대시보드</h1>
+          <p className="page-subtitle">관리 현황을 한눈에 확인하세요</p>
+
+          <div className="dashboard-grid">
+            <div className="stat-card">
+              <div className="stat-card-label">등록 상품</div>
+              <div className="stat-card-value">{visibleProducts}</div>
+              <div className="stat-card-subtitle">공개 중인 상품</div>
+            </div>
+            <div className="stat-card amber">
+              <div className="stat-card-label">승인 대기</div>
+              <div className="stat-card-value">{pendingOrders}</div>
+              <div className="stat-card-subtitle">처리 대기 중인 주문</div>
+            </div>
+            <div className="stat-card">
+              <div className="stat-card-label">등록 파트너</div>
+              <div className="stat-card-value">{partners.length}</div>
+              <div className="stat-card-subtitle">활성 파트너사</div>
+            </div>
+            <div className="stat-card green">
+              <div className="stat-card-label">수주회 상태</div>
+              <div className="stat-card-status">
+                <span className="status-dot"></span>
+                <span style={{ fontSize: '0.95rem' }}>진행중</span>
+              </div>
+              <div className="stat-card-subtitle">정상 운영 중</div>
+            </div>
+          </div>
+
+          <div className="quick-actions-grid">
+            <div className="quick-actions-card">
+              <div className="quick-actions-title">빠른 작업</div>
+              <div className="quick-action-item">
+                <span className="quick-action-text">상품 목록 관리</span>
+                <span className="quick-action-arrow">→</span>
+              </div>
+              <div className="quick-action-item">
+                <span className="quick-action-text">주문 승인 처리</span>
+                <span className="quick-action-arrow">→</span>
+              </div>
+              <div className="quick-action-item">
+                <span className="quick-action-text">파트너 할인율 설정</span>
+                <span className="quick-action-arrow">→</span>
+              </div>
+              <div className="quick-action-item">
+                <span className="quick-action-text">환율 설정</span>
+                <span className="quick-action-arrow">→</span>
+              </div>
+            </div>
+            <div className="quick-actions-card">
+              <div className="quick-actions-title">최근 주문</div>
+              <div className="recent-orders-list">
+                {recentOrders.map(order => (
+                  <div key={order.order_id} className="order-item">
+                    <div className="order-id">{order.order_id}</div>
+                    <div className="order-meta">{order.partner_name} • {new Date(order.created_at).toLocaleDateString('ko-KR')}</div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
+        </div>
+      );
+    };
+
+    const ProductEditModal = ({ product, onClose, onSave, allPartners, exchangeRate }) => {
+      const [formData, setFormData] = useState(product || {});
+      const [selectedImage, setSelectedImage] = useState(0);
+
+      const handleChange = (e) => {
+        const { name, value } = e.target;
+        setFormData(prev => ({ ...prev, [name]: value }));
+      };
+
+      const handleToggle = (field) => {
+        setFormData(prev => ({ ...prev, [field]: !prev[field] }));
+      };
+
+      const handleSizeToggle = (size) => {
+        setFormData(prev => ({
+          ...prev,
+          sizes: prev.sizes.includes(size)
+            ? prev.sizes.filter(s => s !== size)
+            : [...prev.sizes, size]
+        }));
+      };
+
+      return (
+        <div className="modal-overlay" onClick={onClose}>
+          <div className="modal-content" onClick={(e) => e.stopPropagation()}>
+            <div className="modal-header">
+              <h2 className="modal-title">상품 정보 수정</h2>
+              <button className="modal-close" onClick={onClose}>×</button>
+            </div>
+            <div className="modal-body">
+              <div className="image-gallery">
+                {(formData.images || []).map((img, idx) => (
+                  <div key={idx} className="image-item" onClick={() => setSelectedImage(idx)}>
+                    <img src={img} alt={`Product ${idx}`} style={{ border: selectedImage === idx ? '2px solid #000' : 'none' }} />
+                  </div>
+                ))}
+              </div>
+
+              <div className="form-row">
+                <div className="form-group">
+                  <label className="form-label">상품번호</label>
+                  <input className="form-input" type="text" name="id" value={formData.id || ''} disabled />
+                </div>
+                <div className="form-group">
+                  <label className="form-label">스타일번호</label>
+                  <input className="form-input" type="text" name="style_no" value={formData.style_no || ''} disabled />
+                </div>
+              </div>
+
+              <div className="form-group">
+                <label className="form-label">상품명</label>
+                <input className="form-input" type="text" name="name" value={formData.name || ''} onChange={handleChange} />
+              </div>
+
+              <div className="form-row">
+                <div className="form-group">
+                  <label className="form-label">색상</label>
+                  <input className="form-input" type="text" name="color" value={formData.color || ''} onChange={handleChange} />
+                </div>
+                <div className="form-group">
+                  <label className="form-label">소재</label>
+                  <input className="form-input" type="text" name="material" value={formData.material || ''} onChange={handleChange} />
+                </div>
+              </div>
+
+              <div className="form-row">
+                <div className="form-group">
+                  <label className="form-label">원산지</label>
+                  <input className="form-input" type="text" name="origin" value={formData.origin || ''} onChange={handleChange} />
+                </div>
+                <div className="form-group">
+                  <label className="form-label">카테고리</label>
+                  <input className="form-input" type="text" name="category" value={formData.category || ''} onChange={handleChange} />
+                </div>
+              </div>
+
+              <div className="form-row">
+                <div className="form-group">
+                  <label className="form-label">한국소매가</label>
+                  <input className="form-input" type="number" name="retail_price_krw" value={formData.retail_price_krw || ''} onChange={handleChange} />
+                </div>
+                <div className="form-group">
+                  <label className="form-label">HS Code</label>
+                  <input className="form-input" type="text" name="hs_code" value={formData.hs_code || ''} onChange={handleChange} />
+                </div>
+              </div>
+
+              <div className="form-row">
+                <div className="form-group">
+                  <label className="form-label">수주회 샘플사이즈</label>
+                  <input className="form-input" type="text" name="sample_size" value={formData.sample_size || ''} onChange={handleChange} />
+                </div>
+                <div className="form-group">
+                  <label className="form-label">Ship Date</label>
+                  <input className="form-input" type="date" name="ship_date" value={formData.ship_date || ''} onChange={handleChange} />
+                </div>
+              </div>
+
+              <div className="form-group">
+                <label className="form-label">사이즈 옵션</label>
+                <table className="sizes-table">
+                  <tbody>
+                    <tr>
+                      {(formData.sizes || []).map(size => (
+                        <td key={size}>
+                          <label className="toggle-switch">
+                            <input type="checkbox" checked={true} readOnly />
+                            <span className="toggle-slider"></span>
+                          </label>
+                          <div style={{ fontSize: '0.85rem', marginTop: '0.25rem' }}>{size}</div>
+                        </td>
+                      ))}
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+
+              <div className="form-group">
+                <label style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
+                  <label className="toggle-switch">
+                    <input
+                      type="checkbox"
+                      checked={formData.is_visible || false}
+                      onChange={() => handleToggle('is_visible')}
+                    />
+                    <span className="toggle-slider"></span>
+                  </label>
+                  <span className="form-label" style={{ marginBottom: 0 }}>상품 노출</span>
+                </label>
+              </div>
+
+              <div className="form-row">
+                <div className="form-group">
+                  <label className="form-label">Season Year</label>
+                  <select className="form-input" value={formData.season ? formData.season.year : 2026} onChange={(e) => setFormData(prev => ({ ...prev, season: { ...(prev.season || {}), year: parseInt(e.target.value) } }))}>
+                    <option value={2025}>2025</option>
+                    <option value={2026}>2026</option>
+                  </select>
+                </div>
+                <div className="form-group">
+                  <label className="form-label">Season</label>
+                  <select className="form-input" value={formData.season ? formData.season.season : 'F/W'} onChange={(e) => setFormData(prev => ({ ...prev, season: { ...(prev.season || {}), season: e.target.value } }))}>
+                    <option value="S/S">S/S</option>
+                    <option value="F/W">F/W</option>
+                    <option value="Special">Special</option>
+                  </select>
+                </div>
+              </div>
+
+              <div className="form-group">
+                <label className="form-label">Gender</label>
+                <select className="form-input" value={formData.gender || 'Male'} onChange={(e) => setFormData(prev => ({ ...prev, gender: e.target.value }))}>
+                  <option value="Male">Male</option>
+                  <option value="Female">Female</option>
+                </select>
+              </div>
+
+              <div className="form-group">
+                <label style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
+                  <label className="toggle-switch">
+                    <input
+                      type="checkbox"
+                      checked={formData.is_hero || false}
+                      onChange={() => handleToggle('is_hero')}
+                    />
+                    <span className="toggle-slider"></span>
+                  </label>
+                  <span className="form-label" style={{ marginBottom: 0 }}>Hero</span>
+                </label>
+              </div>
+
+              <div className="form-group">
+                <label className="form-label">메모</label>
+                <textarea className="textarea" name="notes" value={formData.notes || ''} onChange={(e) => setFormData(prev => ({ ...prev, notes: e.target.value }))}></textarea>
+              </div>
+            </div>
+            <div className="modal-footer">
+              <button className="btn-cancel" onClick={onClose}>취소</button>
+              <button className="btn-primary" onClick={() => { onSave(formData); onClose(); }}>저장</button>
+            </div>
+          </div>
+        </div>
+      );
+    };
+
+    const WholesalePriceModal = ({ product, partners, exchangeRate, onClose }) => {
+      return (
+        <div className="modal-overlay" onClick={onClose}>
+          <div className="modal-content" onClick={(e) => e.stopPropagation()}>
+            <div className="modal-header">
+              <h2 className="modal-title">홀세일가 조회 - {product.name}</h2>
+              <button className="modal-close" onClick={onClose}>×</button>
+            </div>
+            <div className="modal-body">
+              <table className="products-table">
+                <thead>
+                  <tr>
+                    <th>파트너명</th>
+                    <th>할인율</th>
+                    <th>홀세일가 (USD)</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {partners.map(partner => {
+                    const wholesalePrice = calculateWholesalePrice(product.retail_price_krw, partner.discount_rate, exchangeRate.krw_per_usd);
+                    return (
+                      <tr key={partner.partner_id}>
+                        <td>{partner.company_name}</td>
+                        <td>{(partner.discount_rate * 100).toFixed(0)}%</td>
+                        <td>{formatUSD(wholesalePrice)}</td>
+                      </tr>
+                    );
+                  })}
+                </tbody>
+              </table>
+            </div>
+            <div className="modal-footer">
+              <button className="btn-cancel" onClick={onClose}>닫기</button>
+            </div>
+          </div>
+        </div>
+      );
+    };
+
+    const ProductsPage = ({ products, onUpdateProduct, partners, exchangeRate }) => {
+      const [editingProduct, setEditingProduct] = useState(null);
+      const [viewingWholesale, setViewingWholesale] = useState(null);
+      const [searchTerm, setSearchTerm] = useState('');
+
+      const filteredProducts = products.filter(p =>
+        p.style_no.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        p.name.toLowerCase().includes(searchTerm.toLowerCase())
+      );
+
+      const handleProductUpdate = (updatedProduct) => {
+        onUpdateProduct(updatedProduct);
+      };
+
+      return (
+        <div className="main-content">
+          <h1 className="page-title">상품 관리</h1>
+
+          <div className="products-actions">
+            <button className="btn-primary">엑셀 템플릿 다운로드</button>
+            <button className="btn-secondary">일괄 수정 업로드</button>
+            <button className="btn-secondary">상품 정보 다운로드</button>
+          </div>
+
+          <input
+            type="text"
+            className="search-input"
+            placeholder="스타일번호 또는 상품명으로 검색"
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
+          />
+
+          <table className="products-table">
+            <thead>
+              <tr>
+                <th>이미지</th>
+                <th>상품번호</th>
+                <th>스타일번호</th>
+                <th>상품명</th>
+                <th>색상</th>
+                <th>카테고리</th>
+                <th>한국소매가</th>
+                <th>홀세일가</th>
+                <th>노출여부</th>
+                <th>Ship Date</th>
+                <th>Year</th>
+                <th>Season</th>
+                <th>Gender</th>
+                <th>Hero</th>
+                <th>수정</th>
+              </tr>
+            </thead>
+            <tbody>
+              {filteredProducts.map(product => (
+                <tr key={product.id}>
+                  <td><img src={product.images?.[0]} alt={product.name} className="product-image" /></td>
+                  <td>{product.id}</td>
+                  <td>{product.style_no}</td>
+                  <td>{product.name}</td>
+                  <td>{product.color}</td>
+                  <td>{product.category}</td>
+                  <td>{formatKRW(product.retail_price_krw)}</td>
+                  <td>
+                    <span className="product-link" onClick={() => setViewingWholesale(product)}>조회</span>
+                  </td>
+                  <td>
+                    <label className="toggle-switch">
+                      <input
+                        type="checkbox"
+                        checked={product.is_visible}
+                        onChange={(e) => handleProductUpdate({ ...product, is_visible: e.target.checked })}
+                      />
+                      <span className="toggle-slider"></span>
+                    </label>
+                  </td>
+                  <td>{product.ship_date}</td>
+                  <td>{product.season ? product.season.year : 'N/A'}</td>
+                  <td>{product.season ? product.season.season : 'N/A'}</td>
+                  <td>{product.gender || 'N/A'}</td>
+                  <td>{product.is_hero ? 'Y' : 'N'}</td>
+                  <td>
+                    <button className="btn-small" onClick={() => setEditingProduct(product)}>수정</button>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+
+          {editingProduct && (
+            <ProductEditModal
+              product={editingProduct}
+              onClose={() => setEditingProduct(null)}
+              onSave={handleProductUpdate}
+              allPartners={partners}
+              exchangeRate={exchangeRate}
+            />
+          )}
+
+          {viewingWholesale && (
+            <WholesalePriceModal
+              product={viewingWholesale}
+              partners={partners}
+              exchangeRate={exchangeRate}
+              onClose={() => setViewingWholesale(null)}
+            />
+          )}
+        </div>
+      );
+    };
+
+    const OrderDetailModal = ({ order, products, onClose, onApprove, onReject }) => {
+      const [rejectReason, setRejectReason] = useState(order.rejection_reason || '');
+      const [showRejectForm, setShowRejectForm] = useState(false);
+
+      const mockItems = [
+        { product: products[0], size: 'S', qty: 30, unit_price: 46.15, subtotal: 1384.50 },
+        { product: products[0], size: 'M', qty: 50, unit_price: 46.15, subtotal: 2307.50 },
+        { product: products[0], size: 'L', qty: 20, unit_price: 46.15, subtotal: 923.00 },
+        { product: products[3], size: 'M', qty: 25, unit_price: 66.88, subtotal: 1672.00 }
+      ];
+
+      return (
+        <div className="modal-overlay" onClick={onClose}>
+          <div className="modal-content" onClick={(e) => e.stopPropagation()}>
+            <div className="modal-header">
+              <h2 className="modal-title">주문 상세 - {order.order_id}</h2>
+              <button className="modal-close" onClick={onClose}>×</button>
+            </div>
+            <div className="modal-body">
+              <div className="order-info-grid">
+                <div className="order-info-item">
+                  <div className="order-info-label">주문번호</div>
+                  <div className="order-info-value">{order.order_id}</div>
+                </div>
+                <div className="order-info-item">
+                  <div className="order-info-label">파트너명</div>
+                  <div className="order-info-value">{order.partner_name}</div>
+                </div>
+                <div className="order-info-item">
+                  <div className="order-info-label">주문일시</div>
+                  <div className="order-info-value">{new Date(order.created_at).toLocaleString('ko-KR')}</div>
+                </div>
+                <div className="order-info-item">
+                  <div className="order-info-label">상태</div>
+                  <div className="order-info-value">
+                    <span className={`status-badge ${getStatusBadgeClass(order.status)}`}>{order.status}</span>
+                  </div>
+                </div>
+                <div className="order-info-item">
+                  <div className="order-info-label">총 수량</div>
+                  <div className="order-info-value">{order.total_qty} 개</div>
+                </div>
+                <div className="order-info-item">
+                  <div className="order-info-label">총 금액</div>
+                  <div className="order-info-value">{formatUSD(order.total_amount)}</div>
+                </div>
+              </div>
+
+              <h3 style={{ marginBottom: '1rem', fontWeight: 600 }}>주문 상품</h3>
+              <table className="order-items-table">
+                <thead>
+                  <tr>
+                    <th>상품명</th>
+                    <th>사이즈</th>
+                    <th>수량</th>
+                    <th>단가</th>
+                    <th>소계</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {mockItems.map((item, idx) => (
+                    <tr key={idx}>
+                      <td>{item.product.name}</td>
+                      <td>{item.size}</td>
+                      <td>{item.qty}</td>
+                      <td>{formatUSD(item.unit_price)}</td>
+                      <td>{formatUSD(item.subtotal)}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+
+              {order.status === '주문접수' && (
+                <>
+                  {!showRejectForm ? (
+                    <div className="order-modal-actions">
+                      <button className="btn-approve" onClick={() => onApprove(order)}>주문 승인</button>
+                      <button className="btn-reject" onClick={() => setShowRejectForm(true)}>주문 반려</button>
+                    </div>
+                  ) : (
+                    <div style={{ marginTop: '1.5rem', borderTop: '1px solid var(--color-divider)', paddingTop: '1.5rem' }}>
+                      <div className="form-group">
+                        <label className="form-label">반려 사유</label>
+                        <textarea
+                          className="textarea"
+                          value={rejectReason}
+                          onChange={(e) => setRejectReason(e.target.value)}
+                          placeholder="반려 사유를 입력하세요"
+                        ></textarea>
+                      </div>
+                      <div className="order-modal-actions">
+                        <button className="btn-cancel" onClick={() => setShowRejectForm(false)}>취소</button>
+                        <button className="btn-reject" onClick={() => { onReject(order, rejectReason); onClose(); }}>반려 처리</button>
+                      </div>
+                    </div>
+                  )}
+                </>
+              )}
+            </div>
+          </div>
+        </div>
+      );
+    };
+
+    const OrdersPage = ({ orders, onUpdateOrder, products }) => {
+      const [filterStatus, setFilterStatus] = useState('전체');
+      const [searchTerm, setSearchTerm] = useState('');
+      const [selectedOrder, setSelectedOrder] = useState(null);
+
+      const filteredOrders = orders.filter(order => {
+        const statusMatch = filterStatus === '전체' || order.status === filterStatus;
+        const searchMatch = order.order_id.includes(searchTerm) || order.partner_name.toLowerCase().includes(searchTerm.toLowerCase());
+        return statusMatch && searchMatch;
+      });
+
+      const handleApprove = (order) => {
+        onUpdateOrder({ ...order, status: '주문승인' });
+      };
+
+      const handleReject = (order, reason) => {
+        onUpdateOrder({ ...order, status: '반려', rejection_reason: reason });
+      };
+
+      return (
+        <div className="main-content">
+          <h1 className="page-title">주문 조회</h1>
+
+          <div className="orders-filters">
+            <input
+              type="text"
+              className="search-input"
+              placeholder="주문번호 또는 파트너명 검색"
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+              style={{ maxWidth: 'none', marginBottom: 0, flexGrow: 1 }}
+            />
+            <select className="filter-select" value={filterStatus} onChange={(e) => setFilterStatus(e.target.value)}>
+              <option>전체</option>
+              <option>주문접수</option>
+              <option>주문승인</option>
+              <option>반려</option>
+              <option>주문취소</option>
+            </select>
+          </div>
+
+          <table className="products-table">
+            <thead>
+              <tr>
+                <th>주문번호</th>
+                <th>파트너명</th>
+                <th>주문일시</th>
+                <th>주문 수량</th>
+                <th>주문 금액</th>
+                <th>상태</th>
+                <th>처리</th>
+              </tr>
+            </thead>
+            <tbody>
+              {filteredOrders.map(order => (
+                <tr key={order.order_id}>
+                  <td>
+                    <span className="product-link" onClick={() => setSelectedOrder(order)}>{order.order_id}</span>
+                  </td>
+                  <td>{order.partner_name}</td>
+                  <td>{new Date(order.created_at).toLocaleString('ko-KR')}</td>
+                  <td>{order.total_qty}</td>
+                  <td>{formatUSD(order.total_amount)}</td>
+                  <td>
+                    <span className={`status-badge ${getStatusBadgeClass(order.status)}`}>{order.status}</span>
+                  </td>
+                  <td>
+                    {order.status === '주문접수' && (
+                      <>
+                        <button className="btn-small" onClick={() => handleApprove(order)}>승인</button>
+                        <button className="btn-small reject" onClick={() => setSelectedOrder(order)}>반려</button>
+                      </>
+                    )}
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+
+          {selectedOrder && (
+            <OrderDetailModal
+              order={selectedOrder}
+              products={products}
+              onClose={() => setSelectedOrder(null)}
+              onApprove={handleApprove}
+              onReject={handleReject}
+            />
+          )}
+        </div>
+      );
+    };
+
+    const PartnersPage = ({ partners, onUpdatePartner, onAddPartner }) => {
+      const [searchTerm, setSearchTerm] = useState('');
+      const [editingPartner, setEditingPartner] = useState(null);
+      const [showAddModal, setShowAddModal] = useState(false);
+      const [newPartner, setNewPartner] = useState({ company_name: '', email: '', discount_rate: 0 });
+
+      const filteredPartners = partners.filter(p =>
+        p.company_name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        p.email.toLowerCase().includes(searchTerm.toLowerCase())
+      );
+
+      const handleAddPartner = () => {
+        const partner = {
+          partner_id: `PTR-${String(partners.length + 1).padStart(3, '0')}`,
+          company_name: newPartner.company_name,
+          email: newPartner.email,
+          discount_rate: newPartner.discount_rate / 100,
+          created_at: new Date().toISOString().split('T')[0]
+        };
+        onAddPartner(partner);
+        setShowAddModal(false);
+        setNewPartner({ company_name: '', email: '', discount_rate: 0 });
+      };
+
+      return (
+        <div className="main-content">
+          <div className="partners-header">
+            <div>
+              <h1 className="page-title">파트너 관리</h1>
+            </div>
+            <button className="btn-primary" onClick={() => setShowAddModal(true)}>파트너 추가</button>
+          </div>
+
+          <input
+            type="text"
+            className="search-input"
+            placeholder="파트너명 또는 이메일로 검색"
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
+          />
+
+          <table className="products-table">
+            <thead>
+              <tr>
+                <th>파트너 ID</th>
+                <th>파트너명</th>
+                <th>이메일</th>
+                <th>할인율 (%)</th>
+                <th>등록일</th>
+                <th>수정</th>
+              </tr>
+            </thead>
+            <tbody>
+              {filteredPartners.map(partner => (
+                <tr key={partner.partner_id}>
+                  <td>{partner.partner_id}</td>
+                  <td>{partner.company_name}</td>
+                  <td>{partner.email}</td>
+                  <td>{(partner.discount_rate * 100).toFixed(0)}%</td>
+                  <td>{partner.created_at}</td>
+                  <td>
+                    <button className="btn-small" onClick={() => setEditingPartner(partner)}>수정</button>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+
+          {editingPartner && (
+            <div className="modal-overlay" onClick={() => setEditingPartner(null)}>
+              <div className="modal-content" onClick={(e) => e.stopPropagation()}>
+                <div className="modal-header">
+                  <h2 className="modal-title">파트너 할인율 수정</h2>
+                  <button className="modal-close" onClick={() => setEditingPartner(null)}>×</button>
+                </div>
+                <div className="modal-body">
+                  <div className="form-group">
+                    <label className="form-label">파트너명</label>
+                    <input className="form-input" type="text" value={editingPartner.company_name} disabled />
+                  </div>
+                  <div className="form-group">
+                    <label className="form-label">할인율 (%)</label>
+                    <input
+                      className="form-input"
+                      type="number"
+                      min="0"
+                      max="100"
+                      value={(editingPartner.discount_rate * 100).toFixed(0)}
+                      onChange={(e) => setEditingPartner({ ...editingPartner, discount_rate: parseFloat(e.target.value) / 100 })}
+                    />
+                  </div>
+                </div>
+                <div className="modal-footer">
+                  <button className="btn-cancel" onClick={() => setEditingPartner(null)}>취소</button>
+                  <button className="btn-primary" onClick={() => { onUpdatePartner(editingPartner); setEditingPartner(null); }}>저장</button>
+                </div>
+              </div>
+            </div>
+          )}
+
+          {showAddModal && (
+            <div className="modal-overlay" onClick={() => setShowAddModal(false)}>
+              <div className="modal-content" onClick={(e) => e.stopPropagation()}>
+                <div className="modal-header">
+                  <h2 className="modal-title">파트너 추가</h2>
+                  <button className="modal-close" onClick={() => setShowAddModal(false)}>×</button>
+                </div>
+                <div className="modal-body">
+                  <div className="form-group">
+                    <label className="form-label">파트너명</label>
+                    <input
+                      className="form-input"
+                      type="text"
+                      value={newPartner.company_name}
+                      onChange={(e) => setNewPartner({ ...newPartner, company_name: e.target.value })}
+                    />
+                  </div>
+                  <div className="form-group">
+                    <label className="form-label">이메일</label>
+                    <input
+                      className="form-input"
+                      type="email"
+                      value={newPartner.email}
+                      onChange={(e) => setNewPartner({ ...newPartner, email: e.target.value })}
+                    />
+                  </div>
+                  <div className="form-group">
+                    <label className="form-label">할인율 (%)</label>
+                    <input
+                      className="form-input"
+                      type="number"
+                      min="0"
+                      max="100"
+                      value={newPartner.discount_rate}
+                      onChange={(e) => setNewPartner({ ...newPartner, discount_rate: parseFloat(e.target.value) })}
+                    />
+                  </div>
+                </div>
+                <div className="modal-footer">
+                  <button className="btn-cancel" onClick={() => setShowAddModal(false)}>취소</button>
+                  <button className="btn-primary" onClick={handleAddPartner}>추가</button>
+                </div>
+              </div>
+            </div>
+          )}
+        </div>
+      );
+    };
+
+    const SettingsPage = ({ exchangeRate, onUpdateExchangeRate, onUpdateOrderSettings, orderSettingsEnabled }) => {
+      const [krwUsd, setKrwUsd] = useState(exchangeRate.krw_per_usd.toString());
+      const [effectiveDate, setEffectiveDate] = useState(exchangeRate.effective_date);
+      const [orderEnabled, setOrderEnabled] = useState(orderSettingsEnabled);
+      const [saved, setSaved] = useState(false);
+
+      const handleSave = () => {
+        onUpdateExchangeRate({ krw_per_usd: parseFloat(krwUsd), effective_date: effectiveDate });
+        onUpdateOrderSettings(orderEnabled);
+        setSaved(true);
+        setTimeout(() => setSaved(false), 2000);
+      };
+
+      return (
+        <div className="main-content">
+          <div className="settings-container">
+            <h1 className="page-title">설정</h1>
+
+            <div className="settings-card">
+              <h2 className="settings-card-title">환율 설정</h2>
+              <div className="settings-group">
+                <label className="settings-label">KRW / USD</label>
+                <input
+                  className="settings-input"
+                  type="number"
+                  step="0.01"
+                  value={krwUsd}
+                  onChange={(e) => setKrwUsd(e.target.value)}
+                />
+              </div>
+              <div className="settings-group">
+                <label className="settings-label">적용 시작일</label>
+                <input
+                  className="settings-input"
+                  type="date"
+                  value={effectiveDate}
+                  onChange={(e) => setEffectiveDate(e.target.value)}
+                />
+              </div>
+              <div className="settings-description">
+                현재 환율: 1 USD = {krwUsd} KRW (적용일: {effectiveDate})
+              </div>
+            </div>
+
+            <div className="settings-card">
+              <h2 className="settings-card-title">수주회 설정</h2>
+              <div className="settings-toggle-group">
+                <div>
+                  <label className="settings-label">주문 기능 활성화</label>
+                  <div className="settings-description">
+                    {orderEnabled ? '수주회 주문 기능이 활성화되어 있습니다.' : '수주회 주문 기능이 비활성화되어 있습니다.'}
+                  </div>
+                </div>
+                <label className="toggle-switch">
+                  <input
+                    type="checkbox"
+                    checked={orderEnabled}
+                    onChange={(e) => setOrderEnabled(e.target.checked)}
+                  />
+                  <span className="toggle-slider"></span>
+                </label>
+              </div>
+              {!orderEnabled && <div className="settings-warning">수주회 주문 기능이 비활성화되어 있습니다. 파트너사에서 주문을 할 수 없습니다.</div>}
+            </div>
+
+            <button className="btn-save" onClick={handleSave}>설정 저장</button>
+            {saved && <div className="save-feedback">저장되었습니다.</div>}
+
+            <div className="settings-info-box">
+              <strong>참고 사항</strong>
+              <ul>
+                <li>환율은 매월 1일에 자동 업데이트됩니다.</li>
+                <li>홀세일가 계산에 반영되며, 파트너 할인율이 적용됩니다.</li>
+                <li>수주회 기능이 비활성화되면 모든 파트너의 주문이 중지됩니다.</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      );
+    };
+
+    // Main App
+    function AdminConsole() {
+      const [isLoggedIn, setIsLoggedIn] = useState(false);
+      const [currentPage, setCurrentPage] = useState('dashboard');
+      const [products, setProducts] = useState(MOCK_PRODUCTS);
+      const [orders, setOrders] = useState(MOCK_ORDERS);
+      const [partners, setPartners] = useState(MOCK_PARTNERS);
+      const [exchangeRate, setExchangeRate] = useState(EXCHANGE_RATE);
+      const [orderSettingsEnabled, setOrderSettingsEnabled] = useState(true);
+
+      const handleLogin = () => {
+        setIsLoggedIn(true);
+        setCurrentPage('dashboard');
+      };
+
+      const handleLogout = () => {
+        setIsLoggedIn(false);
+        setCurrentPage('dashboard');
+      };
+
+      const handleNavigate = (page) => {
+        setCurrentPage(page);
+      };
+
+      const handleUpdateProduct = (updatedProduct) => {
+        setProducts(prev => prev.map(p => p.id === updatedProduct.id ? updatedProduct : p));
+      };
+
+      const handleUpdateOrder = (updatedOrder) => {
+        setOrders(prev => prev.map(o => o.order_id === updatedOrder.order_id ? updatedOrder : o));
+      };
+
+      const handleUpdatePartner = (updatedPartner) => {
+        setPartners(prev => prev.map(p => p.partner_id === updatedPartner.partner_id ? updatedPartner : p));
+      };
+
+      const handleAddPartner = (newPartner) => {
+        setPartners(prev => [...prev, newPartner]);
+      };
+
+      const handleUpdateExchangeRate = (newRate) => {
+        setExchangeRate(newRate);
+      };
+
+      return (
+        <>
+          {!isLoggedIn ? (
+            <LoginPage onLogin={handleLogin} />
+          ) : (
+            <>
+              <Header currentPage={currentPage} onNavigate={handleNavigate} onLogout={handleLogout} />
+              {currentPage === 'dashboard' && <Dashboard products={products} orders={orders} partners={partners} />}
+              {currentPage === 'products' && <ProductsPage products={products} onUpdateProduct={handleUpdateProduct} partners={partners} exchangeRate={exchangeRate} />}
+              {currentPage === 'orders' && <OrdersPage orders={orders} onUpdateOrder={handleUpdateOrder} products={products} />}
+              {currentPage === 'partners' && <PartnersPage partners={partners} onUpdatePartner={handleUpdatePartner} onAddPartner={handleAddPartner} />}
+              {currentPage === 'settings' && <SettingsPage exchangeRate={exchangeRate} onUpdateExchangeRate={handleUpdateExchangeRate} onUpdateOrderSettings={setOrderSettingsEnabled} orderSettingsEnabled={orderSettingsEnabled} />}
+            </>
+          )}
+        </>
+      );
+    }
+
+    ReactDOM.createRoot(document.getElementById('root')).render(<AdminConsole />);
+  </script>
+</body>
+</html>
