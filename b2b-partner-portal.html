@@ -2767,10 +2767,8 @@
                                                     <div className="order-info-value">{formatDateTime(order.created_at)}</div>
                                                 </div>
                                                 <div className="order-info-item">
-                                                    <div className="order-info-label">Status</div>
-                                                    <div className="order-info-value">
-                                                        <span className={`status-badge ${statusClassMap[order.status]}`}>{statusMap[order.status]}</span>
-                                                    </div>
+                                                    <div className="order-info-label">Last Updated</div>
+                                                    <div className="order-info-value">{formatDateTime(order.updated_at)}</div>
                                                 </div>
                                                 <div className="order-info-item">
                                                     <div className="order-info-label">Total Quantity</div>
@@ -2781,8 +2779,10 @@
                                                     <div className="order-info-value">{formatUSD(order.total_amount)}</div>
                                                 </div>
                                                 <div className="order-info-item">
-                                                    <div className="order-info-label">Last Updated</div>
-                                                    <div className="order-info-value">{formatDateTime(order.updated_at)}</div>
+                                                    <div className="order-info-label">Status</div>
+                                                    <div className="order-info-value">
+                                                        <span className={`status-badge ${statusClassMap[order.status]}`}>{statusMap[order.status]}</span>
+                                                    </div>
                                                 </div>
                                             </div>
                                             {order.rejection_reason && (
@@ -2820,12 +2820,8 @@
                                                     <div className="order-info-value">{formatDateTime(selectedOrder.created_at)}</div>
                                                 </div>
                                                 <div className="order-info-item">
-                                                    <div className="order-info-label">Status</div>
-                                                    <div className="order-info-value">
-                                                        <span className={`status-badge ${statusClassMap[selectedOrder.status]}`}>
-                                                            {statusMap[selectedOrder.status]}
-                                                        </span>
-                                                    </div>
+                                                    <div className="order-info-label">Last Updated</div>
+                                                    <div className="order-info-value">{formatDateTime(selectedOrder.updated_at)}</div>
                                                 </div>
                                                 <div className="order-info-item">
                                                     <div className="order-info-label">Total Quantity</div>
@@ -2836,8 +2832,12 @@
                                                     <div className="order-info-value">{formatUSD(selectedOrder.total_amount)}</div>
                                                 </div>
                                                 <div className="order-info-item">
-                                                    <div className="order-info-label">Last Updated</div>
-                                                    <div className="order-info-value">{formatDateTime(selectedOrder.updated_at)}</div>
+                                                    <div className="order-info-label">Status</div>
+                                                    <div className="order-info-value">
+                                                        <span className={`status-badge ${statusClassMap[selectedOrder.status]}`}>
+                                                            {statusMap[selectedOrder.status]}
+                                                        </span>
+                                                    </div>
                                                 </div>
                                             </div>
 
