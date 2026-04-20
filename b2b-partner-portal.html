@@ -1926,7 +1926,7 @@
                                                             title={color.name}
                                                         />
                                                         {idx === selectedColorIndex && (
-                                                            <div className="color-swatch-label" style={product.colors.length === 1 ? { left: 0 } : { left: '50%', transform: 'translateX(-50%)' }}>{color.name}</div>
+                                                            <div className="color-swatch-label" style={idx === 0 ? { left: 0 } : { left: '50%', transform: 'translateX(-50%)' }}>{color.name}</div>
                                                         )}
                                                     </div>
                                                 ))}
