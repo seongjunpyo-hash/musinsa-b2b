@@ -439,11 +439,16 @@
             object-fit: cover;
         }
 
+        .product-badges {
+            display: flex;
+            gap: 6px;
+            margin-bottom: 4px;
+        }
+
         .product-badge {
-            position: absolute;
-            top: 0.75rem;
-            padding: 4px 8px;
-            font-size: 12px;
+            display: inline-block;
+            padding: 2px 6px;
+            font-size: 11px;
             font-weight: var(--btn-font-weight);
             letter-spacing: 0;
             text-transform: uppercase;
@@ -453,14 +458,12 @@
         .badge-season {
             background: var(--color-bg-contrast);
             color: var(--color-fg-on-contrast);
-            left: 0.75rem;
         }
 
         .badge-hero {
             background: var(--color-bg-low);
             color: var(--color-fg);
-            right: 0.75rem;
-            border: 2px solid var(--color-border-strong);
+            border: 1px solid var(--color-border-strong);
         }
 
         .product-info {
@@ -1703,11 +1706,13 @@
                 <div className="product-card" onClick={() => onSelect(product)}>
                     <div className={`product-image-container`} style={cartQty > 0 ? { position: 'relative' } : {}}>
                         <img src={product.colors[0].images[0]} alt={product.name} className="product-image" />
-                        {seasonLabel && <div className="product-badge badge-season">{seasonLabel}</div>}
-                        {product.is_hero && <div className="product-badge badge-hero">HERO</div>}
                         {cartQty > 0 && <div className="product-qty-bar">QTY: {cartQty} <button onClick={(e) => { e.stopPropagation(); }}>REMOVE</button></div>}
                     </div>
                     <div className="product-info">
+                        {(seasonLabel || product.is_hero) && <div className="product-badges">
+                            {seasonLabel && <span className="product-badge badge-season">{seasonLabel}</span>}
+                            {product.is_hero && <span className="product-badge badge-hero">HERO</span>}
+                        </div>}
                         <div className="product-name">{product.name}</div>
                         <div className="product-meta">{product.style_no} · {product.colors[0].name} · {product.gender} · {seasonLabel}</div>
                         <div className="product-price">{formatUSD(wholesalePrice)}</div>
