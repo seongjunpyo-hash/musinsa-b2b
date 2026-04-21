@@ -795,6 +795,16 @@
             border-color: var(--color-border-strong);
         }
 
+        .filter-select.active {
+            background: var(--color-bg-contrast) url("data:image/svg+xml,%3Csvg width='10' height='6' viewBox='0 0 10 6' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M1 1L5 5L9 1' stroke='%23ffffff' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E") no-repeat right 10px center !important;
+            color: var(--color-fg-on-contrast) !important;
+            border-color: var(--color-bg-contrast) !important;
+        }
+
+        .filter-select.active:hover {
+            border-color: var(--color-bg-contrast) !important;
+        }
+
         .cat-multi-select {
             position: relative;
         }
@@ -2905,6 +2915,8 @@
             const [selectedSubCats, setSelectedSubCats] = useState({});
             const [catDropdownOpen, setCatDropdownOpen] = useState(null);
             const catDropdownRef = React.useRef(null);
+            const [filterDropdownOpen, setFilterDropdownOpen] = useState(null);
+            const filterDropdownRef = React.useRef(null);
             const [showSearch, setShowSearch] = useState(false);
             const [orderSubmitted, setOrderSubmitted] = useState(false);
             const [editingProduct, setEditingProduct] = useState(null);
@@ -2952,6 +2964,7 @@
             useEffect(() => {
                 const handleClickOutside = (e) => {
                     if (catDropdownRef.current && !catDropdownRef.current.contains(e.target)) setCatDropdownOpen(null);
+                    if (filterDropdownRef.current && !filterDropdownRef.current.contains(e.target)) setFilterDropdownOpen(null);
                 };
                 document.addEventListener('mousedown', handleClickOutside);
                 return () => document.removeEventListener('mousedown', handleClickOutside);
@@ -3249,24 +3262,29 @@
                                         return (
                                             <div key={cat} className="cat-multi-select">
                                                 <button className={`category-btn ${isActive ? 'active' : ''}`}
-                                                    onClick={() => {
-                                                        if (isActive) {
-                                                            setCatDropdownOpen(catDropdownOpen === cat ? null : cat);
-                                                        } else {
-                                                            setSelectedMainCats(prev => [...prev, cat]);
-                                                            setCatDropdownOpen(cat);
-                                                        }
-                                                    }}>
+                                                    onClick={() => setCatDropdownOpen(catDropdownOpen === cat ? null : cat)}>
                                                     {cat}
                                                     {isActive && catSubs.length > 0 && <span style={{fontSize:'11px',marginLeft:'4px',opacity:0.85}}>({catSubs.length})</span>}
-                                                    {isActive && subs.length > 0 && <span style={{fontSize:'9px',marginLeft:'4px',opacity:0.6}}>{catDropdownOpen === cat ? '▲' : '▼'}</span>}
+                                                    {subs.length > 0 && (
+                                                        <svg width="10" height="6" viewBox="0 0 10 6" fill="none" style={{marginLeft:'6px',opacity: isActive ? 1 : 0.5,transform: catDropdownOpen === cat ? 'rotate(180deg)' : 'none',transition:'transform 0.15s, opacity 0.15s'}}>
+                                                            <path d="M1 1L5 5L9 1" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+                                                        </svg>
+                                                    )}
                                                 </button>
                                                 {catDropdownOpen === cat && subs.length > 0 && (() => {
                                                     const allChecked = catSubs.length === subs.length;
                                                     return (
                                                     <div className="cat-multi-dropdown">
                                                         <div className="cat-multi-option" onClick={() => {
-                                                            setSelectedSubCats(prev => ({ ...prev, [cat]: allChecked ? [] : [...subs] }));
+                                                            if (allChecked) {
+                                                                // deselect all → also remove major category
+                                                                setSelectedSubCats(prev => ({ ...prev, [cat]: [] }));
+                                                                setSelectedMainCats(prev => prev.filter(c => c !== cat));
+                                                                setCatDropdownOpen(null);
+                                                            } else {
+                                                                setSelectedSubCats(prev => ({ ...prev, [cat]: [...subs] }));
+                                                                setSelectedMainCats(prev => prev.includes(cat) ? prev : [...prev, cat]);
+                                                            }
                                                         }}>
                                                             <div className={`cat-multi-check ${allChecked ? 'checked' : ''}`}>{allChecked ? '✓' : ''}</div>
                                                             <span style={{fontWeight:600}}>All</span>
@@ -3276,30 +3294,20 @@
                                                             const checked = catSubs.includes(sub);
                                                             return (
                                                                 <div key={sub} className="cat-multi-option" onClick={() => {
-                                                                    setSelectedSubCats(prev => {
-                                                                        const cur = prev[cat] || [];
-                                                                        return { ...prev, [cat]: cur.includes(sub) ? cur.filter(v => v !== sub) : [...cur, sub] };
-                                                                    });
+                                                                    const next = checked ? catSubs.filter(v => v !== sub) : [...catSubs, sub];
+                                                                    setSelectedSubCats(prev => ({ ...prev, [cat]: next }));
+                                                                    if (checked && next.length === 0) {
+                                                                        setSelectedMainCats(prev => prev.filter(c => c !== cat));
+                                                                        setCatDropdownOpen(null);
+                                                                    } else if (!checked) {
+                                                                        setSelectedMainCats(prev => prev.includes(cat) ? prev : [...prev, cat]);
+                                                                    }
                                                                 }}>
                                                                     <div className={`cat-multi-check ${checked ? 'checked' : ''}`}>{checked ? '✓' : ''}</div>
                                                                     {sub}
                                                                 </div>
                                                             );
                                                         })}
-                                                        {catSubs.length > 0 && (
-                                                            <>
-                                                                <div className="cat-multi-divider"></div>
-                                                                <div className="cat-multi-clear" onClick={(e) => {
-                                                                    e.stopPropagation();
-                                                                    setSelectedSubCats(prev => ({ ...prev, [cat]: [] }));
-                                                                    setSelectedMainCats(prev => prev.filter(c => c !== cat));
-                                                                    setCatDropdownOpen(null);
-                                                                }}>
-                                                                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" style={{marginRight:'6px'}}><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
-                                                                    Clear
-                                                                </div>
-                                                            </>
-                                                        )}
                                                     </div>
                                                     );
                                                 })()}
@@ -3327,19 +3335,60 @@
 
                                 <div className="filter-divider"></div>
 
-                                <select className="filter-select" value={filterYear} onChange={(e) => setFilterYear(e.target.value)}>
-                                    <option value="All">All Years</option>
-                                    <option value="2025">2025</option>
-                                    <option value="2026">2026</option>
-                                    <option value="2027">2027</option>
-                                </select>
-                                <select className="filter-select" value={filterSeason} onChange={(e) => setFilterSeason(e.target.value)}>
-                                    <option value="All">All Seasons</option>
-                                    <option value="S/S">S/S</option>
-                                    <option value="F/W">F/W</option>
-                                    <option value="Special">Special</option>
-                                    <option value="Carry Over">Carry Over</option>
-                                </select>
+                                <div ref={filterDropdownRef} style={{display:'inline-flex',gap:'0.375rem'}}>
+                                    <div className="cat-multi-select">
+                                        <button
+                                            className={`category-btn ${filterYear !== 'All' ? 'active' : ''}`}
+                                            onClick={() => setFilterDropdownOpen(filterDropdownOpen === 'year' ? null : 'year')}
+                                        >
+                                            {filterYear === 'All' ? 'Year' : filterYear}
+                                            <svg width="10" height="6" viewBox="0 0 10 6" fill="none" style={{marginLeft:'6px',opacity: filterYear !== 'All' ? 1 : 0.5,transform: filterDropdownOpen === 'year' ? 'rotate(180deg)' : 'none',transition:'transform 0.15s, opacity 0.15s'}}>
+                                                <path d="M1 1L5 5L9 1" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+                                            </svg>
+                                        </button>
+                                        {filterDropdownOpen === 'year' && (
+                                            <div className="cat-multi-dropdown">
+                                                <div className="cat-multi-option" onClick={() => { setFilterYear('All'); setFilterDropdownOpen(null); }} style={{fontWeight: filterYear === 'All' ? 600 : 400}}>
+                                                    All
+                                                </div>
+                                                {['2025','2026','2027'].map(y => {
+                                                    const checked = filterYear === y;
+                                                    return (
+                                                        <div key={y} className="cat-multi-option" onClick={() => { setFilterYear(checked ? 'All' : y); setFilterDropdownOpen(null); }} style={{fontWeight: checked ? 600 : 400}}>
+                                                            {y}
+                                                        </div>
+                                                    );
+                                                })}
+                                            </div>
+                                        )}
+                                    </div>
+                                    <div className="cat-multi-select">
+                                        <button
+                                            className={`category-btn ${filterSeason !== 'All' ? 'active' : ''}`}
+                                            onClick={() => setFilterDropdownOpen(filterDropdownOpen === 'season' ? null : 'season')}
+                                        >
+                                            {filterSeason === 'All' ? 'Season' : filterSeason}
+                                            <svg width="10" height="6" viewBox="0 0 10 6" fill="none" style={{marginLeft:'6px',opacity: filterSeason !== 'All' ? 1 : 0.5,transform: filterDropdownOpen === 'season' ? 'rotate(180deg)' : 'none',transition:'transform 0.15s, opacity 0.15s'}}>
+                                                <path d="M1 1L5 5L9 1" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+                                            </svg>
+                                        </button>
+                                        {filterDropdownOpen === 'season' && (
+                                            <div className="cat-multi-dropdown">
+                                                <div className="cat-multi-option" onClick={() => { setFilterSeason('All'); setFilterDropdownOpen(null); }} style={{fontWeight: filterSeason === 'All' ? 600 : 400}}>
+                                                    All
+                                                </div>
+                                                {['S/S','F/W','Special','Carry Over'].map(s => {
+                                                    const checked = filterSeason === s;
+                                                    return (
+                                                        <div key={s} className="cat-multi-option" onClick={() => { setFilterSeason(checked ? 'All' : s); setFilterDropdownOpen(null); }} style={{fontWeight: checked ? 600 : 400}}>
+                                                            {s}
+                                                        </div>
+                                                    );
+                                                })}
+                                            </div>
+                                        )}
+                                    </div>
+                                </div>
 
                                 <div className="filter-divider"></div>
 
