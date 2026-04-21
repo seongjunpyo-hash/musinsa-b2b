@@ -588,7 +588,7 @@
         }
 
         .badge-hero {
-            background: var(--color-bg-low);
+            background: #fff;
             color: var(--color-fg);
             border: 1px solid var(--color-border-strong);
         }
@@ -875,6 +875,9 @@
         .modal-title {
             font-size: 1.25rem;
             font-weight: 700;
+            display: flex;
+            align-items: center;
+            gap: 6px;
         }
 
         .modal-close {
@@ -1978,8 +1981,6 @@
         }
 
         .order-info-grid {
-            flex: 1;
-            min-width: 0;
             display: flex;
             align-items: flex-start;
             gap: 1.5rem;
@@ -2495,9 +2496,9 @@
                     <div className="modal-content" onClick={(e) => e.stopPropagation()}>
                         <div className="modal-header">
                             <div className="modal-title">
-                                {product.name}
-                                {product.season && product.season.year === LATEST_SEASON.year && product.season.season === LATEST_SEASON.season && <span className="product-badge badge-season" style={{marginLeft:'8px',verticalAlign:'middle',fontSize:'11px'}}>NEW</span>}
-                                {product.is_hero && <span className="product-badge badge-hero" style={{marginLeft: product.season && product.season.year === LATEST_SEASON.year && product.season.season === LATEST_SEASON.season ? '4px' : '8px',verticalAlign:'middle',fontSize:'11px'}}>HERO</span>}
+                                {product.season && product.season.year === LATEST_SEASON.year && product.season.season === LATEST_SEASON.season && <span className="product-badge badge-season" style={{fontSize:'11px'}}>NEW</span>}
+                                {product.is_hero && <span className="product-badge badge-hero" style={{fontSize:'11px'}}>HERO</span>}
+                                <span>{product.name}</span>
                             </div>
                             <button className="modal-close" onClick={onClose}>×</button>
                         </div>
