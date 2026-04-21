@@ -519,6 +519,10 @@
             margin: 0 auto;
         }
 
+        .hero-section + .collections-section {
+            margin-top: 40px;
+        }
+
         .collections-section:last-child {
             padding-bottom: 6rem;
         }
@@ -2879,8 +2883,9 @@
             const [selectedProduct, setSelectedProduct] = useState(null);
             const [modalOpen, setModalOpen] = useState(false);
             const [searchTerm, setSearchTerm] = useState('');
-            const [selectedCategories, setSelectedCategories] = useState([]);
-            const [catDropdownOpen, setCatDropdownOpen] = useState(false);
+            const [selectedMainCats, setSelectedMainCats] = useState([]);
+            const [selectedSubCats, setSelectedSubCats] = useState({});
+            const [catDropdownOpen, setCatDropdownOpen] = useState(null);
             const catDropdownRef = React.useRef(null);
             const [showSearch, setShowSearch] = useState(false);
             const [orderSubmitted, setOrderSubmitted] = useState(false);
@@ -2889,7 +2894,7 @@
             const [activeFilter, setActiveFilter] = useState('all');
             const [filterYear, setFilterYear] = useState('All');
             const [filterSeason, setFilterSeason] = useState('All');
-            const [filterGender, setFilterGender] = useState('All');
+            const [selectedGenders, setSelectedGenders] = useState([]);
             const [orders, setOrders] = useState(ORDERS);
             const [scrollY, setScrollY] = useState(0);
             const [heroRevealed, setHeroRevealed] = useState(false);
@@ -2928,7 +2933,7 @@
 
             useEffect(() => {
                 const handleClickOutside = (e) => {
-                    if (catDropdownRef.current && !catDropdownRef.current.contains(e.target)) setCatDropdownOpen(false);
+                    if (catDropdownRef.current && !catDropdownRef.current.contains(e.target)) setCatDropdownOpen(null);
                 };
                 document.addEventListener('mousedown', handleClickOutside);
                 return () => document.removeEventListener('mousedown', handleClickOutside);
@@ -2981,16 +2986,16 @@
 
             const getVisibleProducts = () => {
                 return PRODUCTS.filter(p => p.is_visible).filter(p => {
-                    if (selectedCategories.length > 0) {
-                        const hasCat = selectedCategories.some(s => !s.includes('::') && p.category === s);
-                        const hasSub = selectedCategories.some(s => s.includes('::') && (() => { const [cat, sub] = s.split('::'); return p.category === cat && p.sub_category === sub; })());
-                        if (!hasCat && !hasSub) return false;
+                    if (selectedMainCats.length > 0) {
+                        if (!selectedMainCats.includes(p.category)) return false;
+                        const subs = selectedSubCats[p.category];
+                        if (subs && subs.length > 0 && !subs.includes(p.sub_category)) return false;
                     }
                     if (searchTerm && !p.name.toLowerCase().includes(searchTerm.toLowerCase()) && !p.style_no.toLowerCase().includes(searchTerm.toLowerCase())) return false;
                     if (activeFilter === 'hero' && !p.is_hero) return false;
                     if (filterYear !== 'All' && p.season && p.season.year !== parseInt(filterYear)) return false;
                     if (filterSeason !== 'All' && p.season && p.season.season !== filterSeason) return false;
-                    if (filterGender !== 'All' && p.gender !== filterGender) return false;
+                    if (selectedGenders.length > 0 && !selectedGenders.includes(p.gender)) return false;
                     return true;
                 });
             };
@@ -3218,68 +3223,64 @@
                             </div>
                             <div className="filters-sticky">
                             <div className="filters-row">
-                                <div className="cat-multi-select" ref={catDropdownRef}>
-                                    <button className="cat-multi-btn" onClick={() => setCatDropdownOpen(!catDropdownOpen)}>
-                                        {selectedCategories.length === 0 ? 'All Categories' : (
-                                            <div className="cat-multi-tags">
-                                                {selectedCategories.map(s => (
-                                                    <span key={s} className="cat-multi-tag">
-                                                        {s.includes('::') ? s.split('::')[1] : s}
-                                                        <span style={{marginLeft:'4px',cursor:'pointer',opacity:0.7}} onClick={(e) => { e.stopPropagation(); setSelectedCategories(prev => prev.filter(v => v !== s)); }}>×</span>
-                                                    </span>
-                                                ))}
-                                            </div>
-                                        )}
-                                        {selectedCategories.length > 0 && (
-                                            <span style={{marginLeft:'2px',marginRight:'6px',fontSize:'11px',color:'#888',cursor:'pointer',textDecoration:'underline',textUnderlineOffset:'2px'}} onClick={(e) => { e.stopPropagation(); setSelectedCategories([]); }}>Clear</span>
-                                        )}
-                                        <span className="arrow">{catDropdownOpen ? '▲' : '▼'}</span>
-                                    </button>
-                                    {catDropdownOpen && (
-                                        <div className="cat-multi-dropdown">
-                                            <div className="cat-multi-option" onClick={() => { setSelectedCategories([]); setCatDropdownOpen(false); }}>
-                                                <div className={`cat-multi-check ${selectedCategories.length === 0 ? 'checked' : ''}`}>{selectedCategories.length === 0 ? '✓' : ''}</div>
-                                                <strong>All Categories</strong>
-                                            </div>
-                                            <div className="cat-multi-divider"></div>
-                                            {[...new Set(PRODUCTS.filter(p => p.is_visible).map(p => p.category))].map((cat, ci) => {
-                                                const subs = [...new Set(PRODUCTS.filter(p => p.is_visible && p.category === cat).map(p => p.sub_category).filter(Boolean))];
-                                                const toggleItem = (val) => {
-                                                    setSelectedCategories(prev => prev.includes(val) ? prev.filter(v => v !== val) : [...prev, val]);
-                                                };
-                                                return (
-                                                    <React.Fragment key={cat}>
-                                                        {ci > 0 && <div className="cat-multi-divider"></div>}
-                                                        <div className="cat-multi-group-label">{cat}</div>
+                                <div className="category-buttons" ref={catDropdownRef} style={{position:'relative'}}>
+                                    {[...new Set(PRODUCTS.filter(p => p.is_visible).map(p => p.category))].map(cat => {
+                                        const isActive = selectedMainCats.includes(cat);
+                                        const subs = [...new Set(PRODUCTS.filter(p => p.is_visible && p.category === cat).map(p => p.sub_category).filter(Boolean))];
+                                        const catSubs = selectedSubCats[cat] || [];
+                                        return (
+                                            <div key={cat} className="cat-multi-select">
+                                                <button className={`category-btn ${isActive ? 'active' : ''}`}
+                                                    onClick={() => {
+                                                        if (isActive) {
+                                                            setCatDropdownOpen(catDropdownOpen === cat ? null : cat);
+                                                        } else {
+                                                            setSelectedMainCats(prev => [...prev, cat]);
+                                                            setCatDropdownOpen(cat);
+                                                        }
+                                                    }}>
+                                                    {cat}
+                                                    {isActive && catSubs.length > 0 && <span style={{fontSize:'11px',marginLeft:'4px',opacity:0.85}}>({catSubs.length})</span>}
+                                                    {isActive && subs.length > 0 && <span style={{fontSize:'9px',marginLeft:'4px',opacity:0.6}}>{catDropdownOpen === cat ? '▲' : '▼'}</span>}
+                                                </button>
+                                                {catDropdownOpen === cat && subs.length > 0 && (
+                                                    <div className="cat-multi-dropdown">
                                                         {subs.map(sub => {
-                                                            const val = `${cat}::${sub}`;
-                                                            const checked = selectedCategories.includes(val);
+                                                            const checked = catSubs.includes(sub);
                                                             return (
-                                                                <div key={sub} className="cat-multi-option" onClick={() => toggleItem(val)}>
+                                                                <div key={sub} className="cat-multi-option" onClick={() => {
+                                                                    setSelectedSubCats(prev => {
+                                                                        const cur = prev[cat] || [];
+                                                                        return { ...prev, [cat]: cur.includes(sub) ? cur.filter(v => v !== sub) : [...cur, sub] };
+                                                                    });
+                                                                }}>
                                                                     <div className={`cat-multi-check ${checked ? 'checked' : ''}`}>{checked ? '✓' : ''}</div>
                                                                     {sub}
                                                                 </div>
                                                             );
                                                         })}
-                                                    </React.Fragment>
-                                                );
-                                            })}
-                                        </div>
-                                    )}
+                                                    </div>
+                                                )}
+                                            </div>
+                                        );
+                                    })}
                                 </div>
 
                                 <div className="filter-divider"></div>
 
                                 <div className="category-buttons">
-                                    {['All', 'Male', 'Female', 'Kids'].map(g => (
-                                        <button
-                                            key={g}
-                                            className={`category-btn ${filterGender === g ? 'active' : ''}`}
-                                            onClick={() => setFilterGender(g)}
-                                        >
-                                            {g}
-                                        </button>
-                                    ))}
+                                    {['Male', 'Female', 'Kids', 'Accessories'].map(g => {
+                                        const isOn = selectedGenders.includes(g);
+                                        return (
+                                            <button
+                                                key={g}
+                                                className={`category-btn ${isOn ? 'active' : ''}`}
+                                                onClick={() => setSelectedGenders(prev => isOn ? prev.filter(x => x !== g) : [...prev, g])}
+                                            >
+                                                {g}
+                                            </button>
+                                        );
+                                    })}
                                 </div>
 
                                 <div className="filter-divider"></div>
@@ -3307,10 +3308,11 @@
                                     HERO
                                 </button>
 
-                                {(selectedCategories.length > 0 || filterGender !== 'All' || filterYear !== 'All' || filterSeason !== 'All' || activeFilter !== 'all') && (
+                                {(selectedMainCats.length > 0 || selectedGenders.length > 0 || filterYear !== 'All' || filterSeason !== 'All' || activeFilter !== 'all') && (
                                     <button className="filter-reset" onClick={() => {
-                                        setSelectedCategories([]);
-                                        setFilterGender('All');
+                                        setSelectedMainCats([]);
+                                        setSelectedSubCats({});
+                                        setSelectedGenders([]);
                                         setFilterYear('All');
                                         setFilterSeason('All');
                                         setActiveFilter('all');
@@ -3349,7 +3351,7 @@
                                         </svg>
                                         <h2 style={{ fontSize: '1.5rem', fontWeight: 700, marginBottom: '0.5rem', color: 'var(--color-fg)' }}>No products found</h2>
                                         <p style={{ color: '#888', marginBottom: '2rem' }}>Try adjusting your filters to find what you're looking for.</p>
-                                        <button className="btn-black" style={{ width: 'auto', padding: '10px 24px', fontSize: '13px' }} onClick={() => { setSelectedCategories([]); setFilterGender('All'); setFilterYear('All'); setFilterSeason('All'); setActiveFilter('all'); setSearchTerm(''); }}>Reset Filters</button>
+                                        <button className="btn-black" style={{ width: 'auto', padding: '10px 24px', fontSize: '13px' }} onClick={() => { setSelectedMainCats([]); setSelectedSubCats({}); setSelectedGenders([]); setFilterYear('All'); setFilterSeason('All'); setActiveFilter('all'); setSearchTerm(''); }}>Reset Filters</button>
                                     </div>
                                 ) : (
                                     <div className="product-grid">
