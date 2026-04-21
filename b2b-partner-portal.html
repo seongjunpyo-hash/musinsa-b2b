@@ -404,6 +404,29 @@
             will-change: min-height;
         }
 
+        /* Scroll-reveal: text fades in after auto-scroll completes */
+        .hero-section .hero-label,
+        .hero-section .hero-title,
+        .hero-section .hero-subtitle,
+        .hero-section .btn-white {
+            opacity: 0;
+            transform: translateY(18px);
+            transition: opacity 0.5s ease, transform 0.5s ease;
+        }
+
+        .hero-section.hero-revealed .hero-label,
+        .hero-section.hero-revealed .hero-title,
+        .hero-section.hero-revealed .hero-subtitle,
+        .hero-section.hero-revealed .btn-white {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .hero-section.hero-revealed .hero-label { transition-delay: 0s; }
+        .hero-section.hero-revealed .hero-title { transition-delay: 0.12s; }
+        .hero-section.hero-revealed .hero-subtitle { transition-delay: 0.24s; }
+        .hero-section.hero-revealed .btn-white { transition-delay: 0.36s; }
+
         .hero-bg {
             position: absolute;
             inset: 0;
@@ -496,8 +519,12 @@
             margin: 0 auto;
         }
 
+        .collections-section:last-child {
+            padding-bottom: 6rem;
+        }
+
         .section-title {
-            font-size: 1.25rem;
+            font-size: 1.5rem;
             font-weight: 700;
             margin-bottom: 0.5rem;
             text-transform: uppercase;
@@ -1625,8 +1652,8 @@
             flex: 1;
             min-height: 0;
             overflow-y: auto;
-            margin-bottom: 1.5rem;
-            border-bottom: 2px solid var(--color-border-strong);
+            margin-bottom: 0;
+            border-bottom: none;
         }
 
         .confirm-table {
@@ -1737,17 +1764,23 @@
             background: var(--color-bg-low);
         }
 
+        .checkout-footer {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-top: 0;
+            margin-bottom: 24px;
+            padding-top: 1.5rem;
+            border-top: 2px solid var(--color-border-strong);
+        }
+
         .totals-row {
             display: flex;
-            justify-content: flex-end;
             gap: 3rem;
-            margin-top: 1rem;
-            padding-top: 1rem;
-            border-top: none;
         }
 
         .total-item {
-            text-align: right;
+            text-align: left;
         }
 
         .total-label {
@@ -1763,9 +1796,7 @@
 
         .confirm-buttons {
             display: flex;
-            justify-content: flex-end;
             gap: 0.75rem;
-            margin-top: 1.5rem;
         }
 
         .confirm-buttons .btn-outline-black {
@@ -2704,6 +2735,31 @@
             const [filterGender, setFilterGender] = useState('All');
             const [orders, setOrders] = useState(ORDERS);
             const [scrollY, setScrollY] = useState(0);
+            const [heroRevealed, setHeroRevealed] = useState(false);
+            const heroScrollDone = React.useRef(false);
+
+            useEffect(() => {
+                if (page !== 'home') {
+                    heroScrollDone.current = false;
+                    setHeroRevealed(false);
+                    return;
+                }
+                if (heroScrollDone.current) return;
+                // Start scrolled down to products/GNB level
+                const heroEl = document.querySelector('.hero-section');
+                const offset = heroEl ? heroEl.offsetHeight : 600;
+                window.scrollTo(0, offset);
+                // After a brief pause, smooth-scroll up to reveal hero
+                const t1 = setTimeout(() => {
+                    window.scrollTo({ top: 0, behavior: 'smooth' });
+                }, 300);
+                // After scroll completes, fade in text
+                const t2 = setTimeout(() => {
+                    setHeroRevealed(true);
+                    heroScrollDone.current = true;
+                }, 1200);
+                return () => { clearTimeout(t1); clearTimeout(t2); };
+            }, [page]);
 
             useEffect(() => {
                 if (page !== 'home') return;
@@ -2771,11 +2827,11 @@
             };
 
             const getNewProducts = () => {
-                return PRODUCTS.filter(p => p.is_visible && p.season && p.season.year === LATEST_SEASON.year && p.season.season === LATEST_SEASON.season).slice(0, 5);
+                return PRODUCTS.filter(p => p.is_visible && p.season && p.season.year === LATEST_SEASON.year && p.season.season === LATEST_SEASON.season).slice(0, 10);
             };
             const getHeroProducts = () => {
                 const newIds = new Set(getNewProducts().map(p => p.id));
-                return PRODUCTS.filter(p => p.is_hero && p.is_visible && !newIds.has(p.id)).slice(0, 10);
+                return PRODUCTS.filter(p => p.is_hero && p.is_visible && !newIds.has(p.id)).slice(0, 5);
             };
 
             const stats = getCartStats();
@@ -2896,7 +2952,7 @@
                     {page === 'home' && (
                         <div className="page">
                             <div
-                                className="hero-section"
+                                className={`hero-section ${heroRevealed ? 'hero-revealed' : ''}`}
                                 style={{
                                     minHeight: `${80 - 40 * heroCollapse}vh`,
                                     paddingTop: `${6 - 3 * heroCollapse}rem`,
@@ -2925,9 +2981,9 @@
                                 <div style={{ display: 'flex', alignItems: 'baseline', justifyContent: 'space-between', marginBottom: '2rem' }}>
                                     <div style={{ display: 'flex', alignItems: 'baseline', gap: '12px' }}>
                                         <h3 className="section-title" style={{ margin: 0 }}>New Arrivals — 27 S/S</h3>
-                                        <span style={{ color: '#888', fontSize: '14px' }}>{PRODUCTS.filter(p => p.is_visible && p.season && p.season.year === LATEST_SEASON.year && p.season.season === LATEST_SEASON.season).length} items</span>
+                                        <span style={{ color: '#888', fontSize: '16px' }}>{PRODUCTS.filter(p => p.is_visible && p.season && p.season.year === LATEST_SEASON.year && p.season.season === LATEST_SEASON.season).length} items</span>
                                     </div>
-                                    <button onClick={() => { setFilterYear(String(LATEST_SEASON.year)); setFilterSeason(LATEST_SEASON.season); setActiveFilter('all'); setPage('products'); }} style={{ background: 'none', border: 'none', color: '#888', fontSize: '14px', cursor: 'pointer', textDecoration: 'underline', textUnderlineOffset: '4px' }}>View all</button>
+                                    <button onClick={() => { setFilterYear(String(LATEST_SEASON.year)); setFilterSeason(LATEST_SEASON.season); setActiveFilter('all'); setPage('products'); }} style={{ background: 'none', border: 'none', color: '#888', fontSize: '16px', cursor: 'pointer', textDecoration: 'underline', textUnderlineOffset: '4px' }}>View all</button>
                                 </div>
                                 <div className="product-grid">
                                     {getNewProducts().map(product => (
@@ -2949,9 +3005,9 @@
                                 <div style={{ display: 'flex', alignItems: 'baseline', justifyContent: 'space-between', marginBottom: '2rem' }}>
                                     <div style={{ display: 'flex', alignItems: 'baseline', gap: '12px' }}>
                                         <h3 className="section-title" style={{ margin: 0 }}>HERO PRODUCTS</h3>
-                                        <span style={{ color: '#888', fontSize: '14px' }}>{PRODUCTS.filter(p => p.is_hero && p.is_visible).length} items</span>
+                                        <span style={{ color: '#888', fontSize: '16px' }}>{PRODUCTS.filter(p => p.is_hero && p.is_visible).length} items</span>
                                     </div>
-                                    <button onClick={() => { setActiveFilter('hero'); setPage('products'); }} style={{ background: 'none', border: 'none', color: '#888', fontSize: '14px', cursor: 'pointer', textDecoration: 'underline', textUnderlineOffset: '4px' }}>View all</button>
+                                    <button onClick={() => { setActiveFilter('hero'); setPage('products'); }} style={{ background: 'none', border: 'none', color: '#888', fontSize: '16px', cursor: 'pointer', textDecoration: 'underline', textUnderlineOffset: '4px' }}>View all</button>
                                 </div>
                                 <div className="product-grid">
                                     {getHeroProducts().map(product => (
@@ -3386,6 +3442,7 @@
                                 </table>
                                 </div>
 
+                                <div className="checkout-footer">
                                 <div className="totals-row">
                                     <div className="total-item">
                                         <div className="total-label">Total Styles</div>
@@ -3441,6 +3498,7 @@
                                         setCart({});
                                         setOrderSubmitted(true);
                                     }}>Submit Order</button>
+                                </div>
                                 </div>
                             </div>
                         </div>
