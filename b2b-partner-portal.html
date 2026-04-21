@@ -7,6 +7,7 @@
     <script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
     <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
     <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.min.css" />
     <link rel="stylesheet" href="design-system/layer-desktop.css" />
     <style>
@@ -1009,26 +1010,166 @@
         }
 
         .color-tag {
+            position: relative;
             display: flex;
-            align-items: center;
-            gap: 0.75rem;
-            padding: 0.75rem 1rem;
+            flex-direction: column;
+            gap: 0.3rem;
+            padding: 0.75rem 2.25rem 0.75rem 1rem;
             background: var(--color-bg-low);
             border-radius: var(--radius-sm);
-            font-size: 0.8125rem;
         }
 
         .color-tag-name {
+            font-size: 0.6875rem;
             font-weight: 600;
-            min-width: 40px;
+            letter-spacing: 0.06em;
+            color: var(--color-fg-low);
+            text-transform: uppercase;
         }
 
         .color-tag-sizes {
-            flex: 1;
+            display: flex;
+            flex-wrap: wrap;
+            align-items: baseline;
+            gap: 0.25rem 0;
+            font-size: 1rem;
             color: var(--color-fg);
+            line-height: 1.4;
+        }
+
+        .size-qty-pair {
+            display: inline-flex;
+            align-items: baseline;
+            gap: 0.35rem;
+            padding: 0 0.7rem;
+            border-right: 1px solid rgba(0, 0, 0, 0.18);
+        }
+
+        .size-qty-pair:first-child {
+            padding-left: 0;
+        }
+
+        .size-qty-pair:last-child {
+            border-right: none;
+            padding-right: 0;
+        }
+
+        /* Bulk size quantity helper bar */
+        .bulk-size-helper {
+            display: flex;
+            flex-wrap: nowrap;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.625rem 0.75rem;
+            background: var(--color-bg-low);
+            border-radius: var(--radius-sm);
+            margin-bottom: 0.875rem;
+            font-size: 0.8125rem;
+            white-space: nowrap;
+        }
+
+        .bulk-size-helper > * {
+            flex-shrink: 0;
+        }
+
+        .bulk-size-helper select {
+            min-width: 0;
+        }
+
+        .bulk-size-helper-label {
+            font-size: 0.6875rem;
+            font-weight: 600;
+            letter-spacing: 0.06em;
+            text-transform: uppercase;
+            color: var(--color-fg-low);
+        }
+
+        .bulk-size-helper-group {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.4rem;
+        }
+
+        .bulk-size-helper-divider {
+            width: 1px;
+            height: 18px;
+            background: rgba(0, 0, 0, 0.18);
+        }
+
+        .bulk-size-helper input[type="number"] {
+            width: 64px;
+            height: 32px;
+            padding: 0 8px;
+            font-size: 0.875rem;
+            font-weight: 600;
+            border: 1px solid var(--color-divider);
+            border-radius: var(--radius-sm);
+            background: var(--color-bg);
+            color: var(--color-fg);
+            text-align: center;
+            -moz-appearance: textfield;
+        }
+
+        .bulk-size-helper input[type="number"]::-webkit-outer-spin-button,
+        .bulk-size-helper input[type="number"]::-webkit-inner-spin-button {
+            -webkit-appearance: none;
+            margin: 0;
+        }
+
+        .bulk-size-helper select {
+            height: 32px;
+            padding: 0 26px 0 10px;
+            font-size: 0.8125rem;
+            border: 1px solid var(--color-divider);
+            border-radius: var(--radius-sm);
+            background: var(--color-bg);
+            color: var(--color-fg);
+            cursor: pointer;
+            appearance: none;
+            -webkit-appearance: none;
+            background-image: url("data:image/svg+xml,%3Csvg width='10' height='6' viewBox='0 0 10 6' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M1 1L5 5L9 1' stroke='%23666' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+            background-repeat: no-repeat;
+            background-position: right 10px center;
+        }
+
+        .bulk-size-helper-btn {
+            height: 32px;
+            padding: 0 12px;
+            font-size: 0.8125rem;
+            font-weight: 600;
+            border: 1px solid var(--color-fg);
+            border-radius: var(--radius-sm);
+            background: var(--color-fg);
+            color: var(--color-bg);
+            cursor: pointer;
+            transition: opacity 0.15s;
+        }
+
+        .bulk-size-helper-btn:hover {
+            opacity: 0.85;
+        }
+
+        .bulk-size-helper-btn:disabled {
+            opacity: 0.4;
+            cursor: not-allowed;
+        }
+
+        .size-qty-pair .size-label {
+            font-weight: 600;
+            color: var(--color-fg-low);
+        }
+
+        .size-qty-pair .size-qty {
+            font-weight: 600;
+            color: var(--color-fg);
+            font-variant-numeric: tabular-nums;
         }
 
         .color-tag-remove {
+            position: absolute;
+            top: 50%;
+            right: 0.75rem;
+            transform: translateY(-50%);
             background: none;
             border: none;
             font-size: 1.125rem;
@@ -1242,25 +1383,29 @@
             font-size: 0.875rem;
         }
 
-        .order-items-table th,
-        .order-items-table td {
-            padding: 0.75rem 1rem;
-            text-align: left;
-            border-bottom: 1px solid var(--color-divider);
-        }
-
         .order-items-table th {
-            background: var(--color-bg-low);
-            font-weight: 600;
-            font-size: 0.75rem;
-            color: var(--color-fg-low);
+            text-align: left;
+            padding: 1rem;
+            box-shadow: inset 0 -2px 0 var(--color-border-strong);
+            font-weight: 700;
             text-transform: uppercase;
             letter-spacing: 0.05em;
+            font-size: 13px;
+        }
+
+        .order-items-table td {
+            padding: 1rem;
+            border-bottom: 1px solid var(--color-divider);
+            font-size: 14px;
         }
 
         .order-items-table tfoot td {
-            background: var(--color-bg-low);
-            font-weight: 600;
+            font-weight: 700;
+            box-shadow: inset 0 2px 0 var(--color-border-strong);
+            border-bottom: none;
+            background: var(--color-bg);
+            font-size: 16px;
+            padding: 1.25rem 1rem;
         }
 
         .order-modal-actions {
@@ -1268,6 +1413,59 @@
             gap: 1rem;
             margin-top: 1.5rem;
             justify-content: flex-end;
+        }
+
+        /* Order detail modal: only the items table scrolls */
+        .modal-content .order-detail-modal-body {
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+            padding: 1rem 2rem 1.5rem;
+        }
+
+        .order-detail-modal-body > .order-detail-info,
+        .order-detail-modal-body > .rejection-reason,
+        .order-detail-modal-body > .order-modal-actions {
+            flex-shrink: 0;
+        }
+
+        .order-detail-modal-body .order-items-table-wrap {
+            flex: 1;
+            min-height: 0;
+            overflow-y: auto;
+            margin: 1rem 0;
+            border-top: 1px solid var(--color-divider);
+            border-bottom: 1px solid var(--color-divider);
+        }
+
+        .order-detail-modal-body .order-items-table {
+            margin: 0;
+        }
+
+        .order-detail-modal-body .order-items-table thead {
+            position: sticky;
+            top: 0;
+            background: var(--color-bg);
+            z-index: 2;
+        }
+
+        .order-detail-modal-body .order-items-table thead th {
+            background: var(--color-bg);
+        }
+
+        .order-detail-modal-body .order-items-table tfoot {
+            position: sticky;
+            bottom: 0;
+            background: var(--color-bg);
+            z-index: 2;
+        }
+
+        .order-detail-modal-body .order-items-table tfoot td {
+            background: var(--color-bg);
+        }
+
+        .order-detail-modal-body .order-items-table tbody tr:last-child td {
+            border-bottom: none;
         }
 
         /* COLOR SWATCHES */
@@ -1334,7 +1532,7 @@
 
         .cart-grid {
             display: grid;
-            grid-template-columns: repeat(4, 1fr);
+            grid-template-columns: repeat(5, 1fr);
             gap: 1.5rem;
         }
 
@@ -1411,16 +1609,47 @@
         }
 
         .confirm-view {
-            padding: 2rem;
-            max-width: 1000px;
+            padding: 1.5rem 2rem;
+            max-width: 1400px;
             margin: 0 auto;
+            display: flex;
+            flex-direction: column;
+            height: calc(100vh - 3.5rem);
+        }
+
+        .confirm-view > h2 {
+            flex-shrink: 0;
+        }
+
+        .confirm-table-scroll {
+            flex: 1;
+            min-height: 0;
+            overflow-y: auto;
+            margin-bottom: 1.5rem;
+            border-bottom: 2px solid var(--color-border-strong);
         }
 
         .confirm-table {
             width: 100%;
-            margin-bottom: 2rem;
             border-collapse: collapse;
             font-size: 0.875rem;
+        }
+
+        .confirm-table thead {
+            position: sticky;
+            top: 0;
+            background: var(--color-bg);
+            z-index: 1;
+        }
+
+        .confirm-table thead::after {
+            content: '';
+            position: absolute;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            height: 2px;
+            background: var(--color-border-strong);
         }
 
         .confirm-table th {
@@ -1440,7 +1669,7 @@
         }
 
         .confirm-table tr:last-child td {
-            border-bottom: 2px solid var(--color-border-strong);
+            border-bottom: 1px solid var(--color-divider);
         }
 
         .product-cell {
@@ -1483,6 +1712,31 @@
             cursor: pointer;
         }
 
+        .row-no-cell {
+            color: var(--color-fg-low);
+            font-variant-numeric: tabular-nums;
+            text-align: center;
+            font-size: 13px;
+        }
+
+        .row-delete-btn {
+            background: none;
+            border: none;
+            padding: 6px;
+            color: var(--color-fg-low);
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 4px;
+            transition: color 0.15s ease, background 0.15s ease;
+        }
+
+        .row-delete-btn:hover {
+            color: var(--color-fg);
+            background: var(--color-bg-low);
+        }
+
         .totals-row {
             display: flex;
             justify-content: flex-end;
@@ -1509,9 +1763,23 @@
 
         .confirm-buttons {
             display: flex;
-            justify-content: center;
-            gap: 1rem;
-            margin-top: 2rem;
+            justify-content: flex-end;
+            gap: 0.75rem;
+            margin-top: 1.5rem;
+        }
+
+        .confirm-buttons .btn-outline-black {
+            width: auto;
+            padding: 14px 28px;
+            font-size: 14px;
+        }
+
+        .confirm-buttons .btn-black {
+            width: auto;
+            min-width: 240px;
+            padding: 14px 40px;
+            font-size: 15px;
+            font-weight: 700;
         }
 
         .btn-outline-black {
@@ -1543,23 +1811,31 @@
         }
 
         .success-icon {
-            font-size: 3rem;
-            color: var(--color-success);
-            margin-bottom: 1rem;
+            width: 88px;
+            height: 88px;
+            border-radius: 50%;
+            border: 1.5px solid var(--color-fg);
+            color: var(--color-fg);
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 2rem;
         }
 
         .success-title {
-            font-size: 1.5rem;
+            font-size: 1.75rem;
             font-weight: 700;
+            letter-spacing: -0.01em;
             margin-bottom: 0.5rem;
         }
 
         .success-order-no {
             font-family: inherit;
-            font-weight: 700;
-            font-size: 1.125rem;
-            color: #000;
-            margin-bottom: 2rem;
+            font-weight: 500;
+            font-size: 0.9375rem;
+            color: var(--color-fg-low);
+            letter-spacing: 0.02em;
+            margin-bottom: 2.5rem;
         }
 
         .success-buttons {
@@ -1593,6 +1869,8 @@
         .order-card-actions {
             flex-shrink: 0;
             margin-left: auto;
+            display: flex;
+            gap: 0.75rem;
         }
 
         .order-thumbnails {
@@ -1719,6 +1997,12 @@
             text-transform: uppercase;
             border-radius: var(--btn-radius);
             cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .order-card-button:hover {
+            background: var(--color-bg-contrast);
+            color: var(--color-fg-on-contrast);
         }
 
         /* RESPONSIVE */
@@ -1726,10 +2010,16 @@
             .product-grid {
                 grid-template-columns: repeat(4, 1fr);
             }
+            .cart-grid {
+                grid-template-columns: repeat(4, 1fr);
+            }
         }
 
         @media (max-width: 1300px) {
             .product-grid {
+                grid-template-columns: repeat(3, 1fr);
+            }
+            .cart-grid {
                 grid-template-columns: repeat(3, 1fr);
             }
         }
@@ -1896,6 +2186,163 @@
 
         const formatUSD = (amount) => `$${amount.toFixed(2)}`;
         const formatKRW = (amount) => `₩${Math.round(amount).toLocaleString()}`;
+
+        // Export a single order's items to an .xlsx file
+        const exportOrderToExcel = (order) => {
+            if (typeof XLSX === 'undefined') {
+                alert('Excel library is still loading. Please try again in a moment.');
+                return;
+            }
+            const rows = (order.items || []).map((item, idx) => ({
+                'No.': idx + 1,
+                'Product': item.product.name,
+                'Style No': item.product.style_no,
+                'Color': item.color || '',
+                'Size': item.size || '',
+                'Qty': item.qty,
+                'Unit Price (USD)': Number(item.unit_price.toFixed(2)),
+                'Subtotal (USD)': Number(item.subtotal.toFixed(2)),
+            }));
+            rows.push({
+                'No.': '',
+                'Product': '',
+                'Style No': '',
+                'Color': '',
+                'Size': 'Total',
+                'Qty': order.total_qty,
+                'Unit Price (USD)': '',
+                'Subtotal (USD)': Number(order.total_amount.toFixed(2)),
+            });
+            const ws = XLSX.utils.json_to_sheet(rows);
+            ws['!cols'] = [
+                { wch: 5 }, { wch: 32 }, { wch: 16 }, { wch: 14 },
+                { wch: 8 }, { wch: 8 }, { wch: 14 }, { wch: 14 },
+            ];
+            const wb = XLSX.utils.book_new();
+            XLSX.utils.book_append_sheet(wb, ws, 'Order Items');
+            XLSX.writeFile(wb, `${order.order_id}.xlsx`);
+        };
+
+        // Export all orders of the partner into a single workbook
+        // Sheet 1: Orders summary, Sheet 2: All line items consolidated
+        const exportAllOrdersToExcel = (orderList) => {
+            if (typeof XLSX === 'undefined') {
+                alert('Excel library is still loading. Please try again in a moment.');
+                return;
+            }
+            if (!orderList || orderList.length === 0) {
+                alert('No orders to export.');
+                return;
+            }
+            const statusMap = { '주문접수': 'Pending', '주문승인': 'Approved', '반려': 'Rejected' };
+
+            const summaryRows = orderList.map((order, idx) => ({
+                'No.': idx + 1,
+                'Order Number': order.order_id,
+                'Order Date': order.created_at ? String(order.created_at).replace('T', ' ').slice(0, 19) : '',
+                'Last Updated': order.updated_at ? String(order.updated_at).replace('T', ' ').slice(0, 19) : '',
+                'Status': statusMap[order.status] || order.status || '',
+                'Total Qty': order.total_qty,
+                'Total Amount (USD)': Number((order.total_amount || 0).toFixed(2)),
+            }));
+
+            const itemRows = [];
+            orderList.forEach(order => {
+                (order.items || []).forEach((item, idx) => {
+                    itemRows.push({
+                        'Order Number': order.order_id,
+                        'Order Date': order.created_at ? String(order.created_at).replace('T', ' ').slice(0, 19) : '',
+                        'Status': statusMap[order.status] || order.status || '',
+                        'Line No.': idx + 1,
+                        'Product': item.product.name,
+                        'Style No': item.product.style_no,
+                        'Color': item.color || '',
+                        'Size': item.size || '',
+                        'Qty': item.qty,
+                        'Unit Price (USD)': Number(item.unit_price.toFixed(2)),
+                        'Subtotal (USD)': Number(item.subtotal.toFixed(2)),
+                    });
+                });
+            });
+
+            const wb = XLSX.utils.book_new();
+            const wsSummary = XLSX.utils.json_to_sheet(summaryRows);
+            wsSummary['!cols'] = [
+                { wch: 5 }, { wch: 18 }, { wch: 20 }, { wch: 20 },
+                { wch: 12 }, { wch: 10 }, { wch: 16 },
+            ];
+            XLSX.utils.book_append_sheet(wb, wsSummary, 'Orders Summary');
+
+            const wsItems = XLSX.utils.json_to_sheet(itemRows);
+            wsItems['!cols'] = [
+                { wch: 18 }, { wch: 20 }, { wch: 12 }, { wch: 8 }, { wch: 32 },
+                { wch: 16 }, { wch: 14 }, { wch: 8 }, { wch: 8 }, { wch: 14 }, { wch: 14 },
+            ];
+            XLSX.utils.book_append_sheet(wb, wsItems, 'All Line Items');
+
+            const today = new Date().toISOString().slice(0, 10);
+            XLSX.writeFile(wb, `orders_${today}.xlsx`);
+        };
+
+        // Export the current cart into an .xlsx file (one row per color+size line)
+        const exportCartToExcel = (cartData) => {
+            if (typeof XLSX === 'undefined') {
+                alert('Excel library is still loading. Please try again in a moment.');
+                return;
+            }
+            const rows = [];
+            let grandQty = 0;
+            let grandAmount = 0;
+            Object.entries(cartData || {}).forEach(([productId, colorQties]) => {
+                const product = PRODUCTS.find(p => p.id === productId);
+                if (!product) return;
+                const wholesale = calculateWholesalePrice(product.retail_price_krw);
+                Object.entries(colorQties).forEach(([colorName, sizeQties]) => {
+                    Object.entries(sizeQties).forEach(([size, qty]) => {
+                        if (!qty || qty <= 0) return;
+                        const subtotal = qty * wholesale;
+                        grandQty += qty;
+                        grandAmount += subtotal;
+                        rows.push({
+                            'No.': rows.length + 1,
+                            'Product': product.name,
+                            'Style No': product.style_no,
+                            'Color': colorName,
+                            'Size': size,
+                            'Qty': qty,
+                            'Unit Price (USD)': Number(wholesale.toFixed(2)),
+                            'Subtotal (USD)': Number(subtotal.toFixed(2)),
+                        });
+                    });
+                });
+            });
+
+            if (rows.length === 0) {
+                alert('Cart is empty.');
+                return;
+            }
+
+            rows.push({
+                'No.': '',
+                'Product': '',
+                'Style No': '',
+                'Color': '',
+                'Size': 'Total',
+                'Qty': grandQty,
+                'Unit Price (USD)': '',
+                'Subtotal (USD)': Number(grandAmount.toFixed(2)),
+            });
+
+            const ws = XLSX.utils.json_to_sheet(rows);
+            ws['!cols'] = [
+                { wch: 5 }, { wch: 32 }, { wch: 16 }, { wch: 14 },
+                { wch: 8 }, { wch: 8 }, { wch: 14 }, { wch: 14 },
+            ];
+            const wb = XLSX.utils.book_new();
+            XLSX.utils.book_append_sheet(wb, ws, 'Cart');
+            const today = new Date().toISOString().slice(0, 10);
+            XLSX.writeFile(wb, `cart_${today}.xlsx`);
+        };
         const formatDateTime = (dateStr) => {
             const d = new Date(dateStr);
             const yyyy = d.getFullYear();
@@ -1973,6 +2420,38 @@
                     [selectedColorIndex]: { ...currentQties, [size]: Math.max(0, parseInt(val) || 0) }
                 });
             };
+
+            const [bulkQty, setBulkQty] = useState('');
+
+            const handleApplyToAll = () => {
+                const val = Math.max(0, parseInt(bulkQty) || 0);
+                const next = {};
+                product.sizes.forEach(size => { next[size] = val; });
+                setAllColorQuantities({
+                    ...allColorQuantities,
+                    [selectedColorIndex]: next
+                });
+            };
+
+            const handleCopyFromColor = (sourceIdxStr) => {
+                if (sourceIdxStr === '') return;
+                const sourceIdx = parseInt(sourceIdxStr);
+                const sourceQties = allColorQuantities[sourceIdx] || {};
+                const copied = {};
+                product.sizes.forEach(size => { copied[size] = sourceQties[size] || 0; });
+                setAllColorQuantities({
+                    ...allColorQuantities,
+                    [selectedColorIndex]: copied
+                });
+            };
+
+            const copyableColors = product.colors
+                .map((c, idx) => ({ c, idx }))
+                .filter(({ idx }) => {
+                    if (idx === selectedColorIndex) return false;
+                    const q = allColorQuantities[idx] || {};
+                    return Object.values(q).some(v => v > 0);
+                });
 
             React.useEffect(() => {
                 if (isOpen) {
@@ -2085,6 +2564,41 @@
                                     </div>
                                     <div className="detail-field" style={{ borderBottom: 'none' }}>
                                         <div className="detail-label">Quantity by Size</div>
+                                        <div className="bulk-size-helper">
+                                            <span className="bulk-size-helper-label">Bulk</span>
+                                            <div className="bulk-size-helper-group">
+                                                <input
+                                                    type="number"
+                                                    min="0"
+                                                    placeholder="0"
+                                                    value={bulkQty}
+                                                    onChange={(e) => setBulkQty(e.target.value)}
+                                                    onKeyDown={(e) => { if (e.key === 'Enter') { handleApplyToAll(); }}}
+                                                />
+                                                <button
+                                                    className="bulk-size-helper-btn"
+                                                    onClick={handleApplyToAll}
+                                                    disabled={bulkQty === '' || parseInt(bulkQty) < 0}
+                                                >Apply to all</button>
+                                            </div>
+                                            {copyableColors.length > 0 && (
+                                                <>
+                                                    <div className="bulk-size-helper-divider"></div>
+                                                    <div className="bulk-size-helper-group">
+                                                        <span className="bulk-size-helper-label">Copy from</span>
+                                                        <select
+                                                            value=""
+                                                            onChange={(e) => { handleCopyFromColor(e.target.value); e.target.value = ''; }}
+                                                        >
+                                                            <option value="">Select color</option>
+                                                            {copyableColors.map(({ c, idx }) => (
+                                                                <option key={idx} value={idx}>{c.name}</option>
+                                                            ))}
+                                                        </select>
+                                                    </div>
+                                                </>
+                                            )}
+                                        </div>
                                         <div className="sizes-grid" style={{ gridTemplateColumns: `repeat(${Math.min(4, product.sizes.length)}, 1fr)` }}>
                                             {product.sizes.map(size => (
                                                 <div key={size}>
@@ -2115,8 +2629,11 @@
                                                 <div key={colorIdx} className="color-tag">
                                                     <span className="color-tag-name">{colorObj.name}</span>
                                                     <span className="color-tag-sizes">
-                                                        {Object.entries(sizeQties).filter(([, q]) => q > 0).map(([size, q], i, arr) => (
-                                                            <span key={size}>{size} {q}{i < arr.length - 1 ? ' / ' : ''}</span>
+                                                        {Object.entries(sizeQties).filter(([, q]) => q > 0).map(([size, q]) => (
+                                                            <span key={size} className="size-qty-pair">
+                                                                <span className="size-label">{size}</span>
+                                                                <span className="size-qty">{q}</span>
+                                                            </span>
                                                         ))}
                                                     </span>
                                                     <button className="color-tag-remove" onClick={() => {
@@ -2130,7 +2647,7 @@
                                     </div>
                                     <div className="modal-summary" style={{ padding: '1rem 0 0', border: 'none' }}>
                                         <div className="modal-summary-item">
-                                            <div className="detail-label">Total</div>
+                                            <div className="detail-label">Total Qty</div>
                                             <div className="detail-price">{totalQty.toLocaleString()}</div>
                                         </div>
                                         <div className="modal-summary-item" style={{ textAlign: 'right' }}>
@@ -2648,7 +3165,7 @@
                                 <div style={{ maxWidth: '2200px', margin: '0 auto', padding: '0 1.5rem', paddingBottom: '120px' }}>
                                     <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'flex-end', marginBottom: '2rem' }}>
                                         <div style={{ display: 'flex', gap: '0.5rem' }}>
-                                            <button className="btn-outline-black" style={{ fontSize: '12px', padding: '8px 16px' }}>EXPORT EXCEL</button>
+                                            <button className="btn-outline-black" style={{ fontSize: '12px', padding: '8px 16px' }} onClick={() => exportCartToExcel(cart)}>EXPORT EXCEL</button>
                                             <button className="btn-outline-black" style={{ fontSize: '12px', padding: '8px 16px' }} onClick={() => {
                                                 if (confirm('카트의 모든 상품을 삭제하시겠습니까?')) setCart({});
                                             }}>CLEAR ALL</button>
@@ -2758,9 +3275,11 @@
                         <div className="page">
                             <div className="confirm-view">
                                 <h2 style={{ marginBottom: '2rem' }}>Order Confirmation</h2>
+                                <div className="confirm-table-scroll">
                                 <table className="confirm-table">
                                     <thead>
                                         <tr>
+                                            <th style={{ width: '48px' }}>No.</th>
                                             <th>Product</th>
                                             <th>Style No</th>
                                             <th>Color</th>
@@ -2768,23 +3287,25 @@
                                             <th>Qty</th>
                                             <th>Unit Price</th>
                                             <th>Subtotal</th>
+                                            <th style={{ width: '40px' }}></th>
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        {Object.entries(cart).filter(([_, colorQties]) => {
-                                            let total = 0;
-                                            Object.values(colorQties).forEach(sizeQties => {
-                                                total += Object.values(sizeQties).reduce((a, b) => a + b, 0);
+                                        {(() => {
+                                            const rows = [];
+                                            Object.entries(cart).forEach(([productId, colorQties]) => {
+                                                const product = PRODUCTS.find(p => p.id === productId);
+                                                if (!product) return;
+                                                const wholesale = calculateWholesalePrice(product.retail_price_krw);
+                                                Object.entries(colorQties).forEach(([colorName, sizeQties]) => {
+                                                    Object.entries(sizeQties).forEach(([size, qty]) => {
+                                                        if (qty > 0) rows.push({ productId, product, wholesale, colorName, size, qty });
+                                                    });
+                                                });
                                             });
-                                            return total > 0;
-                                        }).map(([productId, colorQties]) => {
-                                            const product = PRODUCTS.find(p => p.id === productId);
-                                            if (!product) return null;
-                                            const wholesale = calculateWholesalePrice(product.retail_price_krw);
-
-                                            return Object.entries(colorQties).flatMap(([colorName, sizeQties]) => {
-                                                return Object.entries(sizeQties).filter(([_, qty]) => qty > 0).map(([size, qty]) => (
+                                            return rows.map(({ productId, product, wholesale, colorName, size, qty }, idx) => (
                                                     <tr key={`${productId}-${colorName}-${size}`}>
+                                                        <td className="row-no-cell">{idx + 1}</td>
                                                         <td>
                                                             <div className="product-cell">
                                                                 <div className="product-cell-image">
@@ -2831,12 +3352,39 @@
                                                         </td>
                                                         <td>{formatUSD(wholesale)}</td>
                                                         <td>{formatUSD(qty * wholesale)}</td>
+                                                        <td>
+                                                            <button
+                                                                className="row-delete-btn"
+                                                                aria-label="Remove item"
+                                                                title="Remove item"
+                                                                onClick={() => {
+                                                                    const newColorQties = { ...cart[productId][colorName] };
+                                                                    delete newColorQties[size];
+                                                                    if (Object.keys(newColorQties).length === 0) {
+                                                                        const newAllColors = { ...cart[productId] };
+                                                                        delete newAllColors[colorName];
+                                                                        if (Object.keys(newAllColors).length === 0) {
+                                                                            handleRemoveFromCart(productId);
+                                                                        } else {
+                                                                            setCart(prev => ({ ...prev, [productId]: newAllColors }));
+                                                                        }
+                                                                    } else {
+                                                                        setCart(prev => ({ ...prev, [productId]: { ...prev[productId], [colorName]: newColorQties } }));
+                                                                    }
+                                                                }}
+                                                            >
+                                                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+                                                                    <line x1="18" y1="6" x2="6" y2="18"></line>
+                                                                    <line x1="6" y1="6" x2="18" y2="18"></line>
+                                                                </svg>
+                                                            </button>
+                                                        </td>
                                                     </tr>
-                                                ));
-                                            });
-                                        })}
+                                            ));
+                                        })()}
                                     </tbody>
                                 </table>
+                                </div>
 
                                 <div className="totals-row">
                                     <div className="total-item">
@@ -2903,9 +3451,13 @@
                         <div className="page">
                             <div className="confirm-view">
                                 <div className="success-screen">
-                                    <div className="success-icon">✓</div>
+                                    <div className="success-icon">
+                                        <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+                                            <polyline points="20 6 9 17 4 12"></polyline>
+                                        </svg>
+                                    </div>
                                     <div className="success-title">Order Submitted</div>
-                                    <div className="success-order-no">{orders.length > 0 ? orders[orders.length - 1].order_id : ''}</div>
+                                    <div className="success-order-no">Order No. {orders.length > 0 ? orders[orders.length - 1].order_id : ''}</div>
                                     <div className="success-buttons">
                                         <button className="btn-outline-black" onClick={() => {
                                             setPage('products');
@@ -2926,7 +3478,15 @@
                     {page === 'orders' && (
                         <div className="page">
                             <div className="orders-section">
-                                <h2 style={{ marginBottom: '2rem' }}>My Orders</h2>
+                                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '2rem', gap: '1rem', flexWrap: 'wrap' }}>
+                                    <h2 style={{ margin: 0 }}>My Orders</h2>
+                                    {orders.filter(o => o.partner_id === CURRENT_PARTNER.partner_id).length >= 2 && (
+                                        <button className="btn-outline-black" style={{ fontSize: '12px', padding: '8px 16px' }} onClick={() => {
+                                            const mine = orders.filter(o => o.partner_id === CURRENT_PARTNER.partner_id).sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
+                                            exportAllOrdersToExcel(mine);
+                                        }}>EXPORT ALL (EXCEL)</button>
+                                    )}
+                                </div>
                                 {orders.filter(o => o.partner_id === CURRENT_PARTNER.partner_id).length === 0 ? (
                                     <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', minHeight: 'calc(100vh - 12rem)', textAlign: 'center', color: 'var(--color-fg-low)' }}>
                                         <svg width="72" height="72" viewBox="0 0 24 24" fill="none" stroke="#111" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" style={{ marginBottom: '2rem' }}>
@@ -3007,6 +3567,7 @@
                                                 </div>
                                             </div>
                                             <div className="order-card-actions">
+                                                <button className="order-card-button" onClick={() => exportOrderToExcel(order)}>Excel</button>
                                                 <button className="order-card-button" onClick={() => setSelectedOrder(order)}>View Details</button>
                                             </div>
                                             {order.rejection_reason && (
@@ -3030,7 +3591,7 @@
                                             <h2 className="modal-title">{selectedOrder.order_id}</h2>
                                             <button className="modal-close" onClick={() => setSelectedOrder(null)}>&times;</button>
                                         </div>
-                                        <div className="modal-body">
+                                        <div className="modal-body order-detail-modal-body">
                                             <div className="order-detail-info">
                                                 <div className="order-info-item">
                                                     <div className="order-info-label">Order Number</div>
@@ -3068,12 +3629,15 @@
                                                 </div>
                                             )}
 
+                                            <div className="order-items-table-wrap">
                                             <table className="order-items-table">
                                                 <thead>
                                                     <tr>
+                                                        <th style={{ width: '48px' }}>No.</th>
                                                         <th>Product</th>
-                                                        <th>Style No.</th>
-                                                        <th>Color / Size</th>
+                                                        <th>Style No</th>
+                                                        <th>Color</th>
+                                                        <th>Size</th>
                                                         <th>Qty</th>
                                                         <th>Unit Price</th>
                                                         <th>Subtotal</th>
@@ -3082,14 +3646,20 @@
                                                 <tbody>
                                                     {(selectedOrder.items || []).map((item, idx) => (
                                                         <tr key={idx}>
+                                                            <td className="row-no-cell">{idx + 1}</td>
                                                             <td>
-                                                                <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-                                                                    <img src={item.product.images[0]} alt={item.product.name} style={{ width: '40px', height: '40px', objectFit: 'cover', background: 'var(--color-bg-low)' }} />
-                                                                    <span>{item.product.name}</span>
+                                                                <div className="product-cell">
+                                                                    <div className="product-cell-image">
+                                                                        <img src={item.product.images[0]} alt={item.product.name} />
+                                                                    </div>
+                                                                    <div style={{ display: 'flex', flexDirection: 'column', justifyContent: 'center' }}>
+                                                                        {item.product.name}
+                                                                    </div>
                                                                 </div>
                                                             </td>
                                                             <td>{item.product.style_no}</td>
-                                                            <td>{item.color ? `${item.color} / ${item.size}` : item.size}</td>
+                                                            <td>{item.color || '—'}</td>
+                                                            <td>{item.size}</td>
                                                             <td>{item.qty}</td>
                                                             <td>${item.unit_price.toFixed(2)}</td>
                                                             <td>${item.subtotal.toFixed(2)}</td>
@@ -3098,13 +3668,14 @@
                                                 </tbody>
                                                 <tfoot>
                                                     <tr>
-                                                        <td colSpan="3" style={{ textAlign: 'right' }}>Total</td>
+                                                        <td colSpan="5" style={{ textAlign: 'right' }}>Total</td>
                                                         <td>{selectedOrder.total_qty}</td>
                                                         <td></td>
                                                         <td>{formatUSD(selectedOrder.total_amount)}</td>
                                                     </tr>
                                                 </tfoot>
                                             </table>
+                                            </div>
 
                                             <div className="order-modal-actions">
                                                 <button className="order-card-button" onClick={() => setSelectedOrder(null)}>Close</button>
