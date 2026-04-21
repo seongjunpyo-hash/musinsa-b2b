@@ -1984,7 +1984,7 @@
         .order-info-grid {
             display: flex;
             align-items: flex-start;
-            gap: 1.75rem;
+            gap: 2rem;
         }
 
         .order-info-item {
@@ -2004,6 +2004,10 @@
             font-size: 0.9375rem;
         }
 
+        .order-info-value.regular {
+            font-weight: 400;
+        }
+
         .rejection-reason {
             background: #f8d7da;
             padding: 1rem;
@@ -2017,7 +2021,7 @@
         .order-card-button {
             padding: 8px 16px;
             border: 1px solid var(--color-border-strong);
-            background: transparent;
+            background: #fff;
             color: var(--color-fg);
             font-size: 13px;
             font-weight: var(--btn-font-weight);
@@ -3263,14 +3267,14 @@
                                                         <div style={{ fontWeight: 500, fontSize: '14px', marginBottom: '4px' }}>{product.name}</div>
                                                         <div style={{ fontSize: '12px', color: '#888', marginBottom: '2px' }}>{product.style_no}</div>
                                                         <div style={{ fontSize: '12px', color: '#888', marginBottom: '6px' }}>{product.colors[0].name} / {product.material}</div>
-                                                        <div style={{ fontSize: '12px', color: '#888', marginBottom: '8px' }}>
-                                                            {Object.entries(colorQties).flatMap(([color, sizeQties]) => 
+                                                        <div style={{ fontSize: '12px', color: '#000', marginBottom: '8px' }}>
+                                                            {Object.entries(colorQties).flatMap(([color, sizeQties]) =>
                                                                 Object.entries(sizeQties).filter(([_, q]) => q > 0).map(([size, qty]) => `${color} ${size}:${qty}`)
                                                             ).join(' / ')}
                                                         </div>
                                                         <div style={{ display: 'flex', alignItems: 'baseline', justifyContent: 'space-between' }}>
-                                                            <span style={{ fontSize: '14px' }}>QTY: {totalQty}</span>
-                                                            <span style={{ fontWeight: 700 }}>{formatUSD(totalQty * wholesale)}</span>
+                                                            <span style={{ fontSize: '16px', fontWeight: 600 }}>QTY: {totalQty}</span>
+                                                            <span style={{ fontWeight: 700, fontSize: '16px' }}>{formatUSD(totalQty * wholesale)}</span>
                                                         </div>
                                                     </div>
                                                 </div>
@@ -3537,15 +3541,7 @@
                     {page === 'orders' && (
                         <div className="page">
                             <div className="orders-section">
-                                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '2rem', gap: '1rem', flexWrap: 'wrap' }}>
-                                    <h2 style={{ margin: 0 }}>My Orders</h2>
-                                    {orders.filter(o => o.partner_id === CURRENT_PARTNER.partner_id).length >= 2 && (
-                                        <button className="btn-outline-black" style={{ fontSize: '12px', padding: '8px 16px' }} onClick={() => {
-                                            const mine = orders.filter(o => o.partner_id === CURRENT_PARTNER.partner_id).sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
-                                            exportAllOrdersToExcel(mine);
-                                        }}>EXPORT ALL (EXCEL)</button>
-                                    )}
-                                </div>
+                                <h2 style={{ margin: '0 0 2rem 0' }}>My Orders</h2>
                                 {orders.filter(o => o.partner_id === CURRENT_PARTNER.partner_id).length === 0 ? (
                                     <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', minHeight: 'calc(100vh - 12rem)', textAlign: 'center', color: 'var(--color-fg-low)' }}>
                                         <svg width="72" height="72" viewBox="0 0 24 24" fill="none" stroke="#111" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" style={{ marginBottom: '2rem' }}>
@@ -3598,15 +3594,15 @@
                                             <div className="order-info-grid">
                                                 <div className="order-info-item">
                                                     <div className="order-info-label">Order Number</div>
-                                                    <div className="order-info-value">{order.order_id}</div>
+                                                    <div className="order-info-value regular">{order.order_id}</div>
                                                 </div>
                                                 <div className="order-info-item">
                                                     <div className="order-info-label">Order Date</div>
-                                                    <div className="order-info-value">{formatDateTime(order.created_at)}</div>
+                                                    <div className="order-info-value regular">{formatDateTime(order.created_at)}</div>
                                                 </div>
                                                 <div className="order-info-item">
                                                     <div className="order-info-label">Last Updated</div>
-                                                    <div className="order-info-value">{formatDateTime(order.updated_at)}</div>
+                                                    <div className="order-info-value regular">{formatDateTime(order.updated_at)}</div>
                                                 </div>
                                                 <div className="order-info-item">
                                                     <div className="order-info-label">Total Quantity</div>
@@ -3635,6 +3631,14 @@
                                         </div>
                                     );
                                 })}
+                                {orders.filter(o => o.partner_id === CURRENT_PARTNER.partner_id).length >= 2 && (
+                                    <div style={{ display: 'flex', justifyContent: 'flex-end', marginTop: '1.5rem' }}>
+                                        <button className="btn-outline-black" style={{ fontSize: '12px', padding: '8px 16px' }} onClick={() => {
+                                            const mine = orders.filter(o => o.partner_id === CURRENT_PARTNER.partner_id).sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
+                                            exportAllOrdersToExcel(mine);
+                                        }}>EXPORT ALL (EXCEL)</button>
+                                    </div>
+                                )}
                             </div>
 
                             {/* Order Detail Modal */}
