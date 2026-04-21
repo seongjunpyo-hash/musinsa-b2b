@@ -1911,6 +1911,7 @@
             align-items: center;
             gap: 6px;
             flex-shrink: 0;
+            width: 180px;
         }
 
         .order-thumbnail {
@@ -1983,7 +1984,7 @@
         .order-info-grid {
             display: flex;
             align-items: flex-start;
-            gap: 1.5rem;
+            gap: 1.75rem;
         }
 
         .order-info-item {
@@ -2498,7 +2499,7 @@
                             <div className="modal-title">
                                 {product.season && product.season.year === LATEST_SEASON.year && product.season.season === LATEST_SEASON.season && <span className="product-badge badge-season" style={{fontSize:'11px'}}>NEW</span>}
                                 {product.is_hero && <span className="product-badge badge-hero" style={{fontSize:'11px'}}>HERO</span>}
-                                <span>{product.name}</span>
+                                <span style={{marginLeft:'8px'}}>{product.name}</span>
                             </div>
                             <button className="modal-close" onClick={onClose}>×</button>
                         </div>
@@ -3586,16 +3587,14 @@
 
                                     return (
                                         <div key={order.order_id} className="order-card">
-                                            {visibleThumbs.length > 0 && (
-                                                <div className="order-thumbnails">
-                                                    {visibleThumbs.map((t, i) => (
-                                                        <img key={i} className="order-thumbnail" src={t.img} alt={t.name} />
-                                                    ))}
-                                                    {remainingCount > 0 && (
-                                                        <div className="order-thumbnail-more">+{remainingCount}</div>
-                                                    )}
-                                                </div>
-                                            )}
+                                            <div className="order-thumbnails">
+                                                {visibleThumbs.map((t, i) => (
+                                                    <img key={i} className="order-thumbnail" src={t.img} alt={t.name} />
+                                                ))}
+                                                {remainingCount > 0 && (
+                                                    <div className="order-thumbnail-more">+{remainingCount}</div>
+                                                )}
+                                            </div>
                                             <div className="order-info-grid">
                                                 <div className="order-info-item">
                                                     <div className="order-info-label">Order Number</div>
