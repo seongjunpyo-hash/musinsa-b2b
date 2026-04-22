@@ -2339,6 +2339,330 @@
                 padding: 0.5rem;
             }
         }
+
+        /* MOBILE MENU BUTTON AND DRAWER */
+        .mobile-menu-btn {
+            display: none;
+            background: none;
+            border: none;
+            padding: 6px;
+            cursor: pointer;
+            color: var(--color-fg);
+            align-items: center;
+            justify-content: center;
+        }
+
+        .mobile-drawer-backdrop {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: rgba(0,0,0,0.4);
+            z-index: 200;
+        }
+
+        .mobile-drawer {
+            position: fixed;
+            top: 0;
+            right: 0;
+            bottom: 0;
+            width: 80%;
+            max-width: 320px;
+            background: var(--color-bg);
+            z-index: 201;
+            box-shadow: -4px 0 20px rgba(0,0,0,0.15);
+            display: flex;
+            flex-direction: column;
+            transform: translateX(100%);
+            transition: transform 0.25s ease-out;
+        }
+
+        .mobile-drawer.open {
+            transform: translateX(0);
+        }
+
+        .mobile-drawer-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 1rem 1.25rem;
+            border-bottom: 1px solid var(--color-border-low);
+            height: 3.5rem;
+        }
+
+        .mobile-drawer-title {
+            font-weight: 700;
+            font-size: 0.95rem;
+            letter-spacing: 0.04em;
+        }
+
+        .mobile-drawer-close {
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            line-height: 1;
+            padding: 0;
+            color: var(--color-fg-low);
+            cursor: pointer;
+        }
+
+        .mobile-drawer-menu {
+            display: flex;
+            flex-direction: column;
+            padding: 0.5rem 0;
+            flex: 1;
+        }
+
+        .mobile-drawer-item {
+            padding: 1rem 1.25rem;
+            font-size: 1rem;
+            font-weight: 500;
+            color: var(--color-fg);
+            cursor: pointer;
+            border-bottom: 1px solid var(--color-border-low);
+        }
+
+        .mobile-drawer-item.active {
+            font-weight: 700;
+        }
+
+        .mobile-drawer-footer {
+            padding: 1.25rem;
+            border-top: 1px solid var(--color-border-low);
+        }
+
+        /* MOBILE 640px OPTIMIZATIONS */
+        @media (max-width: 640px) {
+            /* GNB - hide desktop nav, show hamburger */
+            .header {
+                padding: 0 1rem;
+                justify-content: space-between;
+            }
+
+            .header-center {
+                display: none;
+            }
+
+            .logout-btn {
+                display: none;
+            }
+
+            .logo {
+                font-size: 0.95rem;
+                gap: 6px;
+            }
+
+            .logo-small {
+                font-size: 0.6rem;
+            }
+
+            .header-right {
+                gap: 0.75rem;
+            }
+
+            .mobile-menu-btn {
+                display: inline-flex;
+            }
+
+            .mobile-drawer-backdrop.open {
+                display: block;
+            }
+
+            /* Filter bar horizontal scroll */
+            .filters-row {
+                flex-wrap: nowrap !important;
+                overflow-x: auto;
+                -webkit-overflow-scrolling: touch;
+                scrollbar-width: none;
+                padding: 0.625rem 1rem;
+                gap: 0.5rem;
+            }
+
+            .filters-row::-webkit-scrollbar {
+                display: none;
+            }
+
+            .filters-row > * {
+                flex-shrink: 0;
+            }
+
+            .filter-divider {
+                display: block !important;
+                margin: 0 0.125rem;
+            }
+
+            .filters-right {
+                width: auto !important;
+                margin-left: 0 !important;
+            }
+
+            .category-buttons {
+                flex-wrap: nowrap;
+            }
+
+            /* Product detail modal - fullscreen */
+            .modal-backdrop {
+                background: var(--color-bg);
+            }
+
+            .modal-content {
+                max-width: 100%;
+                max-height: 100vh;
+                width: 100vw;
+                height: 100vh;
+                border-radius: 0;
+                border: none;
+            }
+
+            .modal-header {
+                padding: 0.75rem 1rem 0.5rem;
+                position: sticky;
+                top: 0;
+                background: var(--color-bg);
+                z-index: 5;
+                border-bottom: 1px solid var(--color-border-low);
+            }
+
+            .modal-body {
+                padding: 1rem;
+            }
+
+            .product-detail {
+                grid-template-columns: 1fr;
+                gap: 1.25rem;
+            }
+
+            .detail-thumbnails {
+                grid-template-columns: repeat(5, 1fr);
+            }
+
+            .sizes-grid {
+                grid-template-columns: repeat(4, 1fr);
+            }
+
+            /* Fullscreen image viewer */
+            .img-fullscreen-nav {
+                width: 48px;
+                height: 48px;
+                font-size: 30px;
+            }
+
+            .img-fullscreen-nav.prev { left: 12px; }
+            .img-fullscreen-nav.next { right: 12px; }
+
+            .img-fullscreen-overlay img {
+                max-width: 100vw;
+                max-height: 100vh;
+            }
+
+            /* Product grid - 2 columns */
+            .product-grid {
+                grid-template-columns: repeat(2, 1fr);
+                gap: 0.75rem;
+            }
+
+            /* Cart grid - 1 column */
+            .cart-grid {
+                grid-template-columns: 1fr;
+                gap: 0.75rem;
+            }
+
+            /* Orders page - stacked card */
+            .orders-section {
+                padding: 1.25rem 1rem;
+            }
+
+            .order-card {
+                flex-wrap: wrap;
+                align-items: flex-start;
+                gap: 1rem;
+                padding: 1rem;
+            }
+
+            .order-thumbnails {
+                width: 100%;
+                gap: 8px;
+            }
+
+            .order-thumbnail,
+            .order-thumbnail-more {
+                width: 48px;
+                height: 48px;
+            }
+
+            .order-info-grid {
+                flex-wrap: wrap;
+                gap: 0.75rem 1.25rem;
+                width: 100%;
+            }
+
+            .order-info-item {
+                flex: 0 0 calc(50% - 0.625rem);
+            }
+
+            .order-card-actions {
+                margin-left: 0;
+                width: 100%;
+                flex-wrap: wrap;
+                gap: 0.5rem;
+            }
+
+            .order-card-actions .order-card-button {
+                flex: 1;
+                min-width: 0;
+            }
+
+            .rejection-reason {
+                width: 100%;
+            }
+
+            /* Cart sticky bottom bar adjustments */
+            .cart-bottom-bar-inner {
+                flex-direction: column;
+                align-items: stretch !important;
+                gap: 0.75rem;
+            }
+
+            .cart-bottom-bar-stats {
+                gap: 1.25rem !important;
+                justify-content: space-between;
+            }
+
+            .cart-bottom-bar-cta {
+                width: 100%;
+            }
+
+            /* Order detail modal table - horizontal scroll */
+            .order-items-table-wrap {
+                overflow-x: auto;
+                -webkit-overflow-scrolling: touch;
+            }
+
+            .order-items-table {
+                min-width: 640px;
+            }
+
+            .confirm-table-scroll {
+                overflow-x: auto;
+                -webkit-overflow-scrolling: touch;
+            }
+
+            .confirm-table {
+                min-width: 640px;
+            }
+
+            /* Hide hover states on touch */
+            @media (hover: none) {
+                .category-btn:hover,
+                .filter-select:hover,
+                .cart-icon-wrap:hover,
+                .order-card-button:hover,
+                .mobile-drawer-item:hover {
+                    background: inherit;
+                    border-color: var(--color-border);
+                    color: inherit;
+                }
+            }
+        }
     </style>
 </head>
 <body>
@@ -2618,6 +2942,9 @@
             const [selectedImageIndex, setSelectedImageIndex] = useState(0);
             const [selectedColorIndex, setSelectedColorIndex] = useState(0);
             const [fullscreenImage, setFullscreenImage] = useState(false);
+            const touchStartX = React.useRef(null);
+            const touchStartY = React.useRef(null);
+            const touchDeltaX = React.useRef(0);
             const [allColorQuantities, setAllColorQuantities] = useState(() => {
                 const init = {};
                 product.colors.forEach((color, colorIdx) => {
@@ -2723,12 +3050,35 @@
                                             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polyline points="15 3 21 3 21 9"></polyline><polyline points="9 21 3 21 3 15"></polyline><line x1="21" y1="3" x2="14" y2="10"></line><line x1="3" y1="21" x2="10" y2="14"></line></svg>
                                         </button>
                                     </div>
-                                    {fullscreenImage && <div className="img-fullscreen-overlay" onClick={() => setFullscreenImage(false)}>
+                                    {fullscreenImage && <div
+                                        className="img-fullscreen-overlay"
+                                        onClick={() => setFullscreenImage(false)}
+                                        onTouchStart={(e) => { touchStartX.current = e.touches[0].clientX; touchStartY.current = e.touches[0].clientY; touchDeltaX.current = 0; }}
+                                        onTouchMove={(e) => { touchDeltaX.current = e.touches[0].clientX - (touchStartX.current || 0); }}
+                                        onTouchEnd={() => {
+                                            const dx = touchDeltaX.current || 0;
+                                            if (Math.abs(dx) > 50 && currentColor.images.length > 1) {
+                                                if (dx < 0) {
+                                                    setSelectedImageIndex((selectedImageIndex + 1) % currentColor.images.length);
+                                                } else {
+                                                    setSelectedImageIndex((selectedImageIndex - 1 + currentColor.images.length) % currentColor.images.length);
+                                                }
+                                            }
+                                            touchStartX.current = null;
+                                            touchDeltaX.current = 0;
+                                        }}
+                                    >
                                         <button className="img-fullscreen-close" onClick={() => setFullscreenImage(false)}>×</button>
                                         {currentColor.images.length > 1 && (
                                             <button className="img-fullscreen-nav prev" onClick={(e) => { e.stopPropagation(); setSelectedImageIndex((selectedImageIndex - 1 + currentColor.images.length) % currentColor.images.length); }}>&#8249;</button>
                                         )}
-                                        <img src={currentColor.images[selectedImageIndex]} alt={product.name} onClick={(e) => e.stopPropagation()} style={{cursor:'default'}} />
+                                        <img
+                                            src={currentColor.images[selectedImageIndex]}
+                                            alt={product.name}
+                                            onClick={(e) => e.stopPropagation()}
+                                            style={{cursor:'default', userSelect:'none', WebkitUserSelect:'none', pointerEvents:'none'}}
+                                            draggable={false}
+                                        />
                                         {currentColor.images.length > 1 && (
                                             <button className="img-fullscreen-nav next" onClick={(e) => { e.stopPropagation(); setSelectedImageIndex((selectedImageIndex + 1) % currentColor.images.length); }}>&#8250;</button>
                                         )}
@@ -2949,6 +3299,7 @@
             const [orderSubmitted, setOrderSubmitted] = useState(false);
             const [editingProduct, setEditingProduct] = useState(null);
             const [selectedOrder, setSelectedOrder] = useState(null);
+            const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
             const [activeFilter, setActiveFilter] = useState('all');
             const [filterYear, setFilterYear] = useState('All');
             const [filterSeason, setFilterSeason] = useState('All');
@@ -3177,9 +3528,48 @@
                                 setPage('login');
                                 setEmail('');
                             }}>Logout</button>
+                            <button className="mobile-menu-btn" onClick={() => setMobileMenuOpen(true)} aria-label="Open menu">
+                                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+                                    <line x1="3" y1="6" x2="21" y2="6"/>
+                                    <line x1="3" y1="12" x2="21" y2="12"/>
+                                    <line x1="3" y1="18" x2="21" y2="18"/>
+                                </svg>
+                            </button>
                         </div>
                     </div>
                     <div className="header-spacer"></div>
+
+                    {/* MOBILE DRAWER */}
+                    <div className={`mobile-drawer-backdrop ${mobileMenuOpen ? 'open' : ''}`} onClick={() => setMobileMenuOpen(false)}></div>
+                    <div className={`mobile-drawer ${mobileMenuOpen ? 'open' : ''}`} role="dialog" aria-hidden={!mobileMenuOpen}>
+                        <div className="mobile-drawer-header">
+                            <span className="mobile-drawer-title">MENU</span>
+                            <button className="mobile-drawer-close" onClick={() => setMobileMenuOpen(false)} aria-label="Close menu">×</button>
+                        </div>
+                        <div className="mobile-drawer-menu">
+                            {['home', 'products', 'orders'].map(navPage => (
+                                <div
+                                    key={navPage}
+                                    className={`mobile-drawer-item ${page === navPage ? 'active' : ''}`}
+                                    onClick={() => {
+                                        setPage(navPage);
+                                        setSelectedProduct(null);
+                                        setModalOpen(false);
+                                        setMobileMenuOpen(false);
+                                    }}
+                                >
+                                    {navPage === 'orders' ? 'My Orders' : navPage.charAt(0).toUpperCase() + navPage.slice(1)}
+                                </div>
+                            ))}
+                        </div>
+                        <div className="mobile-drawer-footer">
+                            <button className="btn-outline-black" style={{ width: '100%', padding: '10px 16px', fontSize: '13px' }} onClick={() => {
+                                setPage('login');
+                                setEmail('');
+                                setMobileMenuOpen(false);
+                            }}>Logout</button>
+                        </div>
+                    </div>
 
                     {/* HOME PAGE */}
                     {page === 'home' && (
@@ -3636,11 +4026,11 @@
                                     {/* Sticky Bottom Summary Bar */}
                                     <div style={{
                                         position: 'fixed', bottom: 0, left: 0, right: 0,
-                                        background: '#000', color: '#fff', padding: '1.5rem',
+                                        background: '#000', color: '#fff', padding: '1rem 1.25rem',
                                         zIndex: 40
                                     }}>
-                                        <div style={{ maxWidth: '2200px', margin: '0 auto', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-                                            <div style={{ display: 'flex', gap: '3rem' }}>
+                                        <div className="cart-bottom-bar-inner" style={{ maxWidth: '2200px', margin: '0 auto', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+                                            <div className="cart-bottom-bar-stats" style={{ display: 'flex', gap: '3rem' }}>
                                                 <div>
                                                     <div style={{ fontSize: '11px', opacity: 0.7 }}>STYLES</div>
                                                     <div style={{ fontWeight: 700, fontSize: '18px' }}>{stats.totalStyles}</div>
@@ -3654,7 +4044,7 @@
                                                     <div style={{ fontWeight: 700, fontSize: '18px' }}>{formatUSD(stats.totalAmount)}</div>
                                                 </div>
                                             </div>
-                                            <button onClick={() => setPage('confirm')} style={{
+                                            <button className="cart-bottom-bar-cta" onClick={() => setPage('confirm')} style={{
                                                 background: '#fff', color: '#000', border: 'none',
                                                 padding: '12px 32px', fontWeight: 600, fontSize: '14px',
                                                 cursor: 'pointer', letterSpacing: '0.05em'
