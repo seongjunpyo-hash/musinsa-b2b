@@ -2316,14 +2316,12 @@
             }
 
             .login-left {
-                flex: 0 0 auto;
-                padding: 2rem;
-                min-height: 200px;
+                display: none;
             }
 
             .login-right {
                 flex: 1;
-                min-height: calc(100vh - 200px);
+                min-height: 100vh;
             }
 
             .product-grid {
@@ -3680,17 +3678,6 @@
                             <div className="login-subtitle">GLOBAL B2B</div>
                         </div>
                         <div className="login-right">
-                            <div className="lang-selector">
-                                {['EN', 'KO', 'TH'].map(lang => (
-                                    <button
-                                        key={lang}
-                                        className={`lang-btn ${language === lang ? 'active' : ''}`}
-                                        onClick={() => setLanguage(lang)}
-                                    >
-                                        {lang}
-                                    </button>
-                                ))}
-                            </div>
                             <div className="login-form">
                                 <div className="login-header">
                                     <span className="login-label">Partner Portal</span>
