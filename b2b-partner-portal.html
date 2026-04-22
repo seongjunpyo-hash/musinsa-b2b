@@ -518,7 +518,7 @@
         .category-banners {
             max-width: 2200px;
             margin: 0 auto;
-            padding: 6rem 1.5rem 2.6rem;
+            padding: 6rem 1.5rem 2.85rem;
             display: grid;
             grid-template-columns: 1fr 1fr 1fr 1fr;
             grid-template-rows: 180px 180px;
@@ -2114,14 +2114,42 @@
             margin-bottom: 1rem;
         }
 
-        .cart-drawer-subtotal span:first-child {
-            font-weight: 500;
-            text-transform: uppercase;
-            letter-spacing: 0.05em;
+        .cart-drawer-stats {
+            display: flex;
+            gap: 1.25rem;
+            font-size: 15px;
+            font-weight: 700;
         }
 
-        .cart-drawer-subtotal span:last-child {
+        .cart-drawer-stats span {
+            display: inline-flex;
+            align-items: baseline;
+            gap: 6px;
+        }
+
+        .cart-drawer-stats em {
+            color: var(--color-fg-lower);
+            font-weight: 500;
+            font-style: normal;
+            letter-spacing: 0.05em;
+            text-transform: uppercase;
+            font-size: 15px;
+        }
+
+        .cart-drawer-total-amount {
+            display: inline-flex;
+            align-items: baseline;
+            gap: 6px;
             font-weight: 700;
+            font-size: 15px;
+        }
+
+        .cart-drawer-total-amount em {
+            color: var(--color-fg-lower);
+            font-weight: 500;
+            font-style: normal;
+            letter-spacing: 0.05em;
+            text-transform: uppercase;
             font-size: 15px;
         }
 
@@ -4246,8 +4274,11 @@
                         {stats.totalQty > 0 && (
                             <div className="cart-drawer-footer">
                                 <div className="cart-drawer-subtotal">
-                                    <span>Subtotal</span>
-                                    <span>{formatUSD(stats.totalAmount)}</span>
+                                    <div className="cart-drawer-stats">
+                                        <span><em>STYLES</em>{stats.totalStyles}</span>
+                                        <span><em>QTY</em>{stats.totalQty}</span>
+                                    </div>
+                                    <span className="cart-drawer-total-amount"><em>TOTAL</em>{formatUSD(stats.totalAmount)}</span>
                                 </div>
                                 <div className="cart-drawer-actions">
                                     <button className="btn-black" onClick={() => { setCartDrawerOpen(false); setPage('confirm'); }}>PROCEED TO ORDER</button>
@@ -4280,7 +4311,7 @@
                                     ></video>
                                 </div>
                                 <div className="hero-overlay" aria-hidden="true"></div>
-                                <div className="hero-label">2027 SPRING/SUMMER COLLECTION</div>
+                                <div className="hero-label">2027 S/S COLLECTION</div>
                                 <div className="hero-title">MUSINSA STANDARD<br />GLOBAL SHOWROOM</div>
                                 <div className="hero-subtitle">Explore our latest collection and place your wholesale orders</div>
                                 <button className="btn-white" onClick={() => setPage('products')}>View All Products</button>
