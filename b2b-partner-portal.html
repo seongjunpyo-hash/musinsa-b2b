@@ -2495,6 +2495,10 @@
                 gap: 0.5rem;
             }
 
+            .filters-row.dropdown-open {
+                overflow-x: visible;
+            }
+
             .filters-row::-webkit-scrollbar {
                 display: none;
             }
@@ -3898,7 +3902,7 @@
                             </div>
                             <div className="filters-sticky">
                             {(catDropdownOpen || filterDropdownOpen) && <div className="cat-multi-dropdown-backdrop" onClick={() => { setCatDropdownOpen(null); setFilterDropdownOpen(null); }}></div>}
-                            <div className="filters-row">
+                            <div className={`filters-row ${catDropdownOpen || filterDropdownOpen ? 'dropdown-open' : ''}`}>
                                 <div className="category-buttons" ref={catDropdownRef} style={{position:'relative'}}>
                                     {[...new Set(PRODUCTS.filter(p => p.is_visible).map(p => p.category))].map(cat => {
                                         const isActive = selectedMainCats.includes(cat);
