@@ -632,7 +632,7 @@
             z-index: 90;
             background: #000;
             color: #fff;
-            padding: 0.75rem 1.5rem;
+            padding: 0.75rem 1.5rem 1.25rem;
             font-size: 0.875rem;
         }
 
@@ -647,12 +647,12 @@
 
         .summary-stats {
             display: flex;
-            gap: 2rem;
+            gap: 1.25rem;
         }
 
         .stat {
             display: flex;
-            gap: 0.5rem;
+            gap: 0.35rem;
         }
 
         .stat-label {
@@ -2635,32 +2635,46 @@
                 width: 100%;
             }
 
-            /* Cart sticky bottom bar adjustments */
-            .cart-bottom-bar-inner {
-                flex-direction: column !important;
-                align-items: stretch !important;
-                gap: 0.75rem !important;
+            /* Summary bar mobile optimization (products + cart pages) */
+            .summary-bar {
+                padding: 0.75rem 1rem 1rem;
             }
 
-            .cart-bottom-bar-stats {
-                gap: 0 !important;
-                justify-content: space-between !important;
-                width: 100%;
+            .summary-bar-inner {
+                padding: 0;
+                flex-direction: row;
+                align-items: center;
+                justify-content: space-between;
+                gap: 0.5rem;
             }
 
-            .cart-bottom-bar-stats > div > div:first-child {
-                font-size: 10px !important;
+            .summary-stats {
+                gap: 1rem;
             }
 
-            .cart-bottom-bar-stats > div > div:last-child {
-                font-size: 15px !important;
+            .summary-bar .stat {
+                flex-direction: column;
+                gap: 0.125rem;
+                align-items: flex-start;
             }
 
-            .cart-bottom-bar-cta {
-                width: 100% !important;
-                padding: 14px 20px !important;
-                font-size: 14px !important;
+            .summary-bar .stat-label {
+                font-size: 9px;
+                letter-spacing: 0.02em;
             }
+
+            .summary-bar .stat > span:last-child {
+                font-size: 13px;
+                font-weight: 700;
+            }
+
+            .summary-bar .btn-outline-white {
+                width: auto;
+                padding: 10px 16px;
+                font-size: 12px;
+                white-space: nowrap;
+            }
+
 
             /* Order detail modal table - horizontal scroll */
             .order-items-table-wrap {
@@ -4175,7 +4189,18 @@
                     {page === 'cart' && !orderSubmitted && (
                         <div className="page">
                             <div style={{ maxWidth: '2200px', margin: '0 auto', padding: '2rem 1.5rem 0' }}>
-                                <h2 style={{ marginBottom: '2rem' }}>Cart</h2>
+                                <div style={{ display: 'flex', alignItems: 'center', gap: '12px', marginBottom: '2rem' }}>
+                                    <button onClick={() => setPage('products')} style={{ background: 'none', border: 'none', cursor: 'pointer', padding: '4px', display: 'flex', alignItems: 'center' }}>
+                                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#111" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M19 12H5"></path><path d="M12 19l-7-7 7-7"></path></svg>
+                                    </button>
+                                    <h2 style={{ margin: 0, flex: 1 }}>Cart</h2>
+                                    <div style={{ display: 'flex', gap: '0.5rem' }}>
+                                        <button className="btn-outline-black" style={{ fontSize: '12px', padding: '8px 16px' }} onClick={() => exportCartToExcel(cart)}>EXPORT EXCEL</button>
+                                        <button className="btn-outline-black" style={{ fontSize: '12px', padding: '8px 16px' }} onClick={() => {
+                                            if (confirm('카트의 모든 상품을 삭제하시겠습니까?')) setCart({});
+                                        }}>CLEAR ALL</button>
+                                    </div>
+                                </div>
                             </div>
                             {stats.totalQty === 0 ? (
                                 <div style={{ maxWidth: '600px', margin: '0 auto', padding: '1.5rem', textAlign: 'center', minHeight: 'calc(100vh - 14rem)', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center' }}>
@@ -4191,14 +4216,6 @@
                                 </div>
                             ) : (
                                 <div style={{ maxWidth: '2200px', margin: '0 auto', padding: '0 1.5rem', paddingBottom: '120px' }}>
-                                    <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'flex-end', marginBottom: '2rem' }}>
-                                        <div style={{ display: 'flex', gap: '0.5rem' }}>
-                                            <button className="btn-outline-black" style={{ fontSize: '12px', padding: '8px 16px' }} onClick={() => exportCartToExcel(cart)}>EXPORT EXCEL</button>
-                                            <button className="btn-outline-black" style={{ fontSize: '12px', padding: '8px 16px' }} onClick={() => {
-                                                if (confirm('카트의 모든 상품을 삭제하시겠습니까?')) setCart({});
-                                            }}>CLEAR ALL</button>
-                                        </div>
-                                    </div>
 
                                     {/* Cart Grid - 4 columns */}
                                     <div className="cart-grid">
@@ -4266,31 +4283,23 @@
                                     )}
 
                                     {/* Sticky Bottom Summary Bar */}
-                                    <div style={{
-                                        position: 'fixed', bottom: 0, left: 0, right: 0,
-                                        background: '#000', color: '#fff', padding: '1rem 1.25rem',
-                                        zIndex: 40
-                                    }}>
-                                        <div className="cart-bottom-bar-inner" style={{ maxWidth: '2200px', margin: '0 auto', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-                                            <div className="cart-bottom-bar-stats" style={{ display: 'flex', gap: '3rem' }}>
-                                                <div>
-                                                    <div style={{ fontSize: '11px', opacity: 0.7 }}>STYLES</div>
-                                                    <div style={{ fontWeight: 700, fontSize: '18px' }}>{stats.totalStyles}</div>
+                                    <div className="summary-bar">
+                                        <div className="summary-bar-inner">
+                                            <div className="summary-stats">
+                                                <div className="stat">
+                                                    <span className="stat-label">STYLES</span>
+                                                    <span>{stats.totalStyles}</span>
                                                 </div>
-                                                <div>
-                                                    <div style={{ fontSize: '11px', opacity: 0.7 }}>QTY</div>
-                                                    <div style={{ fontWeight: 700, fontSize: '18px' }}>{stats.totalQty.toLocaleString()}</div>
+                                                <div className="stat">
+                                                    <span className="stat-label">QTY</span>
+                                                    <span>{stats.totalQty.toLocaleString()}</span>
                                                 </div>
-                                                <div>
-                                                    <div style={{ fontSize: '11px', opacity: 0.7 }}>TOTAL</div>
-                                                    <div style={{ fontWeight: 700, fontSize: '18px' }}>{formatUSD(stats.totalAmount)}</div>
+                                                <div className="stat">
+                                                    <span className="stat-label">TOTAL</span>
+                                                    <span>{formatUSD(stats.totalAmount)}</span>
                                                 </div>
                                             </div>
-                                            <button className="cart-bottom-bar-cta" onClick={() => setPage('confirm')} style={{
-                                                background: '#fff', color: '#000', border: 'none',
-                                                padding: '12px 32px', fontWeight: 600, fontSize: '14px',
-                                                cursor: 'pointer', letterSpacing: '0.05em'
-                                            }}>PROCEED TO ORDER</button>
+                                            <button className="btn-outline-white" onClick={() => setPage('confirm')}>PROCEED TO ORDER</button>
                                         </div>
                                     </div>
                                 </div>
