@@ -2828,6 +2828,11 @@
 
         /* MOBILE 640px OPTIMIZATIONS */
         @media (max-width: 640px) {
+            /* Hide category banners on mobile */
+            .category-banners {
+                display: none;
+            }
+
             /* GNB - hide desktop nav, show hamburger */
             .header {
                 padding: 0 1rem;
@@ -3951,6 +3956,12 @@
                 onScroll();
                 window.addEventListener('scroll', onScroll, { passive: true });
                 return () => window.removeEventListener('scroll', onScroll);
+            }, [page]);
+
+            // Reset scroll to top when navigating to a non-home page
+            useEffect(() => {
+                if (page === 'home') return;
+                window.scrollTo(0, 0);
             }, [page]);
 
             useEffect(() => {
