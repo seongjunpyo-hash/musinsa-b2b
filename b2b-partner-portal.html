@@ -852,6 +852,32 @@
             color: #000;
         }
 
+        .view-bag-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .view-bag-count {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            min-width: 22px;
+            height: 20px;
+            padding: 0 6px;
+            border-radius: 10px;
+            background: #fff;
+            color: #000;
+            font-size: 12px;
+            font-weight: 700;
+            line-height: 1;
+        }
+
+        .view-bag-btn:hover .view-bag-count {
+            background: #000;
+            color: #fff;
+        }
+
         .filters-sticky {
             position: sticky;
             top: 3.5rem;
@@ -4822,7 +4848,10 @@
                                                 <span>{formatUSD(stats.totalAmount)}</span>
                                             </div>
                                         </div>
-                                        <button className="btn-outline-white" onClick={() => setCartDrawerOpen(true)}>VIEW BAG</button>
+                                        <button className="btn-outline-white view-bag-btn" onClick={() => setCartDrawerOpen(true)}>
+                                            <span>VIEW BAG</span>
+                                            <span className="view-bag-count">{stats.totalQty}</span>
+                                        </button>
                                     </div>
                                 </div>
                             )}
