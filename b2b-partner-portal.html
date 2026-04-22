@@ -562,7 +562,7 @@
             object-fit: cover;
             object-position: center center;
             display: block;
-            transition: transform 0.5s ease;
+            transition: transform 0.6s ease;
         }
 
         .cat-banner:hover img {
@@ -3991,10 +3991,19 @@
                     return;
                 }
                 if (heroScrollDone.current) return;
-                // Start scrolled down to products/GNB level
+                // Start with the viewport 100px above the banners (so the hero "opens" with some headroom above the banners)
                 const heroEl = document.querySelector('.hero-section');
-                const offset = heroEl ? heroEl.offsetHeight : 600;
-                window.scrollTo(0, offset);
+                const bannerEl = document.querySelector('.category-banners .cat-banner');
+                let offset;
+                if (bannerEl) {
+                    // 100px of space above the banner row when entry animation starts
+                    offset = bannerEl.getBoundingClientRect().top + window.scrollY - 100;
+                } else if (heroEl) {
+                    offset = heroEl.offsetHeight;
+                } else {
+                    offset = 600;
+                }
+                window.scrollTo(0, Math.max(0, offset));
                 // After a brief pause, smooth-scroll up to reveal hero
                 const t1 = setTimeout(() => {
                     window.scrollTo({ top: 0, behavior: 'smooth' });
