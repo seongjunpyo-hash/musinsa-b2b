@@ -1360,7 +1360,7 @@ import * as XLSX from 'xlsx';
                                             <button
                                                 key={g}
                                                 className={`category-btn ${isOn ? 'active' : ''}`}
-                                                onClick={() => setSelectedGenders(prev => isOn ? prev.filter(x => x !== g) : [...prev, g])}
+                                                onClick={() => setSelectedGenders(isOn ? [] : [g])}
                                             >
                                                 {g}
                                             </button>
