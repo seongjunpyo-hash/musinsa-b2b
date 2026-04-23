@@ -557,6 +557,15 @@
             .hero-title { font-size: 3rem; }
             .hero-label { font-size: 0.9375rem; }
             .hero-subtitle { font-size: 0.9375rem; }
+            .product-slide-pause,
+            .hero-video-pause { display: none !important; }
+            .hero-bg video {
+                transform: translate(-50%, -50%) scale(1.08);
+                transition: transform 1.2s cubic-bezier(0.22, 1, 0.36, 1);
+            }
+            .hero-section.hero-revealed .hero-bg video {
+                transform: translate(-50%, -50%) scale(1);
+            }
         }
 
         .btn-white {
@@ -4388,7 +4397,18 @@
                     return;
                 }
                 if (heroScrollDone.current) return;
-                // Start with the viewport 100px above the banners (so the hero "opens" with some headroom above the banners)
+                const isMobile = window.innerWidth <= 768;
+                if (isMobile) {
+                    // On mobile, skip the scroll-jump mechanic. Rely on the CSS
+                    // entrance animation (video zoom + text fade) triggered by .hero-revealed.
+                    window.scrollTo(0, 0);
+                    const tMob = setTimeout(() => {
+                        setHeroRevealed(true);
+                        heroScrollDone.current = true;
+                    }, 200);
+                    return () => clearTimeout(tMob);
+                }
+                // Desktop: scroll down to banners, then smooth-scroll back up to reveal hero
                 const heroEl = document.querySelector('.hero-section');
                 const bannerEl = document.querySelector('.category-banners .cat-banner');
                 let offset;
