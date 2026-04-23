@@ -1514,7 +1514,8 @@
             display: flex;
             flex-wrap: wrap;
             align-items: baseline;
-            gap: 0.25rem 0;
+            column-gap: 1.4rem;
+            row-gap: 0.4rem;
             font-size: 1rem;
             color: var(--color-fg);
             line-height: 1.4;
@@ -1524,17 +1525,20 @@
             display: inline-flex;
             align-items: baseline;
             gap: 0.35rem;
-            padding: 0 0.7rem;
-            border-right: 1px solid rgba(0, 0, 0, 0.18);
+            position: relative;
         }
 
-        .size-qty-pair:first-child {
-            padding-left: 0;
-        }
-
-        .size-qty-pair:last-child {
-            border-right: none;
-            padding-right: 0;
+        /* Short divider centered in the column-gap, height matched to font */
+        .size-qty-pair:not(:last-child)::after {
+            content: '';
+            position: absolute;
+            left: calc(100% + 0.7rem);
+            top: 0;
+            bottom: 0;
+            margin: auto;
+            width: 1px;
+            height: 0.9em;
+            background: rgba(0, 0, 0, 0.18);
         }
 
         /* Bulk size quantity helper bar */
