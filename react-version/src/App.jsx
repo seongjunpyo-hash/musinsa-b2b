@@ -819,6 +819,21 @@ import * as XLSX from 'xlsx';
             const [scrollY, setScrollY] = useState(0);
             const [heroRevealed, setHeroRevealed] = useState(false);
             const heroScrollDone = useRef(false);
+            const heroVideoRef = useRef(null);
+            const [heroVideoPaused, setHeroVideoPaused] = useState(false);
+
+            const toggleHeroVideo = (e) => {
+                e.stopPropagation();
+                const v = heroVideoRef.current;
+                if (!v) return;
+                if (v.paused) {
+                    v.play();
+                    setHeroVideoPaused(false);
+                } else {
+                    v.pause();
+                    setHeroVideoPaused(true);
+                }
+            };
 
             useEffect(() => {
                 if (page !== 'home') {
@@ -1282,6 +1297,7 @@ import * as XLSX from 'xlsx';
                             >
                                 <div className="hero-bg" aria-hidden="true">
                                     <video
+                                        ref={heroVideoRef}
                                         src="/videos/musinsa-cooltandard-1080p.webm"
                                         autoPlay
                                         muted
@@ -1296,6 +1312,24 @@ import * as XLSX from 'xlsx';
                                 <div className="hero-title">MUSINSA STANDARD<br />GLOBAL SHOWROOM</div>
                                 <div className="hero-subtitle">Explore our latest collection and place your wholesale orders</div>
                                 <button className="btn-white" onClick={() => setPage('products')}>View All Products</button>
+                                <button
+                                    type="button"
+                                    className={`hero-video-pause${heroVideoPaused ? ' is-paused' : ''}`}
+                                    onClick={toggleHeroVideo}
+                                    aria-label={heroVideoPaused ? 'Play hero video' : 'Pause hero video'}
+                                >
+                                    <svg className="hero-video-icon" width="10" height="10" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+                                        {heroVideoPaused ? (
+                                            <polygon points="7,4 20,12 7,20"></polygon>
+                                        ) : (
+                                            <g>
+                                                <rect x="6" y="4" width="4" height="16" rx="1"></rect>
+                                                <rect x="14" y="4" width="4" height="16" rx="1"></rect>
+                                            </g>
+                                        )}
+                                    </svg>
+                                    <span className="hero-video-label">{heroVideoPaused ? 'PLAY' : 'PAUSE'}</span>
+                                </button>
                             </div>
 
                             {/* CATEGORY BANNERS */}

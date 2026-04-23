@@ -475,6 +475,53 @@
             z-index: 2;
         }
 
+        .hero-video-pause {
+            position: absolute;
+            bottom: 24px;
+            left: 50%;
+            transform: translateX(-50%);
+            height: 32px;
+            padding: 0 12px 0 10px;
+            border-radius: 16px;
+            border: none;
+            background: rgba(17, 17, 17, 0.3);
+            backdrop-filter: blur(4px);
+            -webkit-backdrop-filter: blur(4px);
+            color: #fff;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            cursor: pointer;
+            opacity: 0;
+            pointer-events: none;
+            overflow: hidden;
+            transition: opacity 0.2s ease, background 0.15s ease;
+            z-index: 3;
+            font-family: inherit;
+            font-size: 10px;
+            font-weight: 700;
+            letter-spacing: 0.08em;
+            line-height: 1;
+        }
+
+        .hero-section:hover .hero-video-pause {
+            opacity: 1;
+            pointer-events: auto;
+        }
+
+        .hero-video-pause:hover {
+            background: rgba(17, 17, 17, 0.5);
+        }
+
+        .hero-video-icon {
+            flex-shrink: 0;
+        }
+
+        .hero-video-label {
+            position: relative;
+            z-index: 1;
+        }
+
         .hero-label {
             font-size: 1.125rem;
             letter-spacing: 0.22em;
@@ -4314,6 +4361,21 @@
             const [scrollY, setScrollY] = useState(0);
             const [heroRevealed, setHeroRevealed] = useState(false);
             const heroScrollDone = React.useRef(false);
+            const heroVideoRef = React.useRef(null);
+            const [heroVideoPaused, setHeroVideoPaused] = useState(false);
+
+            const toggleHeroVideo = (e) => {
+                e.stopPropagation();
+                const v = heroVideoRef.current;
+                if (!v) return;
+                if (v.paused) {
+                    v.play();
+                    setHeroVideoPaused(false);
+                } else {
+                    v.pause();
+                    setHeroVideoPaused(true);
+                }
+            };
 
             useEffect(() => {
                 if (page !== 'home') {
@@ -4777,6 +4839,7 @@
                             >
                                 <div className="hero-bg" aria-hidden="true">
                                     <video
+                                        ref={heroVideoRef}
                                         src="videos/musinsa-cooltandard-1080p.webm"
                                         autoPlay
                                         muted
@@ -4791,6 +4854,24 @@
                                 <div className="hero-title">MUSINSA STANDARD<br />GLOBAL SHOWROOM</div>
                                 <div className="hero-subtitle">Explore our latest collection and place your wholesale orders</div>
                                 <button className="btn-white" onClick={() => setPage('products')}>View All Products</button>
+                                <button
+                                    type="button"
+                                    className={`hero-video-pause${heroVideoPaused ? ' is-paused' : ''}`}
+                                    onClick={toggleHeroVideo}
+                                    aria-label={heroVideoPaused ? 'Play hero video' : 'Pause hero video'}
+                                >
+                                    <svg className="hero-video-icon" width="10" height="10" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+                                        {heroVideoPaused ? (
+                                            <polygon points="7,4 20,12 7,20"></polygon>
+                                        ) : (
+                                            <g>
+                                                <rect x="6" y="4" width="4" height="16" rx="1"></rect>
+                                                <rect x="14" y="4" width="4" height="16" rx="1"></rect>
+                                            </g>
+                                        )}
+                                    </svg>
+                                    <span className="hero-video-label">{heroVideoPaused ? 'PLAY' : 'PAUSE'}</span>
+                                </button>
                             </div>
 
                             {/* CATEGORY BANNERS */}
