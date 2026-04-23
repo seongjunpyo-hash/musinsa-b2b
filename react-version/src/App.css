@@ -536,12 +536,20 @@
             .hero-subtitle { font-size: 0.9375rem; }
             .product-slide-pause,
             .hero-video-pause { display: none !important; }
-            .hero-bg video {
-                transform: translate(-50%, -50%) scale(1.08);
-                transition: transform 1.2s cubic-bezier(0.22, 1, 0.36, 1);
+            /* Mobile key visual entrance: hero fades + slides in, video zooms out */
+            .hero-section .hero-bg {
+                opacity: 0;
+                transition: opacity 0.9s ease;
+            }
+            .hero-section.hero-revealed .hero-bg {
+                opacity: 1;
             }
             .hero-section.hero-revealed .hero-bg video {
-                transform: translate(-50%, -50%) scale(1);
+                animation: heroVideoEnterMobile 1.6s cubic-bezier(0.22, 1, 0.36, 1) both;
+            }
+            @keyframes heroVideoEnterMobile {
+                from { transform: translate(-50%, -50%) scale(1.18); }
+                to { transform: translate(-50%, -50%) scale(1); }
             }
         }
 
