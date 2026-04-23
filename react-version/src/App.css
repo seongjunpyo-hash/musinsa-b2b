@@ -572,7 +572,7 @@
                so centered top margin ≈ 10–11px */
             top: clamp(8px, calc((100vw - 144px) / 30 - 33px), 40px);
             left: 0;
-            padding: 0 clamp(0.75rem, 3cqi, 1.5rem) 0 clamp(1rem, 4cqi, 2rem);
+            padding: 0 clamp(0.75rem, 3cqi, 1.5rem) 0 2rem;
             color: #111;
             z-index: 2;
             pointer-events: none;
