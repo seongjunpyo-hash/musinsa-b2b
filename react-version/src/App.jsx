@@ -282,16 +282,27 @@ import * as XLSX from 'xlsx';
             const [imgIndex, setImgIndex] = useState(0);
             const [enableTransition, setEnableTransition] = useState(true);
             const intervalRef = useRef(null);
+            const timeoutRef = useRef(null);
 
             const startAutoSlide = () => {
-                if (images.length <= 1 || intervalRef.current) return;
-                intervalRef.current = setInterval(() => {
+                if (images.length <= 1 || intervalRef.current || timeoutRef.current) return;
+                // First slide kicks in at 1.2s, then every 2s after
+                timeoutRef.current = setTimeout(() => {
                     setEnableTransition(true);
                     setImgIndex(prev => prev + 1);
-                }, 2000);
+                    timeoutRef.current = null;
+                    intervalRef.current = setInterval(() => {
+                        setEnableTransition(true);
+                        setImgIndex(prev => prev + 1);
+                    }, 2000);
+                }, 1200);
             };
 
             const stopAutoSlide = () => {
+                if (timeoutRef.current) {
+                    clearTimeout(timeoutRef.current);
+                    timeoutRef.current = null;
+                }
                 if (intervalRef.current) {
                     clearInterval(intervalRef.current);
                     intervalRef.current = null;
@@ -320,6 +331,7 @@ import * as XLSX from 'xlsx';
 
             useEffect(() => () => {
                 if (intervalRef.current) clearInterval(intervalRef.current);
+                if (timeoutRef.current) clearTimeout(timeoutRef.current);
             }, []);
 
             return (
