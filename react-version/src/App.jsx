@@ -1264,7 +1264,7 @@ import * as XLSX from 'xlsx';
                     {/* PRODUCTS PAGE */}
                     {page === 'products' && (
                         <div className="page" style={{ paddingBottom: stats.totalStyles > 0 ? '4rem' : 0 }}>
-                            <div className="products-title-row" style={{ maxWidth: '2200px', margin: '0 auto', padding: '2rem 1.5rem 0' }}>
+                            <div className="products-title-row" style={{ maxWidth: '1980px', margin: '0 auto', padding: 'clamp(16px, 2vw, 32px) 1.5rem 0' }}>
                                 <h2 style={{ marginBottom: 0 }}>Products</h2>
                                 <button className="search-toggle search-toggle-mobile" onClick={() => { setShowSearch(!showSearch); if (showSearch) setSearchTerm(''); }} aria-label="Toggle search">
                                     {showSearch ? (

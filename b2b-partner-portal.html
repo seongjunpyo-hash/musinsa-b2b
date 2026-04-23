@@ -516,9 +516,9 @@
 
         /* CATEGORY BANNERS */
         .category-banners {
-            max-width: 2200px;
+            max-width: 1980px;
             margin: 0 auto;
-            padding: clamp(60px, 7.5vw, 120px) 1.5rem 0;
+            padding: clamp(50px, 6.25vw, 100px) 1.5rem 0;
             display: grid;
             grid-template-columns: 1fr 1fr 1fr 1fr 1fr;
             grid-template-rows: auto auto;
@@ -722,9 +722,14 @@
         }
 
         .collections-section {
-            padding: clamp(60px, 7.5vw, 120px) 1.5rem 0;
-            max-width: 2200px;
+            padding: clamp(50px, 6.25vw, 100px) 1.5rem 0;
+            max-width: 1980px;
             margin: 0 auto;
+        }
+
+        /* Banner bottom (first NEW section right after category banners) — 120px max */
+        .category-banners + .collections-section {
+            padding-top: clamp(60px, 7.5vw, 120px);
         }
 
         .hero-section + .collections-section {
@@ -846,7 +851,7 @@
         }
 
         .summary-bar-inner {
-            max-width: 2200px;
+            max-width: 1980px;
             margin: 0 auto;
             padding: 0 1.5rem;
             display: flex;
@@ -921,7 +926,7 @@
         }
 
         .filters-row {
-            max-width: 2200px;
+            max-width: 1980px;
             margin: 0 auto;
             padding: 0.75rem 1.5rem;
             display: flex;
@@ -1225,7 +1230,7 @@
         }
 
         .products-section {
-            max-width: 2200px;
+            max-width: 1980px;
             margin: 0 auto;
             padding: 1rem 1.5rem;
         }
@@ -2355,7 +2360,7 @@
         }
 
         .confirm-view {
-            padding: 1.5rem 2rem;
+            padding: clamp(12px, 1.5vw, 24px) 2rem 1.5rem;
             max-width: 1400px;
             margin: 0 auto;
             display: flex;
@@ -2592,7 +2597,7 @@
 
         /* ORDERS PAGE */
         .orders-section {
-            padding: 2rem 1.5rem;
+            padding: clamp(16px, 2vw, 32px) 1.5rem 2rem;
             max-width: 1400px;
             margin: 0 auto;
         }
@@ -4674,7 +4679,7 @@
                     {/* PRODUCTS PAGE */}
                     {page === 'products' && (
                         <div className="page" style={{ paddingBottom: stats.totalStyles > 0 ? '4rem' : 0 }}>
-                            <div className="products-title-row" style={{ maxWidth: '2200px', margin: '0 auto', padding: '2rem 1.5rem 0' }}>
+                            <div className="products-title-row" style={{ maxWidth: '1980px', margin: '0 auto', padding: 'clamp(16px, 2vw, 32px) 1.5rem 0' }}>
                                 <h2 style={{ marginBottom: 0 }}>Products</h2>
                                 <button className="search-toggle search-toggle-mobile" onClick={() => { setShowSearch(!showSearch); if (showSearch) setSearchTerm(''); }} aria-label="Toggle search">
                                     {showSearch ? (
