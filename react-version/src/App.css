@@ -780,6 +780,66 @@
             object-fit: cover;
         }
 
+        .product-slide-pause {
+            position: absolute;
+            bottom: 18px;
+            left: 50%;
+            transform: translateX(-50%);
+            height: 32px;
+            padding: 0 12px 0 10px;
+            border-radius: 16px;
+            border: none;
+            background: rgba(17, 17, 17, 0.3);
+            backdrop-filter: blur(4px);
+            -webkit-backdrop-filter: blur(4px);
+            color: #fff;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            cursor: pointer;
+            opacity: 0;
+            overflow: hidden;
+            transition: opacity 0.2s ease, background 0.15s ease;
+            z-index: 2;
+            font-family: inherit;
+            font-size: 10px;
+            font-weight: 700;
+            letter-spacing: 0.08em;
+            line-height: 1;
+        }
+
+        .product-card:hover .product-slide-pause {
+            opacity: 1;
+        }
+
+        .product-slide-pause:hover {
+            background: rgba(17, 17, 17, 0.5);
+        }
+
+        .product-slide-icon {
+            flex-shrink: 0;
+        }
+
+        .product-slide-label {
+            position: relative;
+            z-index: 1;
+        }
+
+        .product-slide-progress-bar {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            height: 2px;
+            width: 0;
+            background: rgba(255, 255, 255, 0.95);
+            animation: product-slide-progress-bar 2s linear forwards;
+            pointer-events: none;
+        }
+
+        @keyframes product-slide-progress-bar {
+            to { width: 100%; }
+        }
+
         .product-badges {
             display: flex;
             gap: 6px;

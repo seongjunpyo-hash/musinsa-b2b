@@ -803,6 +803,66 @@
             object-fit: cover;
         }
 
+        .product-slide-pause {
+            position: absolute;
+            bottom: 18px;
+            left: 50%;
+            transform: translateX(-50%);
+            height: 32px;
+            padding: 0 12px 0 10px;
+            border-radius: 16px;
+            border: none;
+            background: rgba(17, 17, 17, 0.3);
+            backdrop-filter: blur(4px);
+            -webkit-backdrop-filter: blur(4px);
+            color: #fff;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            cursor: pointer;
+            opacity: 0;
+            overflow: hidden;
+            transition: opacity 0.2s ease, background 0.15s ease;
+            z-index: 2;
+            font-family: inherit;
+            font-size: 10px;
+            font-weight: 700;
+            letter-spacing: 0.08em;
+            line-height: 1;
+        }
+
+        .product-card:hover .product-slide-pause {
+            opacity: 1;
+        }
+
+        .product-slide-pause:hover {
+            background: rgba(17, 17, 17, 0.5);
+        }
+
+        .product-slide-icon {
+            flex-shrink: 0;
+        }
+
+        .product-slide-label {
+            position: relative;
+            z-index: 1;
+        }
+
+        .product-slide-progress-bar {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            height: 2px;
+            width: 0;
+            background: rgba(255, 255, 255, 0.95);
+            animation: product-slide-progress-bar 2s linear forwards;
+            pointer-events: none;
+        }
+
+        @keyframes product-slide-progress-bar {
+            to { width: 100%; }
+        }
+
         .product-badges {
             display: flex;
             gap: 6px;
@@ -3716,11 +3776,35 @@
             const slides = images.length > 1 ? [...images, images[0]] : images;
             const [imgIndex, setImgIndex] = useState(0);
             const [enableTransition, setEnableTransition] = useState(true);
+            const [slidesMounted, setSlidesMounted] = useState(false);
+            const [isPaused, setIsPaused] = useState(false);
+            const cardRef = React.useRef(null);
             const intervalRef = React.useRef(null);
             const timeoutRef = React.useRef(null);
 
+            // Preload all slider images once the card enters (or nears) the viewport
+            useEffect(() => {
+                if (slidesMounted || !cardRef.current || images.length <= 1) return;
+                const node = cardRef.current;
+                const observer = new IntersectionObserver(
+                    (entries) => {
+                        if (entries[0].isIntersecting) {
+                            setSlidesMounted(true);
+                            observer.disconnect();
+                        }
+                    },
+                    { rootMargin: '300px 0px' }
+                );
+                observer.observe(node);
+                return () => observer.disconnect();
+            }, [slidesMounted, images.length]);
+
+            const slidesToRender = slidesMounted ? slides : [slides[0]];
+
             const startAutoSlide = () => {
-                if (images.length <= 1 || intervalRef.current || timeoutRef.current) return;
+                if (images.length <= 1 || isPaused || intervalRef.current || timeoutRef.current) return;
+                // Ensure all slide images are mounted (and thus loading) as soon as the user hovers
+                if (!slidesMounted) setSlidesMounted(true);
                 // First slide kicks in at 0.5s, then every 2s after
                 timeoutRef.current = setTimeout(() => {
                     setEnableTransition(true);
@@ -3744,6 +3828,30 @@
                 }
                 setEnableTransition(false);
                 setImgIndex(0);
+                setIsPaused(false);
+            };
+
+            const togglePause = (e) => {
+                e.stopPropagation();
+                if (isPaused) {
+                    // Resume: kick off the interval again
+                    setIsPaused(false);
+                    intervalRef.current = setInterval(() => {
+                        setEnableTransition(true);
+                        setImgIndex(prev => prev + 1);
+                    }, 2000);
+                } else {
+                    // Pause: clear any pending timers
+                    if (timeoutRef.current) {
+                        clearTimeout(timeoutRef.current);
+                        timeoutRef.current = null;
+                    }
+                    if (intervalRef.current) {
+                        clearInterval(intervalRef.current);
+                        intervalRef.current = null;
+                    }
+                    setIsPaused(true);
+                }
             };
 
             const handleTransitionEnd = (e) => {
@@ -3770,7 +3878,7 @@
             }, []);
 
             return (
-                <div className="product-card" onClick={() => onSelect(product)} onMouseEnter={startAutoSlide} onMouseLeave={stopAutoSlide}>
+                <div ref={cardRef} className="product-card" onClick={() => onSelect(product)} onMouseEnter={startAutoSlide} onMouseLeave={stopAutoSlide}>
                     <div className={`product-image-container`} style={cartQty > 0 ? { position: 'relative' } : {}}>
                         <div className="product-image-slider"
                             onTransitionEnd={handleTransitionEnd}
@@ -3781,10 +3889,42 @@
                                 transform: `translateX(-${imgIndex * 100}%)`,
                                 transition: enableTransition ? 'transform 0.6s cubic-bezier(0.4, 0, 0.2, 1)' : 'none'
                             }}>
-                            {slides.map((img, i) => (
-                                <img key={i} src={img} alt={product.name} className="product-image" draggable={false} style={{ flexShrink: 0, width: '100%' }} />
+                            {slidesToRender.map((img, i) => (
+                                <img
+                                    key={i}
+                                    src={img}
+                                    alt={product.name}
+                                    className="product-image"
+                                    draggable={false}
+                                    loading={i === 0 ? 'eager' : 'lazy'}
+                                    decoding="async"
+                                    style={{ flexShrink: 0, width: '100%' }}
+                                />
                             ))}
                         </div>
+                        {images.length > 1 && (
+                            <button
+                                type="button"
+                                className={`product-slide-pause${isPaused ? ' is-paused' : ''}`}
+                                onClick={togglePause}
+                                aria-label={isPaused ? 'Play slideshow' : 'Pause slideshow'}
+                            >
+                                <svg className="product-slide-icon" width="10" height="10" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+                                    {isPaused ? (
+                                        <polygon points="7,4 20,12 7,20"></polygon>
+                                    ) : (
+                                        <g>
+                                            <rect x="6" y="4" width="4" height="16" rx="1"></rect>
+                                            <rect x="14" y="4" width="4" height="16" rx="1"></rect>
+                                        </g>
+                                    )}
+                                </svg>
+                                <span className="product-slide-label">{isPaused ? 'PLAY' : 'PAUSE'}</span>
+                                {!isPaused && (
+                                    <span className="product-slide-progress-bar" key={imgIndex} aria-hidden="true"></span>
+                                )}
+                            </button>
+                        )}
                         {cartQty > 0 && <div className="product-qty-bar">QTY: {cartQty} <button onClick={(e) => { e.stopPropagation(); }}>REMOVE</button></div>}
                     </div>
                     <div className="product-info">
@@ -3904,7 +4044,7 @@
                             <div className="product-detail">
                                 <div className="detail-images">
                                     <div className="detail-main-image">
-                                        <img src={currentColor.images[selectedImageIndex]} alt={product.name} draggable={false} />
+                                        <img src={currentColor.images[selectedImageIndex]} alt={product.name} draggable={false} decoding="async" />
                                         {((product.season && product.season.year === LATEST_SEASON.year && product.season.season === LATEST_SEASON.season) || product.is_hero) && (
                                             <div className="detail-image-badges">
                                                 {product.season && product.season.year === LATEST_SEASON.year && product.season.season === LATEST_SEASON.season && <span className="product-badge badge-season" style={{fontSize:'11px'}}>NEW</span>}
@@ -3958,7 +4098,7 @@
                                                 className={`detail-thumbnail ${idx === selectedImageIndex ? 'active' : ''}`}
                                                 onClick={() => setSelectedImageIndex(idx)}
                                             >
-                                                <img src={img} alt={`thumbnail ${idx}`} draggable={false} />
+                                                <img src={img} alt={`thumbnail ${idx}`} draggable={false} loading="lazy" decoding="async" />
                                             </div>
                                         ))}
                                     </div>
@@ -4588,7 +4728,7 @@
                                         const sizeStr = Object.entries(sizeQties).filter(([_,q]) => q > 0).map(([size,qty]) => `${size}: ${qty}`).join(', ');
                                         return (
                                             <div key={`${productId}-${colorName}`} className="cart-drawer-item">
-                                                <img className="cart-drawer-item-img" src={colorObj.images[0]} alt={`${product.name} - ${colorName}`} draggable={false} />
+                                                <img className="cart-drawer-item-img" src={colorObj.images[0]} alt={`${product.name} - ${colorName}`} draggable={false} loading="lazy" decoding="async" />
                                                 <div className="cart-drawer-item-info">
                                                     <div className="cart-drawer-item-name">{product.name}</div>
                                                     <div className="cart-drawer-item-meta">{product.style_no} · {colorName}</div>
@@ -4656,7 +4796,7 @@
                             {/* CATEGORY BANNERS */}
                             <div className="category-banners">
                                 <div className="cat-banner" onClick={() => { setSelectedGenders(['Male']); setSelectedMainCats([]); setSelectedSubCats({}); setFilterYear('All'); setFilterSeason('All'); setActiveFilter('all'); setSearchTerm(''); setPage('products'); }}>
-                                    <img src="images/banners/Frame 1739342240.png" alt="Male Collection" draggable={false} />
+                                    <img src="images/banners/Frame 1739342240.png" alt="Male Collection" draggable={false} decoding="async" />
                                     <div className="cat-banner-overlay">
                                         <div className="cat-banner-heading--inline">
                                             <div className="cat-banner-title">MALE</div>
@@ -4666,7 +4806,7 @@
                                     </div>
                                 </div>
                                 <div className="cat-banner" onClick={() => { setSelectedGenders(['Female']); setSelectedMainCats([]); setSelectedSubCats({}); setFilterYear('All'); setFilterSeason('All'); setActiveFilter('all'); setSearchTerm(''); setPage('products'); }}>
-                                    <img src="images/banners/Frame 1739342239.png" alt="Female Collection" draggable={false} />
+                                    <img src="images/banners/Frame 1739342239.png" alt="Female Collection" draggable={false} decoding="async" />
                                     <div className="cat-banner-overlay">
                                         <div className="cat-banner-heading--inline">
                                             <div className="cat-banner-title">FEMALE</div>
@@ -4676,7 +4816,7 @@
                                     </div>
                                 </div>
                                 <div className="cat-banner" onClick={() => { setSelectedGenders(['Kids']); setSelectedMainCats([]); setSelectedSubCats({}); setFilterYear('All'); setFilterSeason('All'); setActiveFilter('all'); setSearchTerm(''); setPage('products'); }}>
-                                    <img src="images/banners/Frame 1739342236.png" alt="Kids Collection" draggable={false} />
+                                    <img src="images/banners/Frame 1739342236.png" alt="Kids Collection" draggable={false} decoding="async" />
                                     <div className="cat-banner-overlay">
                                         <div className="cat-banner-title">KIDS</div>
                                         <div className="cat-banner-subtitle">COLLECTION</div>
@@ -4684,7 +4824,7 @@
                                     </div>
                                 </div>
                                 <div className="cat-banner" onClick={() => { setSelectedMainCats(['Accessories']); setSelectedSubCats({}); setSelectedGenders([]); setFilterYear('All'); setFilterSeason('All'); setActiveFilter('all'); setSearchTerm(''); setPage('products'); }}>
-                                    <img src="images/banners/Frame 1739342238.png" alt="Accessories Collection" draggable={false} />
+                                    <img src="images/banners/Frame 1739342238.png" alt="Accessories Collection" draggable={false} decoding="async" />
                                     <div className="cat-banner-overlay">
                                         <div className="cat-banner-title">ACCESSORIES</div>
                                         <div className="cat-banner-subtitle">COLLECTION</div>
@@ -4692,7 +4832,7 @@
                                     </div>
                                 </div>
                                 <div className="cat-banner" onClick={() => { setSelectedMainCats([]); setSelectedSubCats({}); setSelectedGenders([]); setFilterYear('All'); setFilterSeason('Special'); setActiveFilter('all'); setSearchTerm(''); setPage('products'); }}>
-                                    <img src="images/banners/Frame 1739342241.png" alt="Special Collection" draggable={false} />
+                                    <img src="images/banners/Frame 1739342241.png" alt="Special Collection" draggable={false} decoding="async" />
                                     <div className="cat-banner-overlay">
                                         <div className="cat-banner-title">SPECIAL</div>
                                         <div className="cat-banner-subtitle">COLLECTION</div>
@@ -5107,7 +5247,7 @@
                                                         <td>
                                                             <div className="product-cell">
                                                                 <div className="product-cell-image">
-                                                                    <img src={product.colors[0].images[0]} alt={product.name} draggable={false} />
+                                                                    <img src={product.colors[0].images[0]} alt={product.name} draggable={false} loading="lazy" decoding="async" />
                                                                 </div>
                                                                 <div style={{ display: 'flex', flexDirection: 'column', justifyContent: 'center' }}>
                                                                     {product.name}
@@ -5321,7 +5461,7 @@
                                         <div key={order.order_id} className="order-card">
                                             <div className="order-thumbnails">
                                                 {visibleThumbs.map((t, i) => (
-                                                    <img key={i} className="order-thumbnail" src={t.img} alt={t.name} draggable={false} />
+                                                    <img key={i} className="order-thumbnail" src={t.img} alt={t.name} draggable={false} loading="lazy" decoding="async" />
                                                 ))}
                                                 {remainingCount > 0 && (
                                                     <div className="order-thumbnail-more">+{remainingCount}</div>
@@ -5449,7 +5589,7 @@
                                                             <td>
                                                                 <div className="product-cell">
                                                                     <div className="product-cell-image">
-                                                                        <img src={item.product.images[0]} alt={item.product.name} draggable={false} />
+                                                                        <img src={item.product.images[0]} alt={item.product.name} draggable={false} loading="lazy" decoding="async" />
                                                                     </div>
                                                                     <div style={{ display: 'flex', flexDirection: 'column', justifyContent: 'center' }}>
                                                                         {item.product.name}
