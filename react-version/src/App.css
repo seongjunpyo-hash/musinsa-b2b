@@ -518,6 +518,7 @@
             border-radius: 6px;
             cursor: pointer;
             background: #f5f5f5;
+            container-type: inline-size;
         }
 
         .cat-banner:nth-child(1) {
@@ -571,7 +572,7 @@
                so centered top margin ≈ 10–11px */
             top: clamp(8px, calc((100vw - 144px) / 30 - 33px), 40px);
             left: 0;
-            padding: 0 1.5rem 0 2rem;
+            padding: 0 clamp(0.75rem, 3cqi, 1.5rem) 0 clamp(1rem, 4cqi, 2rem);
             color: #111;
             z-index: 2;
             pointer-events: none;
@@ -585,7 +586,7 @@
         }
 
         .cat-banner-title {
-            font-size: 1.125rem;
+            font-size: clamp(0.6875rem, 6.5cqi, 1.125rem);
             font-weight: 800;
             text-transform: uppercase;
             letter-spacing: 0.02em;
@@ -593,7 +594,7 @@
         }
 
         .cat-banner-subtitle {
-            font-size: 1.125rem;
+            font-size: clamp(0.6875rem, 6.5cqi, 1.125rem);
             font-weight: 400;
             text-transform: uppercase;
             letter-spacing: 0.04em;
@@ -610,13 +611,13 @@
 
         .cat-banner-heading--inline .cat-banner-subtitle {
             margin-top: 0;
-            font-size: 1.125rem;
+            font-size: clamp(0.6875rem, 6.5cqi, 1.125rem);
             line-height: 1.1;
         }
 
         .cat-banner-cta {
             margin-top: 4px;
-            font-size: 11px;
+            font-size: clamp(9px, 4cqi, 11px);
             font-weight: 700;
             text-transform: uppercase;
             letter-spacing: 0.08em;
