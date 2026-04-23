@@ -528,7 +528,7 @@
         .category-banners {
             max-width: 1980px;
             margin: 0 auto;
-            padding: clamp(50px, 6.25vw, 100px) 1.5rem 0;
+            padding: clamp(40px, 5vw, 80px) 1.5rem 0;
             display: grid;
             grid-template-columns: 1fr 1fr 1fr 1fr 1fr;
             grid-template-rows: auto auto;
@@ -644,10 +644,25 @@
             font-weight: 700;
             text-transform: uppercase;
             letter-spacing: 0.08em;
-            border-bottom: 1.5px solid #111;
             display: inline-block;
             padding-bottom: 2px;
             color: #111;
+            position: relative;
+        }
+
+        .cat-banner-cta::after {
+            content: '';
+            position: absolute;
+            left: 0;
+            bottom: 0;
+            width: 100%;
+            height: 1.5px;
+            background: #111;
+            transition: width 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .cat-banner:hover .cat-banner-cta::after {
+            width: 10px;
         }
 
 
