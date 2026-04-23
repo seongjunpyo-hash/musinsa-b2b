@@ -2004,7 +2004,7 @@
             display: grid;
             grid-template-columns: repeat(3, 1fr);
             gap: 1rem;
-            margin-bottom: 1.5rem;
+            margin-bottom: 0;
             padding: 1.5rem;
             background: var(--color-bg-low);
             border: none;
@@ -2069,7 +2069,7 @@
             display: flex;
             flex-direction: column;
             overflow: hidden;
-            padding: 1rem 2rem 1.5rem;
+            padding: 1rem 2rem 10px;
         }
 
         .order-detail-modal-body > .order-detail-info,
@@ -2082,7 +2082,7 @@
             flex: 1;
             min-height: 0;
             overflow-y: auto;
-            margin: 1rem 0;
+            margin: 0;
         }
 
         .order-detail-modal-body .order-items-table {
@@ -5672,6 +5672,7 @@
                                                 </div>
                                             )}
 
+                                            <h3 style={{ fontSize: '0.875rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.05em', margin: '0.5rem 0 0' }}>Order Items</h3>
                                             <div className="order-items-table-wrap">
                                             <table className="order-items-table">
                                                 <thead>
@@ -5711,9 +5712,9 @@
                                                 </tbody>
                                                 <tfoot>
                                                     <tr>
-                                                        <td colSpan="5" style={{ textAlign: 'right' }}>Total</td>
+                                                        <td colSpan="5" style={{ textAlign: 'right', color: '#999', fontSize: '12px', fontWeight: 400, paddingRight: '8px' }}>Total Qty</td>
                                                         <td>{selectedOrder.total_qty}</td>
-                                                        <td></td>
+                                                        <td style={{ textAlign: 'right', color: '#999', fontSize: '12px', fontWeight: 400, paddingRight: '8px' }}>Total Amount</td>
                                                         <td>{formatUSD(selectedOrder.total_amount)}</td>
                                                     </tr>
                                                 </tfoot>
