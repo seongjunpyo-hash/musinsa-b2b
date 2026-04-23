@@ -518,7 +518,7 @@
         .category-banners {
             max-width: 2200px;
             margin: 0 auto;
-            padding: 120px 1.5rem 0;
+            padding: clamp(60px, 7.5vw, 120px) 1.5rem 0;
             display: grid;
             grid-template-columns: 1fr 1fr 1fr 1fr 1fr;
             grid-template-rows: auto auto;
@@ -647,6 +647,23 @@
         .cat-banner:nth-child(4) { background: #dddad6; }
         .cat-banner:nth-child(5) { background: #e2dfd9; }
 
+        /* Mid-sized viewport: drop the 5th (SPECIAL) banner so the remaining four have room */
+        @media (min-width: 769px) and (max-width: 1440px) {
+            .category-banners {
+                grid-template-columns: 1fr 1fr 1fr 1fr;
+            }
+            .cat-banner:nth-child(5) {
+                display: none;
+            }
+            /* Row-2 banners (KIDS/ACCESSORIES) have height = col_w / 3 = (100vw-120)/12.
+               Centered text top ≈ (100vw-120)/24 - half_text_height.
+               Match MALE/FEMALE top margin to KIDS/ACCESSORIES centered position. */
+            .cat-banner:nth-child(1) .cat-banner-overlay,
+            .cat-banner:nth-child(2) .cat-banner-overlay {
+                top: clamp(8px, calc((100vw - 120px) / 24 - 28px), 32px);
+            }
+        }
+
         @media (max-width: 768px) {
             .category-banners {
                 grid-template-columns: 1fr;
@@ -705,7 +722,7 @@
         }
 
         .collections-section {
-            padding: 120px 1.5rem 0;
+            padding: clamp(60px, 7.5vw, 120px) 1.5rem 0;
             max-width: 2200px;
             margin: 0 auto;
         }
