@@ -286,7 +286,7 @@ import * as XLSX from 'xlsx';
 
             const startAutoSlide = () => {
                 if (images.length <= 1 || intervalRef.current || timeoutRef.current) return;
-                // First slide kicks in at 1.2s, then every 2s after
+                // First slide kicks in at 1s, then every 2s after
                 timeoutRef.current = setTimeout(() => {
                     setEnableTransition(true);
                     setImgIndex(prev => prev + 1);
@@ -295,7 +295,7 @@ import * as XLSX from 'xlsx';
                         setEnableTransition(true);
                         setImgIndex(prev => prev + 1);
                     }, 2000);
-                }, 1200);
+                }, 1000);
             };
 
             const stopAutoSlide = () => {
