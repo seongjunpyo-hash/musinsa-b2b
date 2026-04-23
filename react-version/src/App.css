@@ -515,6 +515,10 @@
             margin-bottom: 1.75rem;
         }
 
+        .hero-title-light {
+            font-weight: 300;
+        }
+
         .hero-subtitle {
             font-size: 1.125rem;
             opacity: 0.75;

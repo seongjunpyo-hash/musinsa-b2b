@@ -1309,7 +1309,7 @@ import * as XLSX from 'xlsx';
                                 </div>
                                 <div className="hero-overlay" aria-hidden="true"></div>
                                 <div className="hero-label">2027 S/S COLLECTION</div>
-                                <div className="hero-title">MUSINSA STANDARD<br />GLOBAL SHOWROOM</div>
+                                <div className="hero-title">MUSINSA STANDARD<br /><span className="hero-title-light">GLOBAL SHOWROOM</span></div>
                                 <div className="hero-subtitle">Explore our latest collection and place your wholesale orders</div>
                                 <button className="btn-white" onClick={() => setPage('products')}>View All Products</button>
                                 <button
