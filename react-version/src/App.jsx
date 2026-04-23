@@ -280,7 +280,7 @@ import * as XLSX from 'xlsx';
             return (
                 <div className="product-card" onClick={() => onSelect(product)}>
                     <div className={`product-image-container`} style={cartQty > 0 ? { position: 'relative' } : {}}>
-                        <img src={product.colors[0].images[0]} alt={product.name} className="product-image" />
+                        <img src={product.colors[0].images[0]} alt={product.name} className="product-image" draggable={false} />
                         {cartQty > 0 && <div className="product-qty-bar">QTY: {cartQty} <button onClick={(e) => { e.stopPropagation(); }}>REMOVE</button></div>}
                     </div>
                     <div className="product-info">
@@ -400,7 +400,7 @@ import * as XLSX from 'xlsx';
                             <div className="product-detail">
                                 <div className="detail-images">
                                     <div className="detail-main-image">
-                                        <img src={currentColor.images[selectedImageIndex]} alt={product.name} />
+                                        <img src={currentColor.images[selectedImageIndex]} alt={product.name} draggable={false} />
                                         {((product.season && product.season.year === LATEST_SEASON.year && product.season.season === LATEST_SEASON.season) || product.is_hero) && (
                                             <div className="detail-image-badges">
                                                 {product.season && product.season.year === LATEST_SEASON.year && product.season.season === LATEST_SEASON.season && <span className="product-badge badge-season" style={{fontSize:'11px'}}>NEW</span>}
