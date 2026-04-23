@@ -842,15 +842,25 @@ import * as XLSX from 'xlsx';
                     return;
                 }
                 if (heroScrollDone.current) return;
-                // Start with the viewport 100px above the banners (so the hero "opens" with some headroom above the banners)
+                const isMobile = window.innerWidth <= 768;
+                if (isMobile) {
+                    // On mobile, skip the scroll-jump mechanic. Rely on the CSS
+                    // entrance animation (video zoom + text fade) triggered by .hero-revealed.
+                    window.scrollTo(0, 0);
+                    const tMob = setTimeout(() => {
+                        setHeroRevealed(true);
+                        heroScrollDone.current = true;
+                    }, 200);
+                    return () => clearTimeout(tMob);
+                }
+                // Desktop: scroll so the hero is completely above the viewport (banner section
+                // with its top padding is what the user sees), then smooth-scroll back up to reveal hero.
                 const heroEl = document.querySelector('.hero-section');
-                const bannerEl = document.querySelector('.category-banners .cat-banner');
                 let offset;
-                if (bannerEl) {
-                    // 100px of space above the banner row when entry animation starts
-                    offset = bannerEl.getBoundingClientRect().top + window.scrollY - 100;
-                } else if (heroEl) {
-                    offset = heroEl.offsetHeight;
+                if (heroEl) {
+                    // Viewport top aligned to banner section top (= hero bottom). Hero is fully above,
+                    // banner padding area shows as the white whitespace at the top of the viewport.
+                    offset = heroEl.getBoundingClientRect().bottom + window.scrollY;
                 } else {
                     offset = 600;
                 }

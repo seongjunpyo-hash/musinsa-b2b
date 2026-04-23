@@ -534,6 +534,15 @@
             .hero-title { font-size: 3rem; }
             .hero-label { font-size: 0.9375rem; }
             .hero-subtitle { font-size: 0.9375rem; }
+            .product-slide-pause,
+            .hero-video-pause { display: none !important; }
+            .hero-bg video {
+                transform: translate(-50%, -50%) scale(1.08);
+                transition: transform 1.2s cubic-bezier(0.22, 1, 0.36, 1);
+            }
+            .hero-section.hero-revealed .hero-bg video {
+                transform: translate(-50%, -50%) scale(1);
+            }
         }
 
         .btn-white {

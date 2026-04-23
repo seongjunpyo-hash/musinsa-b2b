@@ -4408,15 +4408,14 @@
                     }, 200);
                     return () => clearTimeout(tMob);
                 }
-                // Desktop: scroll down to banners, then smooth-scroll back up to reveal hero
+                // Desktop: scroll so the hero is completely above the viewport (banner section
+                // with its top padding is what the user sees), then smooth-scroll back up to reveal hero.
                 const heroEl = document.querySelector('.hero-section');
-                const bannerEl = document.querySelector('.category-banners .cat-banner');
                 let offset;
-                if (bannerEl) {
-                    // 100px of space above the banner row when entry animation starts
-                    offset = bannerEl.getBoundingClientRect().top + window.scrollY - 100;
-                } else if (heroEl) {
-                    offset = heroEl.offsetHeight;
+                if (heroEl) {
+                    // Viewport top aligned to banner section top (= hero bottom). Hero is fully above,
+                    // banner padding area shows as the white whitespace at the top of the viewport.
+                    offset = heroEl.getBoundingClientRect().bottom + window.scrollY;
                 } else {
                     offset = 600;
                 }
