@@ -764,11 +764,6 @@
 
         .product-card {
             cursor: pointer;
-            transition: opacity 0.2s;
-        }
-
-        .product-card:hover {
-            opacity: 0.8;
         }
 
         .product-image-container {

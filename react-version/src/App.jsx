@@ -276,11 +276,68 @@ import * as XLSX from 'xlsx';
         const ProductCard = ({ product, onSelect, cartQty }) => {
             const wholesalePrice = calculateWholesalePrice(product.retail_price_krw);
             const seasonLabel = formatSeason(product.season);
+            const images = product.colors[0].images;
+            // Append a clone of the first image so the last → first transition continues forward (seamless loop)
+            const slides = images.length > 1 ? [...images, images[0]] : images;
+            const [imgIndex, setImgIndex] = useState(0);
+            const [enableTransition, setEnableTransition] = useState(true);
+            const intervalRef = useRef(null);
+
+            const startAutoSlide = () => {
+                if (images.length <= 1 || intervalRef.current) return;
+                intervalRef.current = setInterval(() => {
+                    setEnableTransition(true);
+                    setImgIndex(prev => prev + 1);
+                }, 2000);
+            };
+
+            const stopAutoSlide = () => {
+                if (intervalRef.current) {
+                    clearInterval(intervalRef.current);
+                    intervalRef.current = null;
+                }
+                setEnableTransition(false);
+                setImgIndex(0);
+            };
+
+            const handleTransitionEnd = (e) => {
+                if (e.propertyName !== 'transform') return;
+                if (imgIndex === images.length) {
+                    setEnableTransition(false);
+                    setImgIndex(0);
+                }
+            };
+
+            // After a no-transition snap (reset), re-enable transitions on the next frame
+            useEffect(() => {
+                if (!enableTransition) {
+                    const id = requestAnimationFrame(() => {
+                        requestAnimationFrame(() => setEnableTransition(true));
+                    });
+                    return () => cancelAnimationFrame(id);
+                }
+            }, [enableTransition]);
+
+            useEffect(() => () => {
+                if (intervalRef.current) clearInterval(intervalRef.current);
+            }, []);
 
             return (
-                <div className="product-card" onClick={() => onSelect(product)}>
+                <div className="product-card" onClick={() => onSelect(product)} onMouseEnter={startAutoSlide} onMouseLeave={stopAutoSlide}>
                     <div className={`product-image-container`} style={cartQty > 0 ? { position: 'relative' } : {}}>
-                        <img src={product.colors[0].images[0]} alt={product.name} className="product-image" draggable={false} />
+                        <div className="product-image-slider"
+                            onTransitionEnd={handleTransitionEnd}
+                            style={{
+                                display: 'flex',
+                                width: '100%',
+                                height: '100%',
+                                transform: `translateX(-${imgIndex * 100}%)`,
+                                transition: enableTransition ? 'transform 0.6s cubic-bezier(0.4, 0, 0.2, 1)' : 'none'
+                            }}>
+                            {slides.map((img, i) => (
+                                <img key={i} src={img} alt={product.name} className="product-image" draggable={false} style={{ flexShrink: 0, width: '100%' }} />
+                            ))}
+                        </div>
                         {cartQty > 0 && <div className="product-qty-bar">QTY: {cartQty} <button onClick={(e) => { e.stopPropagation(); }}>REMOVE</button></div>}
                     </div>
                     <div className="product-info">
