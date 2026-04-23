@@ -559,20 +559,12 @@
             .hero-subtitle { font-size: 0.9375rem; }
             .product-slide-pause,
             .hero-video-pause { display: none !important; }
-            /* Mobile key visual entrance: hero fades + slides in, video zooms out */
-            .hero-section .hero-bg {
-                opacity: 0;
-                transition: opacity 0.9s ease;
-            }
-            .hero-section.hero-revealed .hero-bg {
-                opacity: 1;
+            .hero-bg video {
+                transform: translate(-50%, -50%) scale(1.08);
+                transition: transform 1.2s cubic-bezier(0.22, 1, 0.36, 1);
             }
             .hero-section.hero-revealed .hero-bg video {
-                animation: heroVideoEnterMobile 1.6s cubic-bezier(0.22, 1, 0.36, 1) both;
-            }
-            @keyframes heroVideoEnterMobile {
-                from { transform: translate(-50%, -50%) scale(1.18); }
-                to { transform: translate(-50%, -50%) scale(1); }
+                transform: translate(-50%, -50%) scale(1);
             }
         }
 
@@ -4408,18 +4400,12 @@
                 const isMobile = window.innerWidth <= 768;
                 if (isMobile) {
                     // On mobile, skip the scroll-jump mechanic. Rely on the CSS
-                    // entrance animation (hero-bg fade + video zoom + text fade) triggered by .hero-revealed.
+                    // entrance animation (video zoom + text fade) triggered by .hero-revealed.
                     window.scrollTo(0, 0);
-                    // Delay a couple frames so the initial (pre-revealed) state paints before
-                    // .hero-revealed is added, allowing the transition/animation to actually run.
                     const tMob = setTimeout(() => {
-                        requestAnimationFrame(() => {
-                            requestAnimationFrame(() => {
-                                setHeroRevealed(true);
-                                heroScrollDone.current = true;
-                            });
-                        });
-                    }, 300);
+                        setHeroRevealed(true);
+                        heroScrollDone.current = true;
+                    }, 200);
                     return () => clearTimeout(tMob);
                 }
                 // Desktop: scroll so the hero is completely above the viewport (banner section

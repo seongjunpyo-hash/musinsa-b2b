@@ -845,18 +845,12 @@ import * as XLSX from 'xlsx';
                 const isMobile = window.innerWidth <= 768;
                 if (isMobile) {
                     // On mobile, skip the scroll-jump mechanic. Rely on the CSS
-                    // entrance animation (hero-bg fade + video zoom + text fade) triggered by .hero-revealed.
+                    // entrance animation (video zoom + text fade) triggered by .hero-revealed.
                     window.scrollTo(0, 0);
-                    // Delay a couple frames so the initial (pre-revealed) state paints before
-                    // .hero-revealed is added, allowing the transition/animation to actually run.
                     const tMob = setTimeout(() => {
-                        requestAnimationFrame(() => {
-                            requestAnimationFrame(() => {
-                                setHeroRevealed(true);
-                                heroScrollDone.current = true;
-                            });
-                        });
-                    }, 300);
+                        setHeroRevealed(true);
+                        heroScrollDone.current = true;
+                    }, 200);
                     return () => clearTimeout(tMob);
                 }
                 // Desktop: scroll so the hero is completely above the viewport (banner section
