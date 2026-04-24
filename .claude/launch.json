@@ -1,0 +1,12 @@
+{
+  "version": "0.0.1",
+  "configurations": [
+    {
+      "name": "musinsa-b2b",
+      "runtimeExecutable": "npx",
+      "runtimeArgs": ["vite", "--port", "3333"],
+      "port": 3333,
+      "cwd": "react-version"
+    }
+  ]
+}
