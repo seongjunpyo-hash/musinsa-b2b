@@ -2542,6 +2542,12 @@
       const submitPwChange = async (e) => {
         e.preventDefault();
         setPwChangeError('');
+        // Super Admin의 비번 변경은 본인만 가능 — 서버측 가드
+        const targetAdmin = admins.find(a => a.email.toLowerCase() === pwChangeEmail.toLowerCase());
+        if (targetAdmin && targetAdmin.role === 'super' && pwChangeEmail.toLowerCase() !== currentEmail.toLowerCase()) {
+          setPwChangeError('Super Admin의 비밀번호는 본인만 변경할 수 있습니다.');
+          return;
+        }
         if (!pwChangeNew) { setPwChangeError('비밀번호를 입력해주세요.'); return; }
         if (pwChangeNew !== pwChangeConfirm) { setPwChangeError('비밀번호 확인이 일치하지 않습니다.'); return; }
         const hash = await sha256Hex(pwChangeNew);
@@ -2638,6 +2644,8 @@
                       const isMe = a.email.toLowerCase() === currentEmail.toLowerCase();
                       const isSuper = a.role === 'super';
                       const cannotDelete = isMe || isSuper;
+                      // Super Admin의 비번 변경은 본인만 가능
+                      const cannotChangePw = isSuper && !isMe;
                       return (
                         <tr key={a.email} style={{ borderTop: '1px solid #f3f3f3' }}>
                           <td style={{ padding: '10px 12px', fontWeight: 500 }}>{a.email}{isMe && <span style={{ marginLeft: '6px', fontSize: '10px', color: '#2563eb', fontWeight: 700 }}>(나)</span>}</td>
@@ -2648,7 +2656,12 @@
                             </span>
                           </td>
                           <td style={{ padding: '10px 12px', textAlign: 'right' }}>
-                            <button onClick={() => { setPwChangeEmail(a.email); setPwChangeNew(''); setPwChangeConfirm(''); setPwChangeError(''); }} style={{ padding: '5px 10px', background: 'transparent', color: '#111', border: '1px solid #ddd', borderRadius: '4px', fontSize: '11px', cursor: 'pointer', marginRight: '4px' }}>비번 변경</button>
+                            <button
+                              onClick={() => { if (cannotChangePw) return; setPwChangeEmail(a.email); setPwChangeNew(''); setPwChangeConfirm(''); setPwChangeError(''); }}
+                              disabled={cannotChangePw}
+                              title={cannotChangePw ? 'Super Admin의 비밀번호는 본인만 변경할 수 있습니다' : '비번 변경'}
+                              style={{ padding: '5px 10px', background: 'transparent', color: cannotChangePw ? '#ccc' : '#111', border: `1px solid ${cannotChangePw ? '#eee' : '#ddd'}`, borderRadius: '4px', fontSize: '11px', cursor: cannotChangePw ? 'not-allowed' : 'pointer', marginRight: '4px' }}
+                            >비번 변경</button>
                             <button
                               onClick={() => deleteAdmin(a.email)}
                               disabled={cannotDelete}
