@@ -4,7 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>MUSINSA GLOBAL B2B</title>
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.min.css" />
+    <link rel="stylesheet"
+        href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.min.css" />
     <link rel="stylesheet" href="design-system/layer-desktop.css" />
     <style>
         * {
@@ -13,131 +14,195 @@
             box-sizing: border-box;
         }
 
+        :root {
+            --color-fg: #111;
+            --color-fg-low: #666;
+            --color-border: #e5e5e5;
+            --color-border-strong: #111;
+        }
+
         html, body {
             height: 100%;
             font-family: 'Pretendard Variable', Pretendard, system-ui, -apple-system, sans-serif;
-            color: #000;
-            background: #000;
+            color: var(--color-fg);
+            background: #0a0a0a;
+            -webkit-font-smoothing: antialiased;
         }
 
+        /* 어드민 로그인과 동일한 dark bg + MUSINSA watermark pattern */
         .landing {
             min-height: 100vh;
             display: flex;
             flex-direction: column;
             align-items: center;
             justify-content: center;
-            padding: 2rem;
+            padding: 2.5rem 2rem;
+            position: relative;
+            overflow: hidden;
         }
 
+        .landing::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='200' height='90' viewBox='0 0 200 90'><text x='10' y='52' font-family='Pretendard, system-ui, sans-serif' font-size='28' font-weight='900' letter-spacing='0' fill='%23ffffff' fill-opacity='0.12'>MUSINSA</text></svg>");
+            background-repeat: repeat;
+            background-size: 200px 90px;
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        .landing > * {
+            position: relative;
+            z-index: 1;
+        }
+
+        /* 브랜딩 영역 */
         .branding {
             text-align: center;
-            margin-bottom: 4rem;
+            margin-bottom: 3.5rem;
         }
 
         .branding-logo {
-            font-size: 3rem;
-            font-weight: 700;
-            letter-spacing: 0.3em;
+            font-size: 2.5rem;
+            font-weight: 800;
+            letter-spacing: 0.18em;
             color: #fff;
-            margin-bottom: 0.5rem;
+            line-height: 1;
         }
 
         .branding-sub {
-            font-size: 0.8125rem;
+            font-size: 0.6875rem;
             letter-spacing: 0.4em;
-            color: rgba(255, 255, 255, 0.4);
+            color: rgba(255, 255, 255, 0.45);
             text-transform: uppercase;
+            font-weight: 500;
+            margin-top: 10px;
         }
 
+        /* 카드 그리드 */
         .portal-cards {
             display: grid;
             grid-template-columns: 1fr 1fr;
-            gap: 2rem;
-            max-width: 800px;
+            gap: 1.25rem;
+            max-width: 880px;
             width: 100%;
         }
 
         .portal-card {
             background: #fff;
-            padding: 3rem 2.5rem;
+            padding: 2.5rem;
             cursor: pointer;
-            transition: all 0.3s ease;
-            position: relative;
-            overflow: hidden;
+            transition: transform 0.25s ease, box-shadow 0.25s ease, border-color 0.25s ease;
             text-decoration: none;
-            color: #000;
+            color: var(--color-fg);
             display: flex;
             flex-direction: column;
+            border: 1px solid #e5e5e5;
+            border-radius: 8px;
+            box-shadow: 0 4px 24px rgba(0, 0, 0, 0.04);
+            min-height: 360px;
         }
 
         .portal-card:hover {
-            transform: translateY(-4px);
-            box-shadow: 0 20px 60px rgba(255, 255, 255, 0.1);
+            transform: translateY(-2px);
+            box-shadow: 0 12px 36px rgba(0, 0, 0, 0.18);
+            border-color: #111;
         }
 
-        .portal-card-icon {
-            width: 48px;
-            height: 48px;
-            margin-bottom: 2rem;
-        }
-
+        /* 어드민 로그인의 .login-label-internal과 동일 스타일 */
         .portal-card-label {
-            font-size: 0.65rem;
-            letter-spacing: 0.15em;
+            font-size: 0.75rem;
+            letter-spacing: 0.08em;
+            font-weight: 600;
+            color: #111;
             text-transform: uppercase;
-            color: #888;
-            margin-bottom: 0.5rem;
+            margin-bottom: 1.25rem;
+            padding-bottom: 0.75rem;
+            border-bottom: 1px solid var(--color-border-strong);
+            display: block;
         }
 
         .portal-card-title {
-            font-size: 1.5rem;
+            font-size: 1.625rem;
             font-weight: 700;
-            margin-bottom: 0.75rem;
-            letter-spacing: -0.01em;
+            margin: 0.25rem 0 0.5rem;
+            letter-spacing: -0.015em;
+            line-height: 1.2;
+        }
+
+        .portal-card-sub {
+            font-size: 0.8125rem;
+            color: #666;
+            margin-bottom: 1.5rem;
         }
 
         .portal-card-desc {
             font-size: 0.875rem;
-            color: #666;
-            line-height: 1.6;
-            margin-bottom: 2.5rem;
+            color: #444;
+            line-height: 1.65;
+            margin-bottom: 2rem;
             flex: 1;
         }
 
         .portal-card-arrow {
-            display: flex;
+            display: inline-flex;
             align-items: center;
+            justify-content: center;
             gap: 0.5rem;
             font-size: 0.8125rem;
             font-weight: 600;
-            letter-spacing: 0.05em;
+            letter-spacing: 0.04em;
             text-transform: uppercase;
-            color: #000;
-            transition: gap 0.2s ease;
+            color: #fff;
+            background: #111;
+            padding: 13px 18px;
+            border-radius: 4px;
+            transition: gap 0.2s ease, background 0.15s ease;
+            align-self: stretch;
         }
 
         .portal-card:hover .portal-card-arrow {
             gap: 0.75rem;
+            background: #000;
         }
 
         .portal-card-arrow svg {
-            width: 16px;
-            height: 16px;
+            width: 14px;
+            height: 14px;
         }
 
         .footer-text {
-            margin-top: 4rem;
-            font-size: 0.75rem;
-            color: rgba(255, 255, 255, 0.25);
-            letter-spacing: 0.05em;
+            margin-top: 3rem;
+            font-size: 0.6875rem;
+            color: rgba(255, 255, 255, 0.3);
+            letter-spacing: 0.06em;
+            font-weight: 500;
+            text-align: center;
         }
 
-        @media (max-width: 640px) {
+        @media (max-width: 720px) {
             .portal-cards {
                 grid-template-columns: 1fr;
+                max-width: 440px;
+                gap: 1rem;
             }
+
+            .portal-card {
+                padding: 2rem 1.5rem;
+                min-height: auto;
+            }
+
+            .portal-card-title {
+                font-size: 1.375rem;
+            }
+
             .branding-logo {
                 font-size: 2rem;
+            }
+
+            .branding {
+                margin-bottom: 2.5rem;
             }
         }
     </style>
@@ -150,46 +215,32 @@
         </div>
 
         <div class="portal-cards">
-            <a class="portal-card" href="./b2b-partner-portal.html">
-                <svg class="portal-card-icon" viewBox="0 0 48 48" fill="none" stroke="#000" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
-                    <rect x="6" y="6" width="36" height="36" rx="2"/>
-                    <path d="M6 18h36"/>
-                    <path d="M18 18v24"/>
-                    <circle cx="31" cy="30" r="4"/>
-                    <path d="M31 34v4"/>
-                </svg>
-                <div class="portal-card-label">For Overseas Partners</div>
-                <div class="portal-card-title">Partner Portal</div>
-                <div class="portal-card-desc">Browse products, select sizes and quantities, and place wholesale orders. Manage your order history and track deliveries.</div>
-                <div class="portal-card-arrow">
+            <a class="portal-card" href="./b2b-partner-portal.html?fresh=1" target="_blank" rel="noopener">
+                <span class="portal-card-label">For Overseas Partners</span>
+                <h2 class="portal-card-title">Partner Portal</h2>
+                <p class="portal-card-desc">Browse the latest collection, select sizes and quantities, and place wholesale orders. Track your order history and download confirmations.</p>
+                <span class="portal-card-arrow">
                     Enter Portal
-                    <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
-                        <path d="M3 8h10M9 4l4 4-4 4"/>
+                    <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M3 8h10M9 4l4 4-4 4" />
                     </svg>
-                </div>
+                </span>
             </a>
 
-            <a class="portal-card" href="./b2b-admin-console.html">
-                <svg class="portal-card-icon" viewBox="0 0 48 48" fill="none" stroke="#000" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
-                    <rect x="6" y="6" width="36" height="36" rx="2"/>
-                    <path d="M6 16h36"/>
-                    <path d="M14 24h8M14 30h12M14 36h6"/>
-                    <circle cx="34" cy="30" r="6"/>
-                    <path d="M34 27v3h3"/>
-                </svg>
-                <div class="portal-card-label">Internal Management</div>
-                <div class="portal-card-title">Admin Console</div>
-                <div class="portal-card-desc">Manage products, process orders, oversee partner accounts, and configure system settings for the B2B platform.</div>
-                <div class="portal-card-arrow">
-                    Enter Console
-                    <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
-                        <path d="M3 8h10M9 4l4 4-4 4"/>
+            <a class="portal-card" href="./b2b-admin-console.html?fresh=1" target="_blank" rel="noopener">
+                <span class="portal-card-label">내부 운영 관리</span>
+                <h2 class="portal-card-title">어드민 콘솔</h2>
+                <p class="portal-card-desc">상품 관리, 파트너 주문 처리, 전시 설정 구성, 파트너 계정 관리 등 글로벌 B2B 플랫폼 운영 전반을 관리합니다.</p>
+                <span class="portal-card-arrow">
+                    콘솔 입장
+                    <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M3 8h10M9 4l4 4-4 4" />
                     </svg>
-                </div>
+                </span>
             </a>
         </div>
 
-        <div class="footer-text">&copy; 2026 MUSINSA Global. All rights reserved.</div>
+        <div class="footer-text">© 2026 MUSINSA Global. All rights reserved.</div>
     </div>
 </body>
 </html>

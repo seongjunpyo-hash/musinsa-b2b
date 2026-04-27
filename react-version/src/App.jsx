@@ -1281,10 +1281,10 @@ import * as XLSX from 'xlsx';
                             <div className="cart-drawer-footer">
                                 <div className="cart-drawer-subtotal">
                                     <div className="cart-drawer-stats">
-                                        <span><em>STYLES</em>{stats.totalStyles}</span>
-                                        <span><em>QTY</em>{stats.totalQty}</span>
+                                        <span><em>Styles</em>{stats.totalStyles}</span>
+                                        <span><em>Qty</em>{stats.totalQty}</span>
                                     </div>
-                                    <span className="cart-drawer-total-amount"><em>TOTAL</em>{formatUSD(stats.totalAmount)}</span>
+                                    <span className="cart-drawer-total-amount"><em>Total</em>{formatUSD(stats.totalAmount)}</span>
                                 </div>
                                 <div className="cart-drawer-actions">
                                     <button className="btn-black" onClick={() => { setCartDrawerOpen(false); setPage('confirm'); }}>PROCEED TO ORDER</button>
@@ -1708,15 +1708,15 @@ import * as XLSX from 'xlsx';
                                     <div className="summary-bar-inner">
                                         <div className="summary-stats">
                                             <div className="stat">
-                                                <span className="stat-label">STYLES</span>
+                                                <span className="stat-label">Styles</span>
                                                 <span>{stats.totalStyles}</span>
                                             </div>
                                             <div className="stat">
-                                                <span className="stat-label">QTY</span>
+                                                <span className="stat-label">Qty</span>
                                                 <span>{stats.totalQty}</span>
                                             </div>
                                             <div className="stat">
-                                                <span className="stat-label">TOTAL</span>
+                                                <span className="stat-label">Total</span>
                                                 <span>{formatUSD(stats.totalAmount)}</span>
                                             </div>
                                         </div>
