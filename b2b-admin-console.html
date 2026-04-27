@@ -2520,6 +2520,12 @@
       const addAdmin = async (e) => {
         e.preventDefault();
         setError('');
+        // Super Admin만 관리자 추가 가능 — 서버측 가드
+        const currentAdmin = admins.find(a => a.email.toLowerCase() === currentEmail.toLowerCase());
+        if (!currentAdmin || currentAdmin.role !== 'super') {
+          setError('Super Admin만 관리자를 추가할 수 있습니다.');
+          return;
+        }
         const trimmedEmail = newEmail.trim().toLowerCase();
         if (!trimmedEmail) { setError('이메일을 입력해주세요.'); return; }
         if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(trimmedEmail)) { setError('올바른 이메일 형식이 아닙니다.'); return; }
@@ -2614,12 +2620,23 @@
                   </div>
                 </form>
               )}
-              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '12px' }}>
-                <span style={{ fontSize: '13px', fontWeight: 600, color: '#111' }}>등록된 관리자 ({admins.length})</span>
-                <button onClick={() => setShowAdd(v => !v)} style={{ padding: '7px 14px', background: '#111', color: '#fff', border: 'none', borderRadius: '4px', fontSize: '12px', fontWeight: 500, cursor: 'pointer' }}>
-                  {showAdd ? '취소' : '+ 관리자 추가'}
-                </button>
-              </div>
+              {(() => {
+                const currentAdmin = admins.find(a => a.email.toLowerCase() === currentEmail.toLowerCase());
+                const isSuperAdmin = currentAdmin && currentAdmin.role === 'super';
+                return (
+                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '12px' }}>
+                    <span style={{ fontSize: '13px', fontWeight: 600, color: '#111' }}>등록된 관리자 ({admins.length})</span>
+                    <button
+                      onClick={() => { if (!isSuperAdmin) return; setShowAdd(v => !v); }}
+                      disabled={!isSuperAdmin}
+                      title={isSuperAdmin ? '' : 'Super Admin만 관리자를 추가할 수 있습니다'}
+                      style={{ padding: '7px 14px', background: isSuperAdmin ? '#111' : '#e5e5e5', color: isSuperAdmin ? '#fff' : '#999', border: 'none', borderRadius: '4px', fontSize: '12px', fontWeight: 500, cursor: isSuperAdmin ? 'pointer' : 'not-allowed' }}
+                    >
+                      {showAdd ? '취소' : '+ 관리자 추가'}
+                    </button>
+                  </div>
+                );
+              })()}
               {showAdd && (
                 <form onSubmit={addAdmin} style={{ padding: '14px 16px', background: '#f9fafb', border: '1px solid #e5e7eb', borderRadius: '6px', marginBottom: '16px' }}>
                   <div className="form-group" style={{ marginBottom: '10px' }}>
