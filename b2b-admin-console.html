@@ -7273,7 +7273,10 @@
       const sendInvitationEmail = async (partner, tempPassword) => {
         const subject = `[MUSINSA B2B] Welcome — Partner Portal Access for ${partner.company_name}`;
         const html = buildInvitationEmailHtml(partner, tempPassword);
-        const loginUrl = `${window.location.origin}/b2b-partner-portal.html`;
+        // 어드민 페이지 경로 기반으로 파트너 포털 URL 산출 (예: /musinsa-b2b/b2b-admin-console.html → /musinsa-b2b/b2b-partner-portal.html)
+        // GitHub Pages처럼 서브 디렉토리에 호스팅되는 환경 대응
+        const basePath = window.location.pathname.replace(/[^/]*$/, '');
+        const loginUrl = `${window.location.origin}${basePath}b2b-partner-portal.html`;
         // EmailJS로 실제 발송 시도
         if (emailJsConfigured() && EMAILJS_TEMPLATE_INVITATION) {
           const result = await sendViaEmailJs(EMAILJS_TEMPLATE_INVITATION, {
