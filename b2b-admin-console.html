@@ -1860,7 +1860,7 @@
     const ADMIN_CURRENT_LS_KEY = 'musinsa_b2b_admin_current_email';
     const DEFAULT_ADMIN_EMAIL = 'admin@musinsa.com';
     const DEFAULT_ADMIN_PW_HASH = '5d152fa23be69bf392f6ffa6a65279deede6dd3b38128016f29cd6e5b2fb224d';
-    const DEFAULT_ADMIN_NAME = 'Super Admin';
+    const DEFAULT_ADMIN_NAME = '최고 관리자';
 
     // 임시 비밀번호 생성 (12자, 영대소문+숫자)
     const generateAdminTempPassword = () => {
@@ -1875,7 +1875,22 @@
         const saved = localStorage.getItem(ADMINS_LS_KEY);
         if (saved) {
           const parsed = JSON.parse(saved);
-          if (Array.isArray(parsed) && parsed.length > 0) return parsed;
+          if (Array.isArray(parsed) && parsed.length > 0) {
+            // 마이그레이션: 기본 슈퍼 관리자의 name이 'Super Admin'이면 '최고 관리자'로 변경
+            let mutated = false;
+            const migrated = parsed.map(a => {
+              if (a.email && a.email.toLowerCase() === DEFAULT_ADMIN_EMAIL && a.name === 'Super Admin') {
+                mutated = true;
+                return { ...a, name: DEFAULT_ADMIN_NAME };
+              }
+              return a;
+            });
+            if (mutated) {
+              try { localStorage.setItem(ADMINS_LS_KEY, JSON.stringify(migrated)); } catch (_) { }
+              return migrated;
+            }
+            return parsed;
+          }
         }
       } catch (_) { }
       // 기본 관리자 시드 — localStorage에 저장된 비번 변경 hash가 있으면 그것 사용
@@ -1976,7 +1991,9 @@
           suggested_items: o.suggested_items || null,
           items: o.items || [],
           total_qty: o.total_qty ?? 0, total_amount: o.total_amount ?? 0,
-          created_at: o.created_at, updated_at: o.updated_at
+          created_at: o.created_at, updated_at: o.updated_at,
+          processed_at: o.processed_at || null,
+          processed_by: o.processed_by || null
         }),
         fromDb: (r) => r
       }
@@ -3475,7 +3492,8 @@
                 onClose={() => setSelectedDashOrder(null)}
                 onApprove={(order) => {
                   const now = new Date().toISOString();
-                  const updated = { ...order, status: '주문완료', updated_at: now, processed_at: order.processed_at || now };
+                  const processor = getCurrentAdminEmail() || '';
+                  const updated = { ...order, status: '주문완료', updated_at: now, processed_at: order.processed_at || now, processed_by: order.processed_by || processor };
                   onUpdateOrder(updated);
                   showToast('주문 승인 완료', `${order.order_id} 주문을 승인 처리했어요.`, 'success');
                   dispatchOrderEmail(updated, 'approved');
@@ -3483,7 +3501,8 @@
                 }}
                 onReject={(order, reason, suggestedItems) => {
                   const now = new Date().toISOString();
-                  const updated = { ...order, status: '반려', rejection_reason: reason, suggested_items: suggestedItems || null, updated_at: now, processed_at: order.processed_at || now };
+                  const processor = getCurrentAdminEmail() || '';
+                  const updated = { ...order, status: '반려', rejection_reason: reason, suggested_items: suggestedItems || null, updated_at: now, processed_at: order.processed_at || now, processed_by: order.processed_by || processor };
                   onUpdateOrder(updated);
                   showToast('주문 반려 완료', `${order.order_id} 주문을 반려 처리했어요.`, 'success');
                   dispatchOrderEmail(updated, 'rejected');
@@ -5185,14 +5204,16 @@
 
       const handleApprove = (order) => {
         const now = new Date().toISOString();
-        onUpdateOrder({ ...order, status: '주문완료', processed_at: order.processed_at || now });
+        const processor = getCurrentAdminEmail() || '';
+        onUpdateOrder({ ...order, status: '주문완료', processed_at: order.processed_at || now, processed_by: order.processed_by || processor });
         showToast('주문 승인 완료', `${order.order_id} 주문을 승인 처리했어요.`, 'success');
         dispatchResultEmail(order, 'approved');
       };
 
       const handleReject = (order, reason, suggestedItems) => {
         const now = new Date().toISOString();
-        const updated = { ...order, status: '반려', rejection_reason: reason, suggested_items: suggestedItems || null, processed_at: order.processed_at || now };
+        const processor = getCurrentAdminEmail() || '';
+        const updated = { ...order, status: '반려', rejection_reason: reason, suggested_items: suggestedItems || null, processed_at: order.processed_at || now, processed_by: order.processed_by || processor };
         onUpdateOrder(updated);
         showToast('주문 반려 완료', `${order.order_id} 주문을 반려 처리했어요.`, 'success');
         dispatchResultEmail(updated, 'rejected');
@@ -5213,7 +5234,8 @@
           confirmStyle: { background: '#111', color: '#fff', border: '1px solid #111' },
           onConfirm: () => {
             const bulkNow = new Date().toISOString();
-            targets.forEach(o => { onUpdateOrder({ ...o, status: '주문완료', processed_at: o.processed_at || bulkNow }); dispatchResultEmail(o, 'approved'); });
+            const processor = getCurrentAdminEmail() || '';
+            targets.forEach(o => { onUpdateOrder({ ...o, status: '주문완료', processed_at: o.processed_at || bulkNow, processed_by: o.processed_by || processor }); dispatchResultEmail(o, 'approved'); });
             showToast('일괄 승인 완료', `${targets.length}건의 주문을 승인했어요.`, 'success');
             setSelectedOrderIds([]);
             setBulkConfirm(null);
@@ -5238,8 +5260,9 @@
           onConfirm: (reason) => {
             if (!reason || !reason.trim()) { alert('반려 사유를 입력해주세요.'); return; }
             const bulkNow = new Date().toISOString();
+            const processor = getCurrentAdminEmail() || '';
             targets.forEach(o => {
-              const updated = { ...o, status: '반려', rejection_reason: reason, processed_at: o.processed_at || bulkNow };
+              const updated = { ...o, status: '반려', rejection_reason: reason, processed_at: o.processed_at || bulkNow, processed_by: o.processed_by || processor };
               onUpdateOrder(updated);
               dispatchResultEmail(updated, 'rejected');
             });
@@ -5492,7 +5515,7 @@
                   <th style={{ whiteSpace: 'nowrap' }}>총 수량</th>
                   <th style={{ paddingRight: '32px' }}>총 주문 금액</th>
                   <th style={{ maxWidth: '240px', width: '240px', paddingLeft: '24px' }}>처리</th>
-                  <th>처리일시</th>
+                  <th>처리일시 / 처리자</th>
                   <th>상세</th>
                 </tr>
               </thead>
@@ -5563,9 +5586,16 @@
                       )}
                     </td>
                     <td style={{ whiteSpace: 'nowrap' }}>
-                      {(order.status !== '주문접수' && (order.processed_at || order.updated_at))
-                        ? new Date(order.processed_at || order.updated_at).toLocaleString('ko-KR')
-                        : <span style={{ color: '#111' }}>-</span>}
+                      {(order.status !== '주문접수' && order.processed_at) ? (
+                        <div style={{ lineHeight: 1.45 }}>
+                          <div style={{ fontSize: '13px', color: '#111' }}>{new Date(order.processed_at).toLocaleString('ko-KR')}</div>
+                          {order.processed_by && (() => {
+                            const adminInfo = (() => { try { return findAdmin(order.processed_by); } catch (_) { return null; } })();
+                            const display = adminInfo && adminInfo.name ? adminInfo.name : order.processed_by;
+                            return <div style={{ fontSize: '11px', color: '#888', marginTop: '2px' }}>{display}</div>;
+                          })()}
+                        </div>
+                      ) : <span style={{ color: '#111' }}>-</span>}
                     </td>
                     <td onClick={(e) => e.stopPropagation()}>
                       <button className="btn-small" style={{ background: 'transparent', color: '#111', border: '1px solid #ddd', minWidth: '80px' }} onClick={() => setSelectedOrder(order)}>상세보기</button>
@@ -7898,7 +7928,25 @@
             });
             sbInitDoneRef.current.partners = true;
           }
-          if (oRows) { setOrders(oRows); sbInitDoneRef.current.orders = true; }
+          if (oRows) {
+            // 초기 로드도 머지 — DB에 없는 로컬 필드(processed_at, processed_by 등) 보존
+            setOrders(prev => {
+              const localById = {};
+              (prev || []).forEach(o => { localById[o.order_id] = o; });
+              return oRows.map(dbRow => {
+                const local = localById[dbRow.order_id];
+                if (!local) return dbRow;
+                const out = { ...dbRow };
+                ['processed_at', 'processed_by', 'suggested_items', 'rejection_reason'].forEach(k => {
+                  if (local[k] !== undefined && local[k] !== null && (out[k] === undefined || out[k] === null)) {
+                    out[k] = local[k];
+                  }
+                });
+                return out;
+              });
+            });
+            sbInitDoneRef.current.orders = true;
+          }
           if (dsRow) {
             // banner_slots 안에 우리가 묶어둔 메타 정보 추출
             const bs = dsRow.banner_slots || {};
@@ -8005,14 +8053,25 @@
               const merged = [];
               const dbIds = new Set();
               // DB rows: 로컬 버전이 더 최신이면 로컬 사용 (방금 admin이 변경한 게 폴링으로 롤백되는 것 방지)
+              // 또한 DB 스키마에 없는 로컬 전용 필드(예: processed_at, processed_by)는 항상 보존
               oRows.forEach(dbRow => {
                 dbIds.add(dbRow.order_id);
                 const local = localById[dbRow.order_id];
+                let chosen;
                 if (local && local.updated_at && dbRow.updated_at && new Date(local.updated_at) > new Date(dbRow.updated_at)) {
-                  merged.push(local);
+                  chosen = local;
                 } else {
-                  merged.push(dbRow);
+                  chosen = { ...dbRow };
+                  // 로컬에만 있고 DB에 없는(또는 null인) 필드는 로컬 값 보존 — DB 스키마 미확장 대응
+                  if (local) {
+                    ['processed_at', 'processed_by', 'suggested_items', 'rejection_reason'].forEach(k => {
+                      if (local[k] !== undefined && local[k] !== null && (chosen[k] === undefined || chosen[k] === null)) {
+                        chosen[k] = local[k];
+                      }
+                    });
+                  }
                 }
+                merged.push(chosen);
               });
               // 로컬에만 있는 (아직 sync 안 된) 신규 주문
               prev.forEach(o => { if (!dbIds.has(o.order_id)) merged.push(o); });
