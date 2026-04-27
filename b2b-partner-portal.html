@@ -6854,19 +6854,21 @@
                     alert('This account cannot log in. Please contact the administrator.');
                     return;
                 }
-                // 데모 계정(@bangkok/metrading/sgdist)이거나 초대받은 적 없는 파트너는 비번 검증 우회 (호환)
+                // 비밀번호 검증 — 모든 파트너 필수
                 const hasInvitation = !!(found.temp_password || found.password);
-                if (hasInvitation) {
-                    if (found.password_changed === true) {
-                        // 정식 비번 검증
-                        if (inputPassword !== found.password) { alert('Password does not match.'); return; }
-                    } else {
-                        // 최초 로그인 — 임시 비번 검증
-                        if (inputPassword !== found.temp_password) { alert('Initial password does not match. Please check your invitation email or request a password reset.'); return; }
-                        // 비번 변경 강제
-                        setForcePasswordChange(found);
-                        return;
-                    }
+                if (!hasInvitation) {
+                    alert('This account has not been activated yet. Please ask the administrator to send you an invitation email.');
+                    return;
+                }
+                if (found.password_changed === true) {
+                    // 정식 비번 검증
+                    if (inputPassword !== found.password) { alert('Password does not match.'); return; }
+                } else {
+                    // 최초 로그인 — 임시 비번 검증
+                    if (inputPassword !== found.temp_password) { alert('Initial password does not match. Please check your invitation email or request a password reset.'); return; }
+                    // 비번 변경 강제
+                    setForcePasswordChange(found);
+                    return;
                 }
                 setCurrentPartner(found);
                 setPassword('');
