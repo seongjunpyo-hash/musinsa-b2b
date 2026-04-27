@@ -5819,19 +5819,7 @@
                                         </div>
                                     </div>
                                     <div style={{ marginTop: '1rem', display: 'flex', gap: '8px' }}>
-                                        {!isEditMode && (
-                                            <button className="btn-outline-black" style={{ flex: '0 0 auto', padding: '14px 20px', whiteSpace: 'nowrap' }} onClick={() => {
-                                                // 상품만 담기: 모든 컬러/사이즈를 qty=1로 cart에 추가 (Order Confirmation에서 BULK UPLOAD로 일괄 수량 반영용)
-                                                const qtyByColor = {};
-                                                product.colors.forEach(c => {
-                                                    const sizesObj = {};
-                                                    product.sizes.forEach(s => { sizesObj[s] = 1; });
-                                                    qtyByColor[c.name] = sizesObj;
-                                                });
-                                                onAddToCart(product, qtyByColor);
-                                                onClose();
-                                            }}>QUICK ADD (1 EACH)</button>
-                                        )}
+                                        {/* QUICK ADD 버튼 미노출 */}
                                         <button className="btn-black" disabled={totalQty === 0} style={{ flex: 1, ...(totalQty === 0 ? { opacity: 0.3, cursor: 'not-allowed' } : {}) }} onClick={() => {
                                             if (totalQty === 0) return;
                                             const qtyByColor = {};
