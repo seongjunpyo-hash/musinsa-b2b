@@ -1905,6 +1905,37 @@
 
     const saveAdmins = (admins) => {
       try { localStorage.setItem(ADMINS_LS_KEY, JSON.stringify(admins)); } catch (_) { }
+      // Supabase에도 upsert (영구 저장)
+      if (supabaseClient) {
+        supabaseClient.from('admins').upsert(admins.map(a => ({
+          email: a.email,
+          name: a.name || null,
+          role: a.role || 'admin',
+          password_hash: a.password_hash,
+          created_at: a.created_at || new Date().toISOString()
+        }))).then(({ error }) => {
+          if (error) console.warn('[Admin] DB sync failed:', error.message);
+        });
+      }
+    };
+
+    // Supabase에서 admins 가져와 localStorage 갱신
+    const fetchAdminsFromDb = async () => {
+      if (!supabaseClient) return null;
+      try {
+        const { data, error } = await supabaseClient.from('admins').select('*');
+        if (error) { console.warn('[Admin] DB fetch failed:', error.message); return null; }
+        return data || [];
+      } catch (e) { return null; }
+    };
+
+    // 어드민 삭제 (localStorage + DB)
+    const deleteAdminFromDb = async (email) => {
+      if (!supabaseClient) return;
+      try {
+        const { error } = await supabaseClient.from('admins').delete().eq('email', email);
+        if (error) console.warn('[Admin] DB delete failed:', error.message);
+      } catch (_) { }
     };
 
     const findAdmin = (email) => {
@@ -2553,6 +2584,8 @@
         const next = admins.filter(a => a.email.toLowerCase() !== email.toLowerCase());
         saveAdmins(next);
         setAdmins(next);
+        // Supabase에서도 삭제
+        deleteAdminFromDb(email);
       };
 
       // 비밀번호 변경 인라인 폼 — 입력해서 직접 새 비번 설정
@@ -7805,6 +7838,31 @@
     function AdminConsole() {
       const { showToast } = useToast();
       const VALID_PAGES = ['dashboard', 'products', 'orders', 'display', 'partners'];
+      // 페이지 마운트 시 Supabase에서 admins fetch → localStorage 갱신
+      // 캐시 클리어 후 새로고침해도 admin 계정 보존
+      useEffect(() => {
+        (async () => {
+          const dbAdmins = await fetchAdminsFromDb();
+          if (!dbAdmins) return; // 실패 시 localStorage 유지
+          if (dbAdmins.length === 0) {
+            // DB가 비어있으면 → localStorage의 admin 목록을 DB에 push
+            try {
+              const local = JSON.parse(localStorage.getItem(ADMINS_LS_KEY) || '[]');
+              if (local.length > 0 && supabaseClient) {
+                await supabaseClient.from('admins').upsert(local.map(a => ({
+                  email: a.email, name: a.name || null, role: a.role || 'admin',
+                  password_hash: a.password_hash, created_at: a.created_at || new Date().toISOString()
+                })));
+                console.log('[Admin] localStorage → DB seeded', local.length);
+              }
+            } catch (_) { }
+            return;
+          }
+          // DB에 데이터 있으면 → DB가 source of truth, localStorage 갱신
+          localStorage.setItem(ADMINS_LS_KEY, JSON.stringify(dbAdmins));
+          console.log('[Admin] DB → localStorage synced', dbAdmins.length);
+        })();
+      }, []);
       // 로그인 상태: localStorage에 저장 → 새로고침 시 유지
       // index.html에서 ?fresh=1로 진입한 경우 로그인 상태 초기화
       const [isLoggedIn, setIsLoggedIn] = useState(() => {
