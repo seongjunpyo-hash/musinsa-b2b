@@ -6101,6 +6101,17 @@
         el.addEventListener('scroll', onScroll, { passive: true });
         return () => el.removeEventListener('scroll', onScroll);
       }, [activeTab]);
+      // 메일 관리 안내 문구 스크롤 시 접힘
+      const emailScrollRef = React.useRef(null);
+      const [emailNoticeCollapsed, setEmailNoticeCollapsed] = useState(false);
+      React.useEffect(() => {
+        if (activeTab !== 'email') return;
+        const el = emailScrollRef.current;
+        if (!el) return;
+        const onScroll = () => setEmailNoticeCollapsed(el.scrollTop > 24);
+        el.addEventListener('scroll', onScroll, { passive: true });
+        return () => el.removeEventListener('scroll', onScroll);
+      }, [activeTab]);
       const visibleProducts = products.filter(p => p.is_visible);
       // 무신사 표준 카테고리 노출 순서 (파트너 포털과 통일)
       const CATEGORY_ORDER = ['Outerwear', 'Tops', 'Pants', 'Bottoms', 'Skirts', 'Dresses', 'Shoes', 'Bags', 'Accessories'];
@@ -6914,7 +6925,20 @@
           {/* EMAIL TEMPLATES */}
           {activeTab === 'email' && (
             <div className="settings-card" style={{ height: 'calc(100vh - 220px)', display: 'flex', flexDirection: 'column', overflow: 'hidden', padding: '2rem' }}>
-              <div style={{ background: '#eff6ff', border: '1px solid #bfdbfe', borderRadius: '6px', padding: '12px 16px', marginBottom: '32px', fontSize: '13px', color: '#1e40af', flexShrink: 0 }}>
+              <div style={{
+                background: '#eff6ff',
+                border: emailNoticeCollapsed ? '1px solid transparent' : '1px solid #bfdbfe',
+                borderRadius: '6px',
+                padding: emailNoticeCollapsed ? '0 16px' : '12px 16px',
+                marginBottom: emailNoticeCollapsed ? '0' : '32px',
+                fontSize: '13px',
+                color: '#1e40af',
+                flexShrink: 0,
+                maxHeight: emailNoticeCollapsed ? '0' : '200px',
+                opacity: emailNoticeCollapsed ? 0 : 1,
+                overflow: 'hidden',
+                transition: 'max-height 0.25s ease, opacity 0.2s ease, padding 0.25s ease, margin 0.25s ease, border-color 0.25s ease'
+              }}>
                 <strong>주문 처리 안내 메일 템플릿</strong><br />
                 · 어드민이 주문을 승인/반려하면 등록된 파트너 이메일로 안내 메일이 발송됩니다.<br />
                 · 본문에 사용 가능한 변수: <code>{'{{ORDER_ID}}'}</code> (주문번호), <code>{'{{PARTNER_NAME}}'}</code> (파트너 회사명)<br />
@@ -6966,7 +6990,7 @@
               {(() => {
                 const t = emailTemplates[activeEmailKind] || {};
                 return (
-                  <div style={{ display: 'grid', gridTemplateColumns: '600px minmax(0, 1fr)', gap: '32px', alignItems: 'flex-start', flex: 1, minHeight: 0, overflowY: 'auto' }}>
+                  <div ref={emailScrollRef} style={{ display: 'grid', gridTemplateColumns: '600px minmax(0, 1fr)', gap: '32px', alignItems: 'flex-start', flex: 1, minHeight: 0, overflowY: 'auto' }}>
                     {/* 좌: 실시간 미리보기 */}
                     <div style={{ marginRight: '64px' }}>
                       <label style={{ display: 'block', fontSize: '12px', fontWeight: 600, color: '#111', marginBottom: '8px' }}>실시간 미리보기</label>
