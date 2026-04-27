@@ -3743,6 +3743,24 @@
         onClose();
       };
 
+      // 필수 필드 검증 — 모두 채워져야 저장 버튼 활성화
+      const isFormValid = (() => {
+        if (!formData.id || !String(formData.id).trim()) return false;
+        if (!formData.style_no || !String(formData.style_no).trim()) return false;
+        if (!formData.name || !String(formData.name).trim()) return false;
+        if (!formData.category || !String(formData.category).trim()) return false;
+        if (!formData.sub_category || !String(formData.sub_category).trim()) return false;
+        if (!formData.gender || !String(formData.gender).trim()) return false;
+        if (!formData.season || !formData.season.year) return false;
+        if (!formData.season || !formData.season.season) return false;
+        if (!formData.material || !String(formData.material).trim()) return false;
+        if (!formData.origin || !String(formData.origin).trim()) return false;
+        if (!formData.ship_date || !String(formData.ship_date).trim()) return false;
+        if (!Array.isArray(formData.sizes) || formData.sizes.length === 0) return false;
+        if (formData.retail_price_krw === undefined || formData.retail_price_krw === null || formData.retail_price_krw === '' || isNaN(Number(formData.retail_price_krw)) || Number(formData.retail_price_krw) <= 0) return false;
+        return true;
+      })();
+
       const fieldRow = { display: 'flex', alignItems: 'center', minHeight: '40px', gap: '0', padding: '10px 0' };
       const labelSt = { width: '120px', flexShrink: 0, fontSize: '13px', fontWeight: 600, color: '#111' };
       const reqSt = { color: '#2563eb', marginLeft: '1px' };
@@ -3886,10 +3904,10 @@
                   <input className="form-input" type="date" name="ship_date" value={formData.ship_date || ''} onChange={handleChange} style={{ maxWidth: '280px', marginBottom: 0 }} />
                 </div>
 
-                {/* 색상 옵션 */}
+                {/* 색상 옵션 (선택) */}
                 <div style={{ ...fieldRow, flexDirection: 'column', alignItems: 'stretch' }}>
                   <div style={{ display: 'flex', alignItems: 'center' }}>
-                    <div style={labelSt}>색상 옵션<span style={reqSt}>*</span></div>
+                    <div style={labelSt}>색상 옵션</div>
                     <div style={{ display: 'flex', gap: '4px', flex: 1 }}>
                       <input className="form-input" type="text" value={colorInput} onChange={(e) => setColorInput(e.target.value)} onKeyDown={(e) => e.key === 'Enter' && (e.preventDefault(), addColors())} placeholder="여러개 입력 시 ','로 구분해서 입력" style={{ flex: 1, marginBottom: 0 }} />
                       <button className="btn-secondary" onClick={addColors} style={{ whiteSpace: 'nowrap', padding: '6px 14px' }}>적용</button>
@@ -3951,7 +3969,7 @@
 
             <div className="modal-footer" style={{ flexShrink: 0, marginTop: 0, paddingTop: '12px' }}>
               <button className="btn-cancel" onClick={onClose}>취소</button>
-              <button className="btn-primary" onClick={handleSave}>저장</button>
+              <button className="btn-primary" onClick={handleSave} disabled={!isFormValid} title={isFormValid ? '' : '필수 항목을 모두 입력해주세요'} style={!isFormValid ? { opacity: 0.4, cursor: 'not-allowed' } : {}}>저장</button>
             </div>
 
             {showUrlModal && (
@@ -4764,7 +4782,7 @@
                     <td>{product.season ? product.season.season : 'N/A'}</td>
                     <td>{product.gender || 'N/A'}</td>
                     <td>{product.is_hero ? 'Y' : 'N'}</td>
-                    <td>{formatKRW(product.retail_price_krw)}</td>
+                    <td style={{ fontWeight: 700 }}>{formatKRW(product.retail_price_krw)}</td>
                     <td onClick={(e) => e.stopPropagation()}>
                       <button onClick={() => setViewingWholesale(product)} style={{ padding: '7px 16px', background: 'transparent', color: '#111', border: '1px solid #d1d5db', borderRadius: '4px', fontSize: '12px', fontWeight: 500, cursor: 'pointer' }}>보기</button>
                     </td>
