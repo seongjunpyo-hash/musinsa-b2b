@@ -2692,7 +2692,7 @@
               {showAdd && (
                 <form onSubmit={addAdmin} style={{ padding: '14px 16px', background: '#f9fafb', border: '1px solid #e5e7eb', borderRadius: '6px', marginBottom: '16px' }}>
                   <div className="form-group" style={{ marginBottom: '10px' }}>
-                    <label className="form-label" style={{ fontSize: '12px' }}>이메일 <span style={{ color: '#dc2626' }}>*</span></label>
+                    <label className="form-label" style={{ fontSize: '12px' }}>이메일 <span style={{ color: '#2563eb' }}>*</span></label>
                     <input type="email" className="form-input" value={newEmail} onChange={(e) => { setNewEmail(e.target.value); setError(''); }} placeholder="admin@company.com" autoFocus style={{ background: '#fff' }} />
                   </div>
                   <div className="form-group" style={{ marginBottom: '10px' }}>
@@ -2700,15 +2700,15 @@
                     <input type="text" className="form-input" value={newName} onChange={(e) => setNewName(e.target.value)} placeholder="홍길동" style={{ background: '#fff' }} />
                   </div>
                   <div className="form-group" style={{ marginBottom: '10px' }}>
-                    <label className="form-label" style={{ fontSize: '12px' }}>비밀번호 <span style={{ color: '#dc2626' }}>*</span></label>
+                    <label className="form-label" style={{ fontSize: '12px' }}>비밀번호 <span style={{ color: '#2563eb' }}>*</span></label>
                     <input type="password" className="form-input" value={newPassword} onChange={(e) => { setNewPassword(e.target.value); setError(''); }} placeholder="비밀번호 입력" autoComplete="new-password" style={{ background: '#fff' }} />
                   </div>
                   <div className="form-group" style={{ marginBottom: '10px' }}>
-                    <label className="form-label" style={{ fontSize: '12px' }}>비밀번호 확인 <span style={{ color: '#dc2626' }}>*</span></label>
+                    <label className="form-label" style={{ fontSize: '12px' }}>비밀번호 확인 <span style={{ color: '#2563eb' }}>*</span></label>
                     <input type="password" className="form-input" value={newPasswordConfirm} onChange={(e) => { setNewPasswordConfirm(e.target.value); setError(''); }} placeholder="비밀번호 재입력" autoComplete="new-password" style={{ background: '#fff' }} />
                   </div>
                   <div className="form-group" style={{ marginBottom: '10px' }}>
-                    <label className="form-label" style={{ fontSize: '12px' }}>권한 <span style={{ color: '#dc2626' }}>*</span></label>
+                    <label className="form-label" style={{ fontSize: '12px' }}>권한 <span style={{ color: '#2563eb' }}>*</span></label>
                     <div style={{ display: 'flex', gap: '20px', alignItems: 'center', paddingTop: '4px' }}>
                       <label style={{ display: 'inline-flex', alignItems: 'center', gap: '6px', cursor: 'pointer', fontSize: '13px', color: '#111' }}>
                         <input type="radio" name="newRole" value="admin" checked={newRole === 'admin'} onChange={() => setNewRole('admin')} style={{ accentColor: '#111' }} />
@@ -7543,7 +7543,7 @@
                       <input className="form-input" type="text" value={editingPartner.company_name} disabled />
                     </div>
                     <div className="form-group">
-                      <label className="form-label">국가 <span style={{ color: '#dc2626' }}>*</span></label>
+                      <label className="form-label">국가 <span style={{ color: '#2563eb' }}>*</span></label>
                       <input
                         className="form-input"
                         type="text"
@@ -7553,7 +7553,7 @@
                       />
                     </div>
                     <div className="form-group">
-                      <label className="form-label">할인율 (%) <span style={{ color: '#dc2626' }}>*</span></label>
+                      <label className="form-label">할인율 (%) <span style={{ color: '#2563eb' }}>*</span></label>
                       <input
                         className="form-input"
                         type="number"
@@ -7591,7 +7591,7 @@
                 </div>
                 <div className="modal-body">
                   <div className="form-group">
-                    <label className="form-label">파트너명</label>
+                    <label className="form-label">파트너명 <span style={{ color: '#2563eb' }}>*</span></label>
                     <input
                       className="form-input"
                       type="text"
@@ -7600,7 +7600,7 @@
                     />
                   </div>
                   <div className="form-group">
-                    <label className="form-label">이메일</label>
+                    <label className="form-label">이메일 <span style={{ color: '#2563eb' }}>*</span></label>
                     <input
                       className="form-input"
                       type="email"
@@ -7609,7 +7609,7 @@
                     />
                   </div>
                   <div className="form-group">
-                    <label className="form-label">국가 <span style={{ color: '#dc2626' }}>*</span></label>
+                    <label className="form-label">국가 <span style={{ color: '#2563eb' }}>*</span></label>
                     <input
                       className="form-input"
                       type="text"
@@ -7619,7 +7619,7 @@
                     />
                   </div>
                   <div className="form-group">
-                    <label className="form-label">할인율 (%) <span style={{ color: '#dc2626' }}>*</span></label>
+                    <label className="form-label">할인율 (%) <span style={{ color: '#2563eb' }}>*</span></label>
                     <input
                       className="form-input"
                       type="number"
