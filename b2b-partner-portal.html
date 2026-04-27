@@ -5870,8 +5870,7 @@
             const [error, setError] = useState('');
             const submit = (e) => {
                 e.preventDefault();
-                if (pw1.length < 8) { setError('Password must be at least 8 characters.'); return; }
-                if (!/[a-zA-Z]/.test(pw1) || !/[0-9]/.test(pw1)) { setError('Password must include letters and numbers.'); return; }
+                if (!pw1) { setError('Please enter a new password.'); return; }
                 if (pw1 !== pw2) { setError('Passwords do not match.'); return; }
                 if (pw1 === partner.temp_password) { setError('New password must be different from the initial password.'); return; }
                 onComplete(pw1);
@@ -5884,7 +5883,7 @@
                         </div>
                         <form onSubmit={submit} style={{ padding: '8px 24px 20px' }}>
                             <div style={{ padding: '12px 14px', background: '#fffbeb', border: '1px solid #fde68a', borderRadius: '6px', fontSize: '12px', color: '#92400e', marginBottom: '16px', lineHeight: 1.6 }}>
-                                You must change your initial password on first login. (Minimum 8 characters, including letters and numbers)
+                                You must change your initial password on first login.
                             </div>
                             <div className="form-group" style={{ marginBottom: '12px' }}>
                                 <label className="form-label" style={{ fontSize: '12px', marginBottom: '6px' }}>New Password</label>
