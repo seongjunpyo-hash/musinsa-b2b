@@ -6875,7 +6875,7 @@
             };
 
             // 비밀번호 변경 완료 후 로그인
-            const completePasswordChange = (newPw) => {
+            const completePasswordChange = async (newPw) => {
                 if (!forcePasswordChange) return;
                 const updated = { ...forcePasswordChange, password: newPw, password_changed: true, temp_password: null };
                 // partners state + localStorage 갱신
@@ -6885,6 +6885,25 @@
                     const next = saved.map(p => p.partner_id === updated.partner_id ? updated : p);
                     localStorage.setItem('musinsa_b2b_partners', JSON.stringify(next));
                 } catch (e) { }
+                // Supabase에도 즉시 upsert — 다음 로그인 시 폴링이 password_changed를 false로 되돌리지 않게
+                if (SBSync.enabled) {
+                    try {
+                        await SBSync.upsertMany('partners', [{
+                            partner_id: updated.partner_id,
+                            company_name: updated.company_name,
+                            email: updated.email,
+                            country: updated.country || null,
+                            discount_rate: updated.discount_rate ?? 0,
+                            is_active: updated.is_active !== false,
+                            created_at: updated.created_at,
+                            password: updated.password,
+                            temp_password: null,
+                            password_changed: true,
+                            invited_at: updated.invited_at || null,
+                            password_reset_requested: false
+                        }]);
+                    } catch (e) { console.warn('[Partner] password sync failed:', e); }
+                }
                 setCurrentPartner(updated);
                 setForcePasswordChange(null);
                 setPassword('');

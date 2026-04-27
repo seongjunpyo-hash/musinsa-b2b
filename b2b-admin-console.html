@@ -1951,7 +1951,6 @@
         fromDb: (r) => r
       },
       partners: {
-        // country, password, temp_password, password_changed, invited_at, password_reset_requested 등
         // 추가 컬럼은 DB에 컬럼이 있으면 sync, 없으면 upsertMany가 자동으로 누락 컬럼 감지 후 제외 재시도.
         // → DB에 컬럼 추가하면 영구 저장되며, 추가 전엔 localStorage에 보존됨.
         toDb: (p) => ({
@@ -1959,7 +1958,14 @@
           country: p.country || null,
           discount_rate: p.discount_rate ?? 0,
           is_active: p.is_active !== false,
-          created_at: p.created_at
+          created_at: p.created_at,
+          // 인증 관련 필드 — DB 스키마에 컬럼 추가됨
+          password: p.password || null,
+          temp_password: p.temp_password || null,
+          password_changed: p.password_changed === true,
+          invited_at: p.invited_at || null,
+          password_reset_requested: p.password_reset_requested === true,
+          password_reset_requested_at: p.password_reset_requested_at || null
         }),
         fromDb: (r) => r
       },
