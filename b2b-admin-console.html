@@ -3514,7 +3514,19 @@
       );
     };
 
-    const ProductEditModal = ({ product, onClose, onSave, allPartners, exchangeRate }) => {
+    const ProductEditModal = ({ product, onClose, onSave, allPartners, exchangeRate, allProducts = [] }) => {
+      // 카테고리/서브카테고리 옵션 — 기존 등록된 상품들에서 추출 + 표준 카테고리 시드
+      const STANDARD_CATEGORIES = ['Outerwear', 'Tops', 'Pants', 'Bottoms', 'Skirts', 'Dresses', 'Shoes', 'Bags', 'Accessories'];
+      const categoryOptions = (() => {
+        const set = new Set(STANDARD_CATEGORIES);
+        (allProducts || []).forEach(p => { if (p.category) set.add(p.category); });
+        return Array.from(set);
+      })();
+      const subCategoryOptions = (selectedCategory) => {
+        const set = new Set();
+        (allProducts || []).forEach(p => { if (p.sub_category && (!selectedCategory || p.category === selectedCategory)) set.add(p.sub_category); });
+        return Array.from(set).sort();
+      };
       const [formData, setFormData] = useState(() => {
         const p = product || {};
         return {
@@ -3695,8 +3707,26 @@
                 <div style={fieldRow}>
                   <div style={labelSt}>카테고리<span style={reqSt}>*</span></div>
                   <div style={{ display: 'flex', gap: '8px', flex: 1 }}>
-                    <input className="form-input" type="text" name="category" value={formData.category || ''} onChange={handleChange} placeholder="입력" style={{ flex: 1, marginBottom: 0 }} />
-                    <input className="form-input" type="text" name="sub_category" value={formData.sub_category || ''} onChange={(e) => setFormData(prev => ({ ...prev, sub_category: e.target.value }))} placeholder="입력" style={{ flex: 1, marginBottom: 0 }} />
+                    <select
+                      className="form-input"
+                      name="category"
+                      value={formData.category || ''}
+                      onChange={(e) => setFormData(prev => ({ ...prev, category: e.target.value, sub_category: '' }))}
+                      style={{ flex: 1, marginBottom: 0, height: '40px', padding: '0 28px 0 12px', appearance: 'none', WebkitAppearance: 'none', background: "#fff url(\"data:image/svg+xml,%3Csvg width='10' height='6' viewBox='0 0 10 6' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M1 1L5 5L9 1' stroke='%23666' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E\") no-repeat right 10px center", cursor: 'pointer' }}
+                    >
+                      <option value="">대분류 선택</option>
+                      {categoryOptions.map(c => <option key={c} value={c}>{c}</option>)}
+                    </select>
+                    <select
+                      className="form-input"
+                      name="sub_category"
+                      value={formData.sub_category || ''}
+                      onChange={(e) => setFormData(prev => ({ ...prev, sub_category: e.target.value }))}
+                      style={{ flex: 1, marginBottom: 0, height: '40px', padding: '0 28px 0 12px', appearance: 'none', WebkitAppearance: 'none', background: "#fff url(\"data:image/svg+xml,%3Csvg width='10' height='6' viewBox='0 0 10 6' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M1 1L5 5L9 1' stroke='%23666' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E\") no-repeat right 10px center", cursor: 'pointer' }}
+                    >
+                      <option value="">중분류 선택</option>
+                      {subCategoryOptions(formData.category).map(c => <option key={c} value={c}>{c}</option>)}
+                    </select>
                   </div>
                 </div>
 
@@ -4675,6 +4705,7 @@
               onSave={handleProductUpdate}
               allPartners={partners}
               exchangeRate={exchangeRate}
+              allProducts={products}
             />
           )}
 
@@ -4685,6 +4716,7 @@
               onSave={(p) => { onAddProduct(p); setAddingProduct(false); }}
               allPartners={partners}
               exchangeRate={exchangeRate}
+              allProducts={products}
             />
           )}
 
