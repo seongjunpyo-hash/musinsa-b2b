@@ -4800,7 +4800,7 @@
                       </label>
                     </td>
                     <td onClick={(e) => e.stopPropagation()} style={{ textAlign: 'center' }}>
-                      <button onClick={() => { if (confirm(`'${product.name}' 상품을 삭제하시겠습니까?`)) onDeleteProduct(product.id); }} style={{ background: 'none', border: 'none', cursor: 'pointer', padding: '4px', color: '#999', display: 'inline-flex', alignItems: 'center', justifyContent: 'center' }} title="삭제">
+                      <button onClick={() => { if (confirm(`'${product.name}' 상품을 삭제하시겠습니까?`)) onDeleteProduct(product.id); }} style={{ background: 'none', border: 'none', cursor: 'pointer', padding: '4px', color: '#111', display: 'inline-flex', alignItems: 'center', justifyContent: 'center' }} title="삭제">
                         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><polyline points="3 6 5 6 21 6" /><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2" /><line x1="10" y1="11" x2="10" y2="17" /><line x1="14" y1="11" x2="14" y2="17" /></svg>
                       </button>
                     </td>
@@ -7425,7 +7425,9 @@
                   <th>할인율 (%)</th>
                   <th>등록일</th>
                   <th>사용</th>
-                  <th>관리</th>
+                  <th>수정</th>
+                  <th>비밀번호 재설정</th>
+                  <th>삭제</th>
                 </tr>
               </thead>
               <tbody>
@@ -7467,30 +7469,32 @@
                         })()}
                       </td>
                       <td onClick={(e) => e.stopPropagation()}>
-                        <div style={{ display: 'flex', gap: '8px', alignItems: 'center', justifyContent: 'flex-start' }}>
-                          <button onClick={() => setEditingPartner(partner)} style={{ padding: '7px 16px', background: 'transparent', color: '#111', border: '1px solid #ddd', borderRadius: '4px', fontSize: '12px', fontWeight: 500, cursor: 'pointer' }}>수정</button>
-                          {(() => {
-                            const isRequested = !!partner.password_reset_requested;
-                            const color = isRequested ? '#dc2626' : '#111';
-                            const borderColor = isRequested ? '#dc2626' : '#ddd';
-                            return (
-                              <button
-                                onClick={() => {
-                                  if (!confirm(`'${partner.company_name}' 파트너에게 비번 재설정 메일을 발송하시겠습니까?\n\n현재 비밀번호는 무효화되고 새 임시 비밀번호가 메일로 전달됩니다.`)) return;
-                                  inviteOrResend({ ...partner, password_reset_requested: false }, !!partner.invited_at);
-                                }}
-                                style={{ padding: '7px 12px', background: 'transparent', color, border: `1px solid ${borderColor}`, borderRadius: '4px', fontSize: '12px', fontWeight: isRequested ? 700 : 500, cursor: 'pointer', display: 'inline-flex', alignItems: 'center', gap: '4px' }}
-                                title={isRequested ? '파트너가 비밀번호 재설정을 요청했습니다 — 클릭해서 발송' : '비밀번호 재설정 메일 발송'}
-                              >
-                                <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><line x1="22" y1="2" x2="11" y2="13" /><polygon points="22 2 15 22 11 13 2 9 22 2" /></svg>
-                                비번 재설정 메일 발송
-                              </button>
-                            );
-                          })()}
-                          <button onClick={() => { if (confirm(`'${partner.company_name}' 파트너를 삭제하시겠습니까?`)) onDeletePartner(partner.partner_id); }} style={{ background: 'none', border: 'none', cursor: 'pointer', padding: '4px', color: '#999', display: 'flex', alignItems: 'center' }} title="삭제">
-                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><polyline points="3 6 5 6 21 6" /><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2" /><line x1="10" y1="11" x2="10" y2="17" /><line x1="14" y1="11" x2="14" y2="17" /></svg>
-                          </button>
-                        </div>
+                        <button onClick={() => setEditingPartner(partner)} style={{ padding: '7px 16px', background: 'transparent', color: '#111', border: '1px solid #ddd', borderRadius: '4px', fontSize: '12px', fontWeight: 500, cursor: 'pointer' }}>수정</button>
+                      </td>
+                      <td onClick={(e) => e.stopPropagation()}>
+                        {(() => {
+                          const isRequested = !!partner.password_reset_requested;
+                          const color = isRequested ? '#dc2626' : '#111';
+                          const borderColor = isRequested ? '#dc2626' : '#ddd';
+                          return (
+                            <button
+                              onClick={() => {
+                                if (!confirm(`'${partner.company_name}' 파트너에게 비번 재설정 메일을 발송하시겠습니까?\n\n현재 비밀번호는 무효화되고 새 임시 비밀번호가 메일로 전달됩니다.`)) return;
+                                inviteOrResend({ ...partner, password_reset_requested: false }, !!partner.invited_at);
+                              }}
+                              style={{ padding: '7px 12px', background: 'transparent', color, border: `1px solid ${borderColor}`, borderRadius: '4px', fontSize: '12px', fontWeight: isRequested ? 700 : 500, cursor: 'pointer', display: 'inline-flex', alignItems: 'center', gap: '4px' }}
+                              title={isRequested ? '파트너가 비밀번호 재설정을 요청했습니다 — 클릭해서 발송' : '비밀번호 재설정 메일 발송'}
+                            >
+                              <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><line x1="22" y1="2" x2="11" y2="13" /><polygon points="22 2 15 22 11 13 2 9 22 2" /></svg>
+                              비번 재설정 메일 발송
+                            </button>
+                          );
+                        })()}
+                      </td>
+                      <td onClick={(e) => e.stopPropagation()}>
+                        <button onClick={() => { if (confirm(`'${partner.company_name}' 파트너를 삭제하시겠습니까?`)) onDeletePartner(partner.partner_id); }} style={{ background: 'none', border: 'none', cursor: 'pointer', padding: '4px', color: '#111', display: 'inline-flex', alignItems: 'center' }} title="삭제">
+                          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><polyline points="3 6 5 6 21 6" /><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2" /><line x1="10" y1="11" x2="10" y2="17" /><line x1="14" y1="11" x2="14" y2="17" /></svg>
+                        </button>
                       </td>
                     </tr>
                   );
