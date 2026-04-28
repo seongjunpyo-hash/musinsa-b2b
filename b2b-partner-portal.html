@@ -10,6 +10,8 @@
     <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <!-- EmailJS SDK — 비밀번호 재설정 메일 자동 발송 -->
+    <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
     <link rel="stylesheet"
         href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.min.css" />
     <link rel="stylesheet" href="design-system/layer-desktop.css" />
@@ -4882,8 +4884,39 @@
             created_at: o.created_at, updated_at: o.updated_at
         });
 
-        // Slack 주문 알림 (Incoming Webhook)
-        const SLACK_WEBHOOK_URL = 'https://hooks.slack.com/services/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';
+        // Slack 알림 (Incoming Webhook)
+        // 주문 알림 채널
+        const SLACK_WEBHOOK_ORDERS = 'https://hooks.slack.com/services/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';
+        // 하위 호환 (기존 변수명 사용처)
+        const SLACK_WEBHOOK_URL = SLACK_WEBHOOK_ORDERS;
+
+        // EmailJS 설정 — 비밀번호 재설정 메일 자동 발송용 (어드민과 동일한 키)
+        const EMAILJS_PUBLIC_KEY = '8JwG8yMQgdKa0aaIR';
+        const EMAILJS_SERVICE_ID = 'service_uwk6de4';
+        const EMAILJS_TEMPLATE_INVITATION = 'template_etpd78b';
+        if (EMAILJS_PUBLIC_KEY && window.emailjs) {
+            try { window.emailjs.init({ publicKey: EMAILJS_PUBLIC_KEY }); }
+            catch (e) { console.warn('[EmailJS] init failed:', e); }
+        }
+        const emailJsConfigured = () => !!(EMAILJS_PUBLIC_KEY && EMAILJS_SERVICE_ID && window.emailjs);
+        const sendViaEmailJs = async (templateId, templateParams) => {
+            if (!emailJsConfigured() || !templateId) return { ok: false, reason: 'not_configured' };
+            try {
+                const res = await window.emailjs.send(EMAILJS_SERVICE_ID, templateId, templateParams);
+                console.log('[EmailJS] sent', templateId, res.status);
+                return { ok: true, response: res };
+            } catch (err) {
+                console.warn('[EmailJS] send failed:', err);
+                return { ok: false, reason: 'send_error', error: err };
+            }
+        };
+        // 임시 비밀번호 생성 — 영문 대소문자 + 숫자 10자
+        const generateTempPassword = () => {
+            const chars = 'ABCDEFGHJKLMNPQRSTUVWXYZabcdefghjkmnpqrstuvwxyz23456789';
+            let pw = '';
+            for (let i = 0; i < 10; i++) pw += chars[Math.floor(Math.random() * chars.length)];
+            return pw;
+        };
         const sendSlackOrderAlert = async (order, partner, items) => {
             try {
                 // 상품별로 그룹핑해서 요약
@@ -4926,7 +4959,7 @@
                     text: `새 주문 ${order.order_id} - ${partner.company_name} (${totalAmount})`,
                     blocks
                 };
-                await fetch(SLACK_WEBHOOK_URL, {
+                await fetch(SLACK_WEBHOOK_ORDERS, {
                     method: 'POST',
                     body: JSON.stringify(payload)
                 });
@@ -6917,46 +6950,71 @@
                 setPage('home');
             };
 
-            // 비밀번호 재설정 요청 → Slack 알림 + 어드민 노출용 플래그 설정
+            // 비밀번호 재설정 요청 → 등록된 이메일이면 즉시 새 임시 비밀번호 발급 + EmailJS로 메일 자동 발송
             const requestPasswordReset = async (resetEmail) => {
                 const trimmed = (resetEmail || '').trim().toLowerCase();
                 if (!trimmed) { alert('Please enter your email.'); return false; }
                 const found = partners.find(p => p.email && p.email.toLowerCase() === trimmed);
                 if (!found) { alert('This email is not registered.'); return false; }
-                // password_reset_requested 플래그 설정 — 어드민 파트너 관리에서 해당 파트너 버튼이 빨간색으로 강조됨
+                // 새 임시 비밀번호 생성 — 기존 비번 무효화
+                const tempPw = generateTempPassword();
                 const updated = {
                     ...found,
-                    password_reset_requested: true,
-                    password_reset_requested_at: new Date().toISOString()
+                    temp_password: tempPw,
+                    password: null,
+                    password_changed: false,
+                    invited_at: new Date().toISOString(),
+                    password_reset_requested: false,
+                    password_reset_requested_at: null
                 };
+                // 로컬 + Supabase 동기화
                 setPartners(prev => prev.map(p => p.partner_id === updated.partner_id ? updated : p));
                 try {
                     const saved = JSON.parse(localStorage.getItem('musinsa_b2b_partners') || '[]');
                     const next = saved.map(p => p.partner_id === updated.partner_id ? updated : p);
                     localStorage.setItem('musinsa_b2b_partners', JSON.stringify(next));
                 } catch (e) { }
+                if (SBSync.enabled) {
+                    try {
+                        await SBSync.upsertMany('partners', [{
+                            partner_id: updated.partner_id,
+                            company_name: updated.company_name,
+                            email: updated.email,
+                            country: updated.country || null,
+                            discount_rate: updated.discount_rate ?? 0,
+                            is_active: updated.is_active !== false,
+                            created_at: updated.created_at,
+                            password: null,
+                            temp_password: tempPw,
+                            password_changed: false,
+                            invited_at: updated.invited_at,
+                            password_reset_requested: false,
+                            password_reset_requested_at: null
+                        }]);
+                    } catch (e) { console.warn('Supabase sync failed:', e); }
+                }
+                // EmailJS로 비밀번호 재설정 메일 발송
                 try {
-                    const blocks = [
-                        { type: 'header', text: { type: 'plain_text', text: '🔑 비밀번호 재설정 요청', emoji: true } },
-                        {
-                            type: 'section',
-                            fields: [
-                                { type: 'mrkdwn', text: `*파트너*\n${found.company_name}` },
-                                { type: 'mrkdwn', text: `*이메일*\n${found.email}` },
-                                { type: 'mrkdwn', text: `*국가*\n${found.country || '-'}` },
-                                { type: 'mrkdwn', text: `*요청 시각*\n${new Date().toLocaleString('ko-KR')}` }
-                            ]
-                        },
-                        {
-                            type: 'section',
-                            text: { type: 'mrkdwn', text: '어드민 콘솔의 *파트너 관리* 메뉴에서 해당 파트너의 *비번 재설정 발송* 버튼(빨간색으로 강조됨)을 눌러주세요.' }
-                        }
-                    ];
-                    await fetch(SLACK_WEBHOOK_URL, {
-                        method: 'POST',
-                        body: JSON.stringify({ text: `🔑 비밀번호 재설정 요청 - ${found.company_name} (${found.email})`, blocks })
+                    const loginUrl = `${window.location.origin}${window.location.pathname.replace(/[^/]*$/, '')}b2b-partner-portal.html`;
+                    const subject = `[MUSINSA B2B] Password Reset — ${found.company_name}`;
+                    const result = await sendViaEmailJs(EMAILJS_TEMPLATE_INVITATION, {
+                        to_email: found.email,
+                        to_name: found.company_name || 'Partner',
+                        partner_name: found.company_name || 'Partner',
+                        partner_email: found.email,
+                        temp_password: tempPw,
+                        login_url: loginUrl,
+                        subject: subject
                     });
-                } catch (e) { console.warn('Slack notification failed:', e); }
+                    if (result.ok) {
+                        alert(`A new temporary password has been sent to ${found.email}. Please check your inbox.`);
+                    } else {
+                        alert(`Could not send email automatically. Please contact your account manager.\n\n(EmailJS not configured or send failed)`);
+                    }
+                } catch (e) {
+                    console.warn('Password reset email failed:', e);
+                    alert(`Could not send email. Please contact your account manager.`);
+                }
                 return true;
             };
 
@@ -7379,10 +7437,7 @@
                                 onClose={() => setForgotOpen(false)}
                                 onSubmit={async (resetEmail) => {
                                     const ok = await requestPasswordReset(resetEmail);
-                                    if (ok) {
-                                        alert('Your password reset request has been submitted. The administrator will review it and send you a new temporary password by email.');
-                                        setForgotOpen(false);
-                                    }
+                                    if (ok) setForgotOpen(false);
                                 }}
                             />
                         )}
